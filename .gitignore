@@ -1,0 +1,8 @@
+# Only release the analysis source and its instructions.
+*
+!/.gitignore
+!/README.md
+!/requirements-nease.txt
+!/scripts/
+!/scripts/*.R
+!/scripts/*.py
