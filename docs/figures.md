@@ -4,7 +4,7 @@
 
 Computational sources for the **18 November 2026 manuscript** are listed below. The repository contains code for reported main-text results, figures, tables and supplementary data, together with their required preprocessing and shared helpers. Source-table scripts provide values used in a panel; they do not necessarily export the final assembled layout. Figure filenames follow the manuscript numbering and the [shared naming convention](script_naming.md).
 
-[Figure 1](#figure-1) · [Figure 2](#figure-2) · [Figure 3](#figure-3) · [Figure 4](#figure-4) · [Supplementary material](#supplementary-figures-and-tables) · [Supplementary data](#supplementary-data)
+[Figure 1](#figure-1) · [Figure 2](#figure-2) · [Figure 3](#figure-3) · [Figure 4](#figure-4) · [Table 1](#table-1) · [Supplementary material](#supplementary-figures-and-tables) · [Supplementary data](#supplementary-data)
 
 ## Figure 1
 
@@ -52,9 +52,13 @@ Sashimi plotting requires STAR-aligned BAM files. The selected-event script supp
 | Fig. 4C; stromal protein-feature coverage and overlaps | [figure_04c_nease_feature_mapping.R](../scripts/figure_04c_nease_feature_mapping.R) |
 | Fig. 4D; stromal Reactome top-ten R panel | [figure_04d_reactome_enrichment.R](../scripts/figure_04d_reactome_enrichment.R) |
 | Fig. 4C,D and Supplementary Fig. 10; upstream NEASE feature mapping and Reactome calculation | [analysis_nease.py](../scripts/analysis_nease.py) |
-| Fig. 4E; conceptual summary | Separately assembled artwork |
+| Fig. 4E; conceptual summary | Separately assembled artwork; the 807 DAS / 799 non-DEG counts come from [Figure 3A](../scripts/figure_03a_deg_das_venn.R) |
 
 Figure 4C,D R scripts use bundled corrected NEASE outputs. New NEASE calculations require the [external environment](manuscript_methods.md#nease-and-reactome). See [Reactome provenance](reactome.md) for the numbered R implementation.
+
+## Table 1
+
+Clinical characteristics and RNA integrity numbers are recorded study metadata. The table is assembled from those records and does not require an RNA-seq analysis script. Clinical descriptive statistics and experimental RT-PCR statistics are outside the agreed scope of this repository.
 
 ## Supplementary figures and tables
 

@@ -157,6 +157,30 @@ The window-corrected BH and BY columns are present in Supplementary Data 3 and w
 
 All remaining R/Python scripts passed parsing, the 29 Python tests and three R test scripts passed, and local documentation links and helper references resolved. A mocked NEASE engine compared the previous and restricted entry points: all ten retained primary TSV exports were byte-identical, primary analysis settings agreed, and the retained summary fields agreed. This checks dispatch and export behavior; it is not a new native enrichment run. Bundled inputs and configuration files were unchanged, no images were generated, and the manuscript files retained their original SHA-256 fingerprints.
 
+## Final manuscript coverage audit
+
+The current code was checked against the text and legends of the 18 November 2026 marked manuscript, all 17 slides of the accompanying figure deck, and the supplementary-data descriptions. The inventory covers Figures 1–4, Table 1, Supplementary Figures 1–10, Supplementary Tables 1–2 and Supplementary Data 1–6. All 46 retained scripts have a reported-result or required-helper role in the [figure-to-code index](figures.md). No missing analysis implementation was identified within the agreed RNA-seq scope.
+
+A fresh work directory was used for 22 numerical commands, including the nine-step main manuscript workflow. All 28 bundled inputs passed their checksum checks. R graphics devices were disabled before script startup, and plotting entry points ran with `--tables-only`. The following numerical checks agreed with the manuscript or its source tables:
+
+| Component | Confirmed result |
+| --- | --- |
+| Fig. 1; Supplementary Fig. 7 | 1,073 stromal events / 807 genes; 805 epithelial events / 609 genes |
+| Fig. 1B; Supplementary Fig. 7B | PC1/PC2 variance 46.3156% / 16.1530% and 30.9362% / 7.8216% |
+| Fig. 3 | 414 DE genes with 8 DAS overlaps; 55 genes with both DAS and DE isoforms; 29 genes with event-matched DE isoforms; 4,047 plotted event–transcript pairs |
+| Supplementary Fig. 2; Data 6 | 1,074 KC6-inclusive events, 889 shared events; 768 coverage-qualified primary events; 1,060/1,073 events retaining direction across all nine omissions |
+| Supplementary Fig. 3 | 19 stromal and 23 epithelial candidate RBP genes |
+| Supplementary Fig. 6 | 36 of 67 published events shared with the FDR-significant reanalysis |
+| Supplementary Fig. 9 | 15,343 qualifying events; 427/56/8 stromal-only/epithelial-only/shared DAS events; Pearson 0.1011075 and Spearman 0.0849890 |
+| Fig. 4C; Supplementary Fig. 10A | 276/698 and 135/450 mapped events; 321 and 146 feature-class assignments |
+| Fig. 4D; Supplementary Fig. 10B | 1,823 tested pathways per cohort; 64/26 significant pathways; ten selected per panel |
+
+The rMAPS3 exon-selection audit and both cohorts' motif table exports also completed. All 29 Python tests, three R test scripts, and parsing of 39 R / 16 Python source files passed. External native read processing, DESeq2 refitting, the native motif scan and full NEASE enrichment were not repeated. The original QC logs and published S8 workbook remain outside the agreed independent-verification scope.
+
+Table 1 and Supplementary Table 1 contain clinical/experimental metadata. Gel images, conceptual artwork and final panel assembly are prepared separately. Figures 2D–F and 2J–L use GraphPad Prism, as confirmed by the authors. Supplementary Table 2 combines the supplied STAR-summary calculation with sequencing/QC-report fields and RIN metadata; the two QC scripts do not export every table column. Supplementary-data scripts export numerical source tables rather than formatted Excel workbooks. These distinctions are recorded in the index and [QC coverage](qc.md).
+
+No figure files were generated. The manuscript Word file, figure PowerPoint and three inspected supplementary workbooks retained their SHA-256 fingerprints. This audit updated documentation only and did not change analysis code, inputs or manuscript results.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.

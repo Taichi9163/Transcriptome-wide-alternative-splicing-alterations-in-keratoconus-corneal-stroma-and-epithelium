@@ -69,7 +69,7 @@ python3 scripts/supp_table_02_star_junction_qc.py \
   --output work/results/qc/Supplementary_Table2_STAR_junction_QC.tsv
 ```
 
-Use the example matching your files. `--samples /path/to/samples.tsv` selects a different metadata table. Input and output paths may be absolute; relative paths are resolved from the current working directory. The default metadata path is resolved from the script location. Existing identical TSV output is reusable; a different existing output is preserved and produces an error. No FASTQ or BAM files are read.
+Use the example matching your files. `--samples /path/to/samples.tsv` selects a different metadata table. Input and output paths may be absolute; relative paths are resolved from `--work-dir`, then `KC_WORK_DIR`, or the current directory if neither is supplied. The default metadata path is resolved from the script location. Existing identical TSV output is reusable; a different existing output is preserved and produces an error. No FASTQ or BAM files are read.
 
 ## Definitions and validation limits
 

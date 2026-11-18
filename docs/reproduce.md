@@ -27,7 +27,7 @@ python3 scripts/supp_data_06_leave_one_out.py --work-dir work
 python3 scripts/workflow_run_manuscript.py --work-dir work
 ```
 
-To use an existing reference instead of downloading it, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Input preparation reuses identical files and refuses to overwrite different files. Set `FIGURE_FONT` to select an installed font; the default is `sans`. The commands on this page write analysis outputs in the selected work directory. The primary workflow and the numbered commands using `KC_WORK_DIR` accept absolute script paths. Older modules listed in [additional analyses](manuscript_methods.md) use the current working directory.
+To use an existing reference instead of downloading it, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Input preparation reuses identical files and refuses to overwrite different files. Set `FIGURE_FONT` to select an installed font; the default is `sans`. The commands on this page write analysis outputs in the selected work directory. Every analysis entry point, including those in the [manuscript-methods guide](manuscript_methods.md), accepts `--work-dir` and the `KC_WORK_DIR` fallback. Absolute script paths can be used from another directory.
 
 Use a separate work directory for each new run: analysis result tables may be replaced within that directory.
 

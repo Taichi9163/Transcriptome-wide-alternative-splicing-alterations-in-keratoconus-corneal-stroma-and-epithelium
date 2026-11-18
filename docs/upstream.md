@@ -16,8 +16,9 @@ The default rMATS command is `rmats.py` on `PATH`. For a source installation set
 ## Run stages
 
 ```sh
-python3 scripts/workflow_preprocess_reads.py all --config config/upstream.json \
-  --samples config/samples_stroma.tsv --work-dir /path/to/analysis
+# Run from the repository root, after editing copies of the settings as needed.
+python3 scripts/workflow_preprocess_reads.py all --config "$PWD/config/upstream.json" \
+  --samples "$PWD/config/samples_stroma.tsv" --work-dir /path/to/analysis
 ```
 
 This previews the commands without creating files. Add `--execute` to run them. For a first run, execute stages individually in this order:
