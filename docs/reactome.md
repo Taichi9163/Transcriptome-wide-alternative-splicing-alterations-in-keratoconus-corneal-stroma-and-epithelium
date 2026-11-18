@@ -1,5 +1,7 @@
 # Reactome R panels
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 The numbered entry scripts are `Figure4D_Reactome_enrichment.R` (stroma) and `SuppFigure10B_Reactome_enrichment.R` (epithelium). Both use `Utils_Reactome_enrichment.R`. Their source was recovered from each cohort's `after_NEASE/scripts/エンリッチメント.R`; local paths, `setwd()`, workspace clearing and unguarded interactive plot printing were removed.
 
 ```sh

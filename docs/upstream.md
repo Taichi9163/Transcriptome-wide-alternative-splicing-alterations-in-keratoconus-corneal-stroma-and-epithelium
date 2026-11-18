@@ -1,5 +1,7 @@
 # Ubuntu read-processing workflow
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 This is a path-safe reconstruction of the supplied commands, not a record of a newly executed FASTQ analysis. The manuscript reports FastQC 0.12.1, MultiQC 1.29, fastp 0.20.0, STAR 2.7.11a, RSEM 1.3.1, rMATS-turbo 4.3.0 and rmats2sashimiplot 3.0.0, with GRCh38/Ensembl release 114. Record the versions of all executables when running the workflow. The original environment was named `shortread`; its environment lock was not supplied, so an untested replacement lock is not presented as the original environment.
 
 ## Set up paths

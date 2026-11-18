@@ -1,5 +1,7 @@
 # Event-comparison panels
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 These entry scripts run directly from the bundled rMATS JC tables, without a GTF download, workbook import or new alignment. Paths are resolved under `KC_WORK_DIR`; scripts may be called by absolute path from another directory. Install `VennDiagram` in R in addition to the packages listed in the README. `ragg` is needed only when exporting images.
 
 ```sh
@@ -38,7 +40,7 @@ The existing `SuppFigure9_SE_junction_support.R` remains the broader numeric aud
 
 ## Input provenance and validation
 
-Five complete KC6-inclusive JC tables were added from the local `Yamashita2026/after_rMATS/allsamples/results` analysis. Lossless gzip files and their uncompressed hashes are in the input manifest. This increases the bundled input count to 26. Per-class included-cohort counts are SE 713, A3SS 78, A5SS 85, MXE 44 and RI 154, in 802 unique genes overall. The class-count output also supplies the numeric labels for Supplementary Figure 2A; its exon schematics remain a separate composition.
+Five complete KC6-inclusive JC tables were added from the local `Yamashita2026/after_rMATS/allsamples/results` analysis. Lossless gzip files and their uncompressed hashes are in the input manifest. These five tables are part of the 28 inputs listed in the current manifest. Per-class included-cohort counts are SE 713, A3SS 78, A5SS 85, MXE 44 and RI 154, in 802 unique genes overall. The class-count output also supplies the numeric labels for Supplementary Figure 2A; its exon schematics remain a separate composition.
 
 Validation compared all five union tables with the previous release and all 40 directional counts with the saved cross-layer matrix. Every support-qualified event key, effect, FDR, significance flag and per-group support count matched the original audit. All 15 support-filtered Venn regions and their 491 event memberships matched the saved region audit. The reconstructed Venn layouts have not been visually validated against the manuscript graphics.
 

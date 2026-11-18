@@ -1,5 +1,7 @@
 # Processed input provenance
 
+[Repository overview](../README.md) · [Reproduction guide](../docs/reproduce.md) · [Checksum manifest](manifest.json)
+
 All bundled files are losslessly gzip-compressed. `manifest.json` records each destination, uncompressed byte count and SHA-256 checksum. `scripts/prepare_inputs.py` verifies these values and refuses to replace different existing inputs.
 
 | Input | Source and purpose |

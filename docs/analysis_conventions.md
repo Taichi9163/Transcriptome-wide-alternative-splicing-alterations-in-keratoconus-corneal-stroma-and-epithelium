@@ -1,5 +1,7 @@
 # Analysis conventions and input provenance
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 ## Data and thresholds
 
 The bundled numeric tables come from the supplied analysis package and the recovered local analyses for the manuscript revision of 18 November 2026; see [input provenance](../inputs/README.md). Compression is lossless; `inputs/manifest.json` records the SHA-256 checksum and byte count of each uncompressed source. The complete gene table preserves its original row-name field (the header has one fewer field than the data rows); the transcript table has explicit `TranscriptID` and `GeneID` columns.

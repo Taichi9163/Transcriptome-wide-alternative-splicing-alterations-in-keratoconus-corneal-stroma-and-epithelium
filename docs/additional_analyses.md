@@ -1,6 +1,8 @@
 # Additional analyses
 
-These modules complement the bundled manuscript workflow. Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B can run directly from the bundled processed inputs, as shown in the main README. Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
+These modules complement the bundled manuscript workflow. Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B can run directly from the bundled processed inputs, as shown in the [reproduction guide](reproduce.md). Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
 
 ## Dependencies and native inputs
 
@@ -78,7 +80,7 @@ Rscript --vanilla scripts/SuppFigure3AB_RBP_expression.R epithelium data/gene_sy
 
 For Figure 4D and Supplementary Figure 10B, the numbered [Reactome R scripts](reactome.md) read bundled corrected pathway results and support `--tables-only`. They export the same top-ten numerical data as the revised Python implementation; no new NEASE calculation is needed.
 
-For the protein-feature panels alone, use `Figure4C_NEASE_feature_mapping.R` and `SuppFigure10A_NEASE_feature_mapping.R`. They summarize saved event memberships with base R and support `--tables-only`; the commands in the README require no NEASE installation. To use the output of a new NEASE run, supply `--events results/<cohort>/nease/results/SE_events.tsv` within the selected work directory. The plotted labels distinguish all SE events, unique mapped events, assignments and inclusive overlaps between feature classes.
+For the protein-feature panels alone, use `Figure4C_NEASE_feature_mapping.R` and `SuppFigure10A_NEASE_feature_mapping.R`. They summarize saved event memberships with base R and support `--tables-only`; the commands in the [reproduction guide](reproduce.md) require no NEASE installation. To use the output of a new NEASE run, supply `--events results/<cohort>/nease/results/SE_events.tsv` within the selected work directory. The plotted labels distinguish all SE events, unique mapped events, assignments and inclusive overlaps between feature classes.
 
 Use Python 3.12 and the package versions recorded for the NEASE analysis. Run after the two primary `Figure1A_DAS_event_summary.R` commands. The code converts the rMATS exon start to a 1-based position, preserves the event identity during feature mapping, and disambiguates repeated pathway display names by reference row during the NEASE calculation. Reactome P values are BH-adjusted within each tissue.
 

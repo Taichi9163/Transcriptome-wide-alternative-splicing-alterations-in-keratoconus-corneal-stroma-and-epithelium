@@ -1,5 +1,7 @@
 # rMAPS3 execution and exon-selection audit
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 `scripts/run_rmaps3.py` supplies the upstream SE motif workflow for Figure 1E,F and Supplementary Figure 7E,F. It reconstructs the commands recorded in both study `log.motifMap.txt` files on 30 June 2026, replacing workstation paths with command-line options. It does not vendor or modify the external rMAPS3 engine.
 
 ## Verify selection without generating figures

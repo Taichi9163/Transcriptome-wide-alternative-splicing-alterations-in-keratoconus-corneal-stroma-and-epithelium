@@ -1,5 +1,7 @@
 # Supplementary Figure 1 and Table 2: QC workflow
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 The supplied `STAR_junction_QC.py` is published as [SuppTable2_STAR_junction_QC.py](../scripts/SuppTable2_STAR_junction_QC.py). It calculates the STAR unique-mapping and splice-junction columns of Supplementary Table 2 from existing outputs. It uses the Python standard library, does not rerun alignment, and does not create figure images.
 
 The subsequently supplied `Keratoconus_QC_ReadPairs.py` is published as [SuppFigure1B_QC_read_pairs.py](../scripts/SuppFigure1B_QC_read_pairs.py). It calculates the raw, filtered and mapped read-pair counts and can draw Supplementary Figure 1B. The supplied file explicitly describes itself as a reconstruction from the reported methods, not a verified copy of the original plotting code. The public version preserves its plotting function and calculation definitions; it does not assert visual identity to the manuscript panel.

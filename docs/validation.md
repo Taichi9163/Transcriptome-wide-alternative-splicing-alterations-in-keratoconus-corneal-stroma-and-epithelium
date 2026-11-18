@@ -1,5 +1,7 @@
 # Release validation
 
+[Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
+
 Checked on 18 November 2026 against the supplied analysis archive and manuscript revision. The checks below distinguish numeric reproduction, plot-object construction and rendered-figure validation. Original manuscript and presentation files were not modified.
 
 ## Reproduced results
