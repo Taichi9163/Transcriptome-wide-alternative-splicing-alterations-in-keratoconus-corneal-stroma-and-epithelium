@@ -106,5 +106,17 @@
     "destination": "data/epithelium/rbp/tpm.tsv",
     "sha256": "834c8f706b2b5ff24f650e4943814c60d173cf0f7813f690e38b46bf56db594d",
     "bytes": 2454
+  },
+  {
+    "file": "inputs/stroma/nease/SE_events.tsv.gz",
+    "destination": "data/stroma/nease/SE_events.tsv",
+    "sha256": "4afdbd839f565cf5f36f445b39b07a57e6207ee1801935d12f55d7bd799797a0",
+    "bytes": 190423
+  },
+  {
+    "file": "inputs/epithelium/nease/SE_events.tsv.gz",
+    "destination": "data/epithelium/nease/SE_events.tsv",
+    "sha256": "d8e4fe1359136d0faab772ef8dfd046d766cb84499e7a18957d285a9bb49f028",
+    "bytes": 122173
   }
 ]

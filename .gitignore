@@ -25,6 +25,8 @@
 !/inputs/stroma/rmaps/*.gz
 !/inputs/stroma/rbp/
 !/inputs/stroma/rbp/*.gz
+!/inputs/stroma/nease/
+!/inputs/stroma/nease/*.gz
 !/inputs/epithelium/
 !/inputs/epithelium/rmats/
 !/inputs/epithelium/rmats/*.gz
@@ -32,6 +34,8 @@
 !/inputs/epithelium/rmaps/*.gz
 !/inputs/epithelium/rbp/
 !/inputs/epithelium/rbp/*.gz
+!/inputs/epithelium/nease/
+!/inputs/epithelium/nease/*.gz
 !/tests/
 !/tests/*.py
 !/LICENSE

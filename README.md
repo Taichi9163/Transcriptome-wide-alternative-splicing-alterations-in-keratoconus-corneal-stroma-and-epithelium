@@ -6,7 +6,7 @@ This repository combines the downstream analysis modules, the supplied Figure 1/
 
 ## Reproduce the manuscript tables and panels
 
-Eighteen compressed processed input tables are included under `inputs/`: ten complete rMATS JC tables across the two cohorts, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, and two candidate-RBP TPM matrices. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
+Twenty compressed processed input tables are included under `inputs/`: ten complete rMATS JC tables across the two cohorts, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, and two NEASE event-mapping tables. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
 
 Use Python 3.9 or later and R with these packages:
 
@@ -55,6 +55,20 @@ KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure7D_DAS_gene_UpSet.R 
 
 Remove `--tables-only` to generate the figures. The heatmap script processes both cohorts, or accepts `stroma` or `epithelium` to select one panel. Outputs are written to `work/results/<cohort>/suppfigure3/` and `work/results/epithelium/suppfigure7/`. The recovered heatmap scripts select 19 stromal and 23 epithelial RBP genes. The epithelial UpSet adapts the supplied Figure 1D implementation and checks 805 significant events, 609 genes and 314 SE-only genes; the original Supplementary Figure 7D script was not located.
 
+### Figure 4C and Supplementary Figure 10A
+
+The recovered R plotting scripts read the bundled NEASE event memberships and calculate coverage, feature-class counts and pairwise overlaps. No new NEASE annotation run is required for these plots.
+
+```sh
+python3 scripts/prepare_inputs.py --work-dir work
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/Figure4C_NEASE_feature_mapping.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure10A_NEASE_feature_mapping.R --tables-only
+```
+
+Remove `--tables-only` to generate PNG and SVG panels. Outputs are written to `work/results/stroma/figure4/` and `work/results/epithelium/suppfigure10/`. Each command writes event memberships, coverage, feature counts and overlaps even in tables-only mode. The upper bars use all significant SE events as denominators (698 stromal; 450 epithelial). The lower bars use event–feature assignments (321; 146), because an event can map to more than one class. Pairwise overlaps include events present in all three classes.
+
+To use an output from `nease_analysis.py`, add `--events results/<cohort>/nease/results/SE_events.tsv`; relative paths are resolved within `KC_WORK_DIR`. The script checks event identities against the cohort's rMATS input and the expected manuscript counts. The stromal plot preserves the recovered panel body; its outer axis titles and numeric tick labels were separate PowerPoint annotations. The epithelial source already contains those axis labels.
+
 ## Process reads on Ubuntu
 
 The configurable workflow covers FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi plotting. Edit [config/upstream.json](config/upstream.json) and [config/samples_stroma.tsv](config/samples_stroma.tsv) for your files and tools.
@@ -89,7 +103,9 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Fig. 3A–C; expression/splicing overlap source tables | [Figure3ABC_expression_splicing_overlap.R](scripts/Figure3ABC_expression_splicing_overlap.R) |
 | Fig. 4A and Supplementary Fig. 8; coordinate-matched overlap tables | [Figure4A_SuppFigure8_DAS_overlap.R](scripts/Figure4A_SuppFigure8_DAS_overlap.R) |
 | Fig. 4B; stromal versus epithelial ΔPSI | [Figure4B_cross_layer_deltaPSI.R](scripts/Figure4B_cross_layer_deltaPSI.R) |
-| Fig. 4C,D and Supplementary Fig. 10; NEASE and Reactome | `nease_analysis.py`, `reactome_top10.py` |
+| Fig. 4C; stromal protein-feature coverage and overlaps | [Figure4C_NEASE_feature_mapping.R](scripts/Figure4C_NEASE_feature_mapping.R) |
+| Supplementary Fig. 10A; epithelial protein-feature coverage and overlaps | [SuppFigure10A_NEASE_feature_mapping.R](scripts/SuppFigure10A_NEASE_feature_mapping.R) |
+| Fig. 4C,D and Supplementary Fig. 10; NEASE calculation and Reactome plots | `nease_analysis.py`, `reactome_top10.py` |
 | Supplementary Fig. 2 and Data 6; stromal sensitivity tables | `stromal_sensitivity.py`, `leave_one_out.py` |
 | Supplementary Fig. 3A,B; candidate RBP expression heatmaps | [SuppFigure3AB_RBP_expression_heatmaps.R](scripts/SuppFigure3AB_RBP_expression_heatmaps.R) |
 | Supplementary Fig. 3A,B; expression tables with DESeq2 adjusted P values | [SuppFigure3AB_RBP_expression.R](scripts/SuppFigure3AB_RBP_expression.R) |
@@ -97,7 +113,7 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Supplementary Fig. 7D; epithelial gene-level UpSet | [SuppFigure7D_DAS_gene_UpSet.R](scripts/SuppFigure7D_DAS_gene_UpSet.R) |
 | Supplementary Fig. 9; SE junction-support sensitivity tables | [SuppFigure9_SE_junction_support.R](scripts/SuppFigure9_SE_junction_support.R) |
 
-The DAS summary and motif scripts also support the epithelial analyses in Supplementary Fig. 7. The significant-event PCA helper accepts either cohort; the dedicated `Figure1BC` script reproduces the current stromal panels.
+The DAS summary and motif scripts also support the epithelial analyses in Supplementary Fig. 7. The significant-event PCA helper accepts either cohort; the dedicated `Figure1BC` script reproduces the current stromal panels. The two NEASE feature plots share [Utils_NEASE_feature_summary.R](scripts/Utils_NEASE_feature_summary.R) for event-level counting and validation.
 
 Shared preparation uses [Setup_check_R_packages.R](scripts/Setup_check_R_packages.R), [Setup_import_supplementary_data.R](scripts/Setup_import_supplementary_data.R), [Setup_prepare_Figure1_Figure3_data.R](scripts/Setup_prepare_Figure1_Figure3_data.R), and [Utils_plotting.R](scripts/Utils_plotting.R). The two numbered UpSet entry scripts share [Utils_DAS_gene_UpSet.R](scripts/Utils_DAS_gene_UpSet.R). Additional PCA sensitivity analyses use [Analysis_PCA_all_events.R](scripts/Analysis_PCA_all_events.R), [Analysis_PCA_variable_events.R](scripts/Analysis_PCA_variable_events.R), and [Analysis_PCA_including_KC6.R](scripts/Analysis_PCA_including_KC6.R); these optional analyses are not assigned to a numbered panel in the current manuscript.
 

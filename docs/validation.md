@@ -56,9 +56,28 @@ The additional check on 18 November 2026 ran both numbered supplementary scripts
 - Figure 1D regression: the previous published script and the shared implementation were run on the same stromal data. All 14 output tables were byte-for-byte identical, retaining 1,073 events, 807 genes and 487 SE-only genes.
 - All R scripts passed parsing, and the existing eight automated analysis/workflow tests passed.
 
+## Recovered Figure 4C and Supplementary Figure 10A
+
+The R sources were recovered from `outputs/nease_overlap_preview_20261012`: `plot_overlap_extra_large_text.R` for Figure 4C and `plot_epithelium_with_axis_labels.R` for Supplementary Figure 10A. Their existing PNG outputs match the decoded RGB pixels of the embedded figures in slides 5 and 15 of the supplied 18 November 2026 deck. This identifies the actual source versions, including the feature-overlap labels.
+
+The public scripts ran with `--tables-only` using the 20 checksum-verified bundled inputs. They calculate plot counts from the saved NEASE event memberships and check event identity, coordinates, genes, FDR and ΔPSI against the significant rMATS SE calls. Independently deduplicating the original NEASE domain, residue-evidence and motif annotation tables confirmed every exported event membership in both cohorts.
+
+| Check | Stroma / Figure 4C | Epithelium / Supplementary Figure 10A |
+| --- | --- | --- |
+| Mapped / all SE events | 276 / 698 (39.5%) | 135 / 450 (30.0%) |
+| Unmapped events | 422 | 315 |
+| Domain / residue / motif assignments | 264 / 50 / 7 | 129 / 15 / 2 |
+| Lower-bar denominator | 321 assignments | 146 assignments |
+| Inclusive domain–residue / domain–motif / residue–motif overlaps | 41 / 4 / 3 | 10 / 1 / 0 |
+| Three-class overlap | 3 | 0 |
+
+The 35 stromal and 45 epithelial drawing calls, including all labels and coordinates, matched the recovered sources when recorded through non-rendering graphics stubs. No graphics device was opened. Invalid inputs for the wrong cohort, duplicate events, inconsistent mapped-any flags, and the ORF-filtered analysis were rejected. The `--events` override reproduced the same four numeric tables from another working directory. All R scripts passed parsing.
+
+No new NEASE reference mapping, pathway-enrichment run or figure image was generated. The existing-image comparison establishes provenance; it is not a visual test of newly rendered public-script output. Figure 4C's outer axis titles and numeric tick labels remain separate annotations in the original PowerPoint composition.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
-- Figure images were not regenerated or visually compared. Platform fonts and plotting versions can affect layout.
-- Supplementary Figures 3A,B and 7D have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
+- Figure images were not regenerated. Existing NEASE images were compared to identify their source scripts; newly rendered outputs were not visually checked. Platform fonts and plotting versions can affect layout.
+- Figure 4C and Supplementary Figures 3A,B, 7D and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.
