@@ -154,5 +154,17 @@
     "destination": "data/stroma_with_kc6/rmats/RI.MATS.JC.txt",
     "sha256": "c1d4f4ccff017ed9e5e383ab6c17a5648a12a922f2bb7006aa3f053bfd529524",
     "bytes": 1556331
+  },
+  {
+    "file": "inputs/stroma/nease/Reactome_Python.tsv.gz",
+    "destination": "data/stroma/nease/Reactome_Python.tsv",
+    "sha256": "fa35ad45fcfb8bfde3e0e4d8a79f1762a30803ce910c8b2ba6a2747dc826a3a3",
+    "bytes": 269019
+  },
+  {
+    "file": "inputs/epithelium/nease/Reactome_Python.tsv.gz",
+    "destination": "data/epithelium/nease/Reactome_Python.tsv",
+    "sha256": "bccd8a2ef024770e0553fffd6da710233e14a5620595b770a591c7f07e3e7ebb",
+    "bytes": 179625
   }
 ]

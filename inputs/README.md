@@ -11,6 +11,7 @@ All bundled files are losslessly gzip-compressed. `manifest.json` records each d
 | `<cohort>/rmaps/pVal.*.vs.bg.RNAmap.txt.gz` | Original stromal (Yamashita2026) and epithelial (Sun2022) rMAPS3 output tables, 114 motifs × eight regions per direction; candidate selection is recomputed from these P values |
 | `<cohort>/rbp/tpm.tsv.gz` | Candidate-gene TPM values and Ensembl IDs from the saved outputs of the recovered RBP heatmap scripts; 19 genes × nine samples for stroma and 23 × 14 for epithelium |
 | `<cohort>/nease/SE_events.tsv.gz` | Complete event-preserving NEASE exports from the local `python_revision_20261010/results` analyses; 698 stromal and 450 epithelial SE events, with the optional ORF exclusion disabled |
+| `<cohort>/nease/Reactome_Python.tsv.gz` | Complete corrected 1,823-pathway exports from each `python_revision_20261010/results` analysis; primary analysis without ORF exclusion, for Fig. 4D / Supplementary Fig. 10B |
 
 The additional `reference/Sun2022_published_event_coordinates.tsv.gz` contains 67 published event coordinates recovered from the supplied Supplementary Figure 6 membership tables. The original reference workbook was not included in the archive. [Supplementary Figure 6 provenance](../docs/suppfigure6.md) documents the extraction, source citation, attribution, matching rules and the lack of independent verification against that workbook.
 
@@ -31,3 +32,5 @@ The public scripts retain those drawing specifications and calculate their label
 The bundled NEASE tables are saved processed mappings, not a rerun of the reference annotation or pathway enrichment. `nease_analysis.py` provides the upstream calculation and exports the same event-table schema. The two feature-panel scripts check event IDs, coordinates, genes, FDR and ΔPSI against the bundled rMATS calls, require the primary analysis without ORF exclusion, and distinguish unique mapped events from event-class assignments.
 
 The KC6-inclusive inputs are lossless copies of existing analysis outputs, not a new rMATS run. [Event-comparison panels](../docs/comparison_panels.md) documents the newly added Venn/scatter commands and their validation.
+
+The corrected Reactome tables replace the older 1,750-row CSV inputs referenced by the recovered R sources. They are saved enrichment results, not a new NEASE run. See [Reactome selection and provenance](../docs/reactome.md). The rMAPS3 audit reuses the two already-bundled primary SE JC tables; their uncompressed bytes match the original motif-run inputs. Saved exon-coordinate checksums and scientific settings are in `config/rmaps3.json`; the external motif library and hg38 genome are not redistributed. See [rMAPS3 execution](../docs/rmaps3.md).

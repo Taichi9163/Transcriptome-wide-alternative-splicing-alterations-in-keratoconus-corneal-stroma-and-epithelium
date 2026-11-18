@@ -110,10 +110,22 @@ The Venn panels are portable layout reconstructions; pixel-level equivalence is 
 
 Independent checks against original QC logs and the published S8 workbook are outside the agreed scope. Their previously documented validation limits remain in place.
 
+## rMAPS3 execution wrapper and Reactome R scripts
+
+All 28 bundled inputs passed their SHA-256 checks. The new wrapper's numeric-only audit reproduced every row and the complete file hashes of all six saved native exon-coordinate files: stromal up/down/background counts 367/171/12,955 and epithelial counts 163/136/15,719. The two complete SE input files and the inspected upstream 114-motif library also match the original rMAPS3 inputs byte for byte.
+
+The native rMAPS3 selection uses inclusive ΔPSI cutoffs at ±0.10, unlike the general DAS summaries' strict boundary. Tests preserve that distinction, missing-PSI behavior, strict background boundaries, last-qualifying-row deduplication, strand identity and exclusion of cross-group conflicts. Preview mode created no files. Mock execution checked command arguments, paths with spaces, Fisher-test environment, native-coordinate verification, output protection and failure status. All 25 Python tests passed. No native motif scan or P-value recalculation was executed; the original source/environment revision remains unverified, as described in [rMAPS3 provenance](rmaps3.md).
+
+Both numbered Reactome R entry scripts ran with `--tables-only` from another working directory. Graphics-device functions were disabled through `tests/no_graphics.R` before startup; the startup guard was confirmed active. Each complete table has 1,823 pathways, with 64 stromal and 26 epithelial pathways at adjusted P ≤ 0.05. Independent BH recomputation differed from the saved adjusted values by at most 2.23e-16.
+
+All twenty selected pathway IDs, ranks, names, gene lists and distinct-gene counts matched the saved corrected top-ten tables exactly. NEASE scores and raw/adjusted P values, including −log10 values, matched at relative tolerance 1e-12 and absolute tolerance 1e-14 (maximum absolute serialized difference below 4.85e-14). Both plot objects retained all ten finite points, including the 14-gene epithelial pathway omitted by the old R size cap. Focused R tests also checked equal-name pathways, tied scores, the inclusive 0.05 boundary, duplicate genes, invalid IDs, incomplete BH tables and invalid scores.
+
+No figures were generated during this addition, and no Word or PowerPoint file was modified. The R scripts are adaptations of the older plotting sources using the corrected numerical results; rendered visual equivalence was not assessed. The complete NEASE enrichment calculation was not repeated.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
 - Newly rendered outputs were not visually checked; see the temporary Figure 9 rendering noted above. Existing NEASE images were compared to identify source scripts. Platform fonts and plotting versions can affect layout.
-- Figures 4A,C and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
+- Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Native rMAPS3 execution requires an external engine and genome; upstream NEASE and other expression modules require their separately documented dependencies or inputs.
 - Figures 2D–F and 2J–L were prepared in GraphPad Prism, as confirmed by the authors. No custom plotting scripts are required for those panels. Their Prism workflows were not rerun during code validation; the RNA-seq PSI source-table export for Figures 2D–F remains included.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.

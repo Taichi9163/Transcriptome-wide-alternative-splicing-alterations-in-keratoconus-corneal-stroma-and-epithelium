@@ -6,13 +6,13 @@ This repository combines the downstream analysis modules, the supplied Figure 1/
 
 ## Reproduce the manuscript tables and panels
 
-Twenty-six compressed processed input tables are included under `inputs/`: fifteen complete rMATS JC tables covering the primary stromal, KC6-inclusive stromal and epithelial comparisons, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, two NEASE event-mapping tables, and a recovered 67-event published-coordinate table for Supplementary Figure 6. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
+Twenty-eight compressed processed input tables are included under `inputs/`: fifteen complete rMATS JC tables covering the primary stromal, KC6-inclusive stromal and epithelial comparisons, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, two NEASE event-mapping tables, two corrected complete Reactome pathway tables, and a recovered 67-event published-coordinate table for Supplementary Figure 6. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
 
 Use Python 3.9 or later and R with these packages:
 
 ```r
 install.packages(c("ggplot2", "ggforce", "ragg", "gplots", "RColorBrewer",
-                   "dplyr", "tidyr", "purrr", "patchwork", "VennDiagram"))
+                   "dplyr", "tidyr", "purrr", "patchwork", "VennDiagram", "scales"))
 ```
 
 From a clone of this repository:
@@ -93,6 +93,33 @@ Remove `--tables-only` to generate PNG and SVG panels. Outputs are written to `w
 
 To use an output from `nease_analysis.py`, add `--events results/<cohort>/nease/results/SE_events.tsv`; relative paths are resolved within `KC_WORK_DIR`. The script checks event identities against the cohort's rMATS input and the expected manuscript counts. The stromal plot preserves the recovered panel body; its outer axis titles and numeric tick labels were separate PowerPoint annotations. The epithelial source already contains those axis labels.
 
+### rMAPS3 execution and exon audit (Figure 1E,F; Supplementary Figure 7E,F)
+
+The recovered native commands are available through `run_rmaps3.py`. The audit verifies exon selection without a genome scan or any figure output:
+
+```sh
+python3 scripts/prepare_inputs.py --work-dir work
+python3 scripts/run_rmaps3.py audit --work-dir work
+
+# Preview native commands without running rMAPS3:
+python3 scripts/run_rmaps3.py run --work-dir work \
+  --rmaps-dir /path/to/rMAPS3 --fasta-root /path/to/genomedata \
+  --python /path/to/rmaps-env/bin/python
+```
+
+The audit reproduces all saved coordinates: 367/171/12,955 stromal and 163/136/15,719 epithelial inclusion/skipping/background exons. Native execution requires `--execute` and also creates the engine's figures. The [rMAPS3 guide](docs/rmaps3.md) documents setup, source-version limits, output paths, and the native inclusive ΔPSI boundary used in the original runs.
+
+### Figure 4D and Supplementary Figure 10B
+
+The Reactome R scripts use the bundled corrected pathway tables and do not require a new NEASE calculation:
+
+```sh
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/Figure4D_Reactome_enrichment.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure10B_Reactome_enrichment.R --tables-only
+```
+
+Each script checks BH adjustment over all 1,823 Reactome pathways, selects the top ten by NEASE score at adjusted P ≤ 0.05, and exports pathway identities, scores, P values and distinct affected-gene counts. Remove `--tables-only` to export figures. [Reactome provenance and methods](docs/reactome.md) explains the corrected inputs, the R adaptation and the optional `--pathways` override.
+
 ## Process reads on Ubuntu
 
 The configurable workflow covers FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi plotting. Edit [config/upstream.json](config/upstream.json) and [config/samples_stroma.tsv](config/samples_stroma.tsv) for your files and tools.
@@ -119,6 +146,7 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Fig. 1B,C; PSI PCA and heatmap | [Figure1BC_PSI_PCA_heatmap.R](scripts/Figure1BC_PSI_PCA_heatmap.R) |
 | Fig. 1D; gene-level UpSet | [Figure1D_DAS_gene_UpSet.R](scripts/Figure1D_DAS_gene_UpSet.R) |
 | Fig. 1E,F; RBP motif heatmaps | [Figure1EF_RBP_motif_heatmaps.R](scripts/Figure1EF_RBP_motif_heatmaps.R) |
+| Fig. 1E,F and Supplementary Fig. 7E,F; native rMAPS3 execution and exon-selection audit | [run_rmaps3.py](scripts/run_rmaps3.py), [settings](config/rmaps3.json) |
 | Fig. 1E,F; motif statistics and sensitivity tables | [Figure1EF_RBP_motif_statistics.R](scripts/Figure1EF_RBP_motif_statistics.R) |
 | Fig. 2A–C; sashimi plots | `preprocess_reads.py sashimi`; event selection is supplied by [Figure2DEF_selected_exon_PSI.R](scripts/Figure2DEF_selected_exon_PSI.R) |
 | Fig. 2D–F; RNA-seq PSI graphs prepared in GraphPad Prism | [Figure2DEF_selected_exon_PSI.R](scripts/Figure2DEF_selected_exon_PSI.R) exports sample-level PSI source tables; final graphing uses Prism |
@@ -133,7 +161,9 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Fig. 4B; stromal versus epithelial ΔPSI | [Figure4B_cross_layer_deltaPSI.R](scripts/Figure4B_cross_layer_deltaPSI.R) |
 | Fig. 4C; stromal protein-feature coverage and overlaps | [Figure4C_NEASE_feature_mapping.R](scripts/Figure4C_NEASE_feature_mapping.R) |
 | Supplementary Fig. 10A; epithelial protein-feature coverage and overlaps | [SuppFigure10A_NEASE_feature_mapping.R](scripts/SuppFigure10A_NEASE_feature_mapping.R) |
-| Fig. 4C,D and Supplementary Fig. 10; NEASE calculation and Reactome plots | `nease_analysis.py`, `reactome_top10.py` |
+| Fig. 4D; stromal Reactome top-ten R panel | [Figure4D_Reactome_enrichment.R](scripts/Figure4D_Reactome_enrichment.R) |
+| Supplementary Fig. 10B; epithelial Reactome top-ten R panel | [SuppFigure10B_Reactome_enrichment.R](scripts/SuppFigure10B_Reactome_enrichment.R) |
+| Fig. 4C,D and Supplementary Fig. 10; upstream NEASE calculation and revised Python plot implementation | `nease_analysis.py`, `reactome_top10.py` |
 | Supplementary Fig. 1A; QC report generation | `preprocess_reads.py raw-qc`, `trim`, `trimmed-qc`, `align`; see [QC coverage](docs/qc.md) for the final panels |
 | Supplementary Fig. 1B; raw, filtered and mapped read pairs | [SuppFigure1B_QC_read_pairs.py](scripts/SuppFigure1B_QC_read_pairs.py); supplied reconstruction, with a numeric-only mode |
 | Supplementary Table 2; STAR unique-mapping and junction-support columns | [SuppTable2_STAR_junction_QC.py](scripts/SuppTable2_STAR_junction_QC.py), [sample metadata](config/samples_stroma_qc.tsv) |
@@ -160,6 +190,7 @@ The release check reproduced the primary DAS counts, expression-overlap counts, 
 ```sh
 python3 -m unittest discover -s tests -v
 Rscript --vanilla tests/test_comparison_panels.R
+Rscript --vanilla tests/test_reactome_panels.R
 ```
 
 Use [CITATION.cff](CITATION.cff) for the manuscript authors and title, and record the Git commit used. The manuscript is currently described as unpublished; no DOI is asserted. The stromal dataset is identified by [GEO GSE336375](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE336375) and the epithelial dataset by [BioProject PRJNA799648](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA799648).

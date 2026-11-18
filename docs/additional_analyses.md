@@ -1,6 +1,6 @@
 # Additional analyses
 
-These modules complement the bundled manuscript workflow. Figures 4A,C and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A can run directly from the bundled processed inputs, as shown in the main README. Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
+These modules complement the bundled manuscript workflow. Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B can run directly from the bundled processed inputs, as shown in the main README. Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
 
 ## Dependencies and native inputs
 
@@ -17,7 +17,7 @@ BiocManager::install(c("DESeq2", "tximport"))
 | `data/stroma/rmaps/`, `data/epithelium/rmaps/` | `pVal.up.vs.bg.RNAmap.txt`, `pVal.dn.vs.bg.RNAmap.txt`; include `log.motifMap.txt` when available |
 | Paths supplied in expression sample sheets | RSEM `.genes.results` or `.isoforms.results` files |
 
-The manuscript reports rMAPS3 3.1.0, hg38 SE workflow, human/mouse motifs, a 50 nt window and a 1 nt step. Preserve those settings when recreating the motif inputs.
+The manuscript reports rMAPS3 3.1.0, hg38 SE workflow, human/mouse motifs, a 50 nt window and a 1 nt step. The native execution wrapper, numeric-only exon audit, external setup, and exact original selection rules are documented in the [rMAPS3 guide](rmaps3.md).
 
 ## Supplementary workbooks
 
@@ -76,6 +76,8 @@ Rscript --vanilla scripts/SuppFigure3AB_RBP_expression.R epithelium data/gene_sy
 
 ### NEASE and Reactome
 
+For Figure 4D and Supplementary Figure 10B, the numbered [Reactome R scripts](reactome.md) read bundled corrected pathway results and support `--tables-only`. They export the same top-ten numerical data as the revised Python implementation; no new NEASE calculation is needed.
+
 For the protein-feature panels alone, use `Figure4C_NEASE_feature_mapping.R` and `SuppFigure10A_NEASE_feature_mapping.R`. They summarize saved event memberships with base R and support `--tables-only`; the commands in the README require no NEASE installation. To use the output of a new NEASE run, supply `--events results/<cohort>/nease/results/SE_events.tsv` within the selected work directory. The plotted labels distinguish all SE events, unique mapped events, assignments and inclusive overlaps between feature classes.
 
 Use Python 3.12 and the package versions recorded for the NEASE analysis. Run after the two primary `Figure1A_DAS_event_summary.R` commands. The code converts the rMATS exon start to a 1-based position, preserves the event identity during feature mapping, and disambiguates repeated pathway display names by reference row during the NEASE calculation. Reactome P values are BH-adjusted within each tissue.
@@ -85,8 +87,9 @@ python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-nease.txt
 .venv/bin/python scripts/nease_analysis.py stroma
 .venv/bin/python scripts/nease_analysis.py epithelium
-.venv/bin/python scripts/reactome_top10.py
 ```
+
+After a new NEASE run, use the numbered R script with `--pathways results/<cohort>/nease/results/Reactome_Python.tsv` and `--tables-only` for numeric checks. The retained `reactome_top10.py` is an optional Python plotting implementation that generates figures when run.
 
 The primary run keeps all input SE events for mapping. Pass `--orf-filter` to run the additional ORF-filtered sensitivity analysis in a separate output directory.
 

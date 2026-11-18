@@ -1,0 +1,50 @@
+{
+  "upstream_repository": "https://github.com/UofLBioinformatics/rMAPS3",
+  "inspected_revision": "b9a9dce9ad8596fdef21c3a705fbc5f37d9fa45d",
+  "original_source_revision": null,
+  "manuscript_version_label": "3.1.0",
+  "original_log_engine_version": "2.0.1",
+  "original_run_date": "2026-06-30",
+  "motif_sha256": "c88741e5324b1fecff5207942dbca2d7452978221d3abe94e3b8db4aca39033a",
+  "settings": {
+    "genome": "hg38",
+    "stat_method": "fisher",
+    "intron": 250,
+    "exon": 50,
+    "window": 50,
+    "step": 1,
+    "sig_fdr": 0.05,
+    "sig_delta_psi": 0.1,
+    "background_fdr": 0.5,
+    "background_min_mean_psi_upper": 0.85,
+    "background_max_mean_psi_lower": 0.15
+  },
+  "cohorts": {
+    "stroma": {
+      "rmats_sha256": "693259ba999e20a552e642f7d06d3a18c82efba36345b66d491447d5652281cc",
+      "selected_counts": {
+        "up": 367,
+        "dn": 171,
+        "bg": 12955
+      },
+      "coordinate_sha256": {
+        "up": "81b34e608e896a7a76e235d6838d3e884cb14cf814280241768f830633813b85",
+        "dn": "d0ee35c676fe5a0a8f46932cb1696af8a5a65b419e53bb1be7b5d303a3c31187",
+        "bg": "f364554483e9dd00518454a76d3289a17214df0efb1b8f32f810f4876d745e34"
+      }
+    },
+    "epithelium": {
+      "rmats_sha256": "14e29d3d313710382ee0d7cdaff9a1b12747638bd1de82a50ab4dd89f3faf75d",
+      "selected_counts": {
+        "up": 163,
+        "dn": 136,
+        "bg": 15719
+      },
+      "coordinate_sha256": {
+        "up": "d8b415d1e1b56dedc63d1bfe60a8304dd9317412a4c0d2ac9e326f7acd2e3126",
+        "dn": "9d1986946d68294932de7a15296aacd711ce6dfa96eac3c4085dda593f9fe681",
+        "bg": "ee62e98f68ae73c1c30239bcd02be18bbb7b9ddb2082dfbf6ffcdbe9b021ac12"
+      }
+    }
+  }
+}
