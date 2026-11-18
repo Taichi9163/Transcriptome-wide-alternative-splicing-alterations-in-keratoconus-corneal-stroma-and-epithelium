@@ -1,6 +1,6 @@
 # Additional analyses
 
-These modules complement the bundled manuscript workflow. Figure 4C and Supplementary Figures 3A,B, 7D and 10A can run directly from the bundled processed inputs, as shown in the main README. Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
+These modules complement the bundled manuscript workflow. Figures 4A,C and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A can run directly from the bundled processed inputs, as shown in the main README. Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
 
 ## Dependencies and native inputs
 
@@ -31,7 +31,7 @@ Rscript --vanilla scripts/Setup_import_supplementary_data.R motifs "data/Supplem
 Rscript --vanilla scripts/Figure1A_DAS_event_summary.R stroma
 Rscript --vanilla scripts/Figure1A_DAS_event_summary.R epithelium
 Rscript --vanilla scripts/Figure1A_DAS_event_summary.R stroma_with_kc6
-Rscript --vanilla scripts/Figure4A_SuppFigure8_DAS_overlap.R
+Rscript --vanilla scripts/Figure4A_SuppFigure8_DAS_overlap.R --tables-only
 Rscript --vanilla scripts/Figure4B_cross_layer_deltaPSI.R --tables-only
 Rscript --vanilla scripts/SuppFigure9_SE_junction_support.R
 python3 scripts/stromal_sensitivity.py
@@ -89,6 +89,8 @@ python3.12 -m venv .venv
 ```
 
 The primary run keeps all input SE events for mapping. Pass `--orf-filter` to run the additional ORF-filtered sensitivity analysis in a separate output directory.
+
+The standalone Venn and junction-support panel commands are described in [event-comparison panels](comparison_panels.md); they need no supplementary-workbook import.
 
 ## Optional plots and PCA sensitivity
 

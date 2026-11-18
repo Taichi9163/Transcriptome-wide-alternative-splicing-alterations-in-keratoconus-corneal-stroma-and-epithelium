@@ -124,5 +124,35 @@
     "destination": "data/reference/Sun2022_published_event_coordinates.tsv",
     "sha256": "07943236119c1966eb9a3a47986129800ba682263b751ac82ee60c745e74f108",
     "bytes": 5441
+  },
+  {
+    "file": "inputs/stroma_with_kc6/rmats/SE.MATS.JC.txt.gz",
+    "destination": "data/stroma_with_kc6/rmats/SE.MATS.JC.txt",
+    "sha256": "8bf89d03b2d318689daa8283c351318b2ecb651f196b1c37744fa8d3a45ee596",
+    "bytes": 10181351
+  },
+  {
+    "file": "inputs/stroma_with_kc6/rmats/A3SS.MATS.JC.txt.gz",
+    "destination": "data/stroma_with_kc6/rmats/A3SS.MATS.JC.txt",
+    "sha256": "8a4f6a843403d1057b91b565190a1b8dd2a5aa823bb495c1e23b568f470bf103",
+    "bytes": 1754019
+  },
+  {
+    "file": "inputs/stroma_with_kc6/rmats/A5SS.MATS.JC.txt.gz",
+    "destination": "data/stroma_with_kc6/rmats/A5SS.MATS.JC.txt",
+    "sha256": "a52059a190be7ddd6dd1834167e8e8e9894a22732b1c33b6cd2ae9b431a7ed3d",
+    "bytes": 1195401
+  },
+  {
+    "file": "inputs/stroma_with_kc6/rmats/MXE.MATS.JC.txt.gz",
+    "destination": "data/stroma_with_kc6/rmats/MXE.MATS.JC.txt",
+    "sha256": "cf7924653c4633d1c564d2a8c4e04f056bba3c854d66a107d68dd06b634f972f",
+    "bytes": 1701155
+  },
+  {
+    "file": "inputs/stroma_with_kc6/rmats/RI.MATS.JC.txt.gz",
+    "destination": "data/stroma_with_kc6/rmats/RI.MATS.JC.txt",
+    "sha256": "c1d4f4ccff017ed9e5e383ab6c17a5648a12a922f2bb7006aa3f053bfd529524",
+    "bytes": 1556331
   }
 ]

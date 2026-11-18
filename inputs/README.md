@@ -5,6 +5,7 @@ All bundled files are losslessly gzip-compressed. `manifest.json` records each d
 | Input | Source and purpose |
 | --- | --- |
 | `stroma/rmats/*.MATS.JC.txt.gz` | Five complete stromal rMATS JC tables from the supplied Figure 1/Figure 3 archive; primary five-case/four-control comparison |
+| `stroma_with_kc6/rmats/*.MATS.JC.txt.gz` | Five complete JC tables from the local Yamashita2026 `after_rMATS/allsamples/results` analysis; six cases/four controls, 1,074 significant events in 802 genes; Supplementary Figure 2 and stromal sensitivity input |
 | `stroma/expression/*_deseq2.tsv.gz` | Gene and transcript DESeq2 result tables from the same supplied archive |
 | `epithelium/rmats/*.MATS.JC.txt.gz` | Five complete JC tables from the local Sun2022 `after_rMATS/results` analysis, seven samples per group; inputs to Supplementary Figures 6 and 7D |
 | `<cohort>/rmaps/pVal.*.vs.bg.RNAmap.txt.gz` | Original stromal (Yamashita2026) and epithelial (Sun2022) rMAPS3 output tables, 114 motifs × eight regions per direction; candidate selection is recomputed from these P values |
@@ -28,3 +29,5 @@ The Figure 4C plotting source is `outputs/nease_overlap_preview_20261012/plot_ov
 The public scripts retain those drawing specifications and calculate their labels from the bundled event exports instead of copying fixed counts. Original NEASE domain, motif and residue-evidence annotation tables independently confirmed all memberships. The stromal counts are 276 mapped of 698 events, with 264 domain, 50 residue and seven motif assignments; the epithelial counts are 135 mapped of 450, with 129, 15 and two assignments. Inclusive domain/residue, domain/motif and residue/motif intersections are 41/4/3 in stroma and 10/1/0 in epithelium. The three-class intersections are three and zero. These data describe annotated events and do not measure functional protein changes.
 
 The bundled NEASE tables are saved processed mappings, not a rerun of the reference annotation or pathway enrichment. `nease_analysis.py` provides the upstream calculation and exports the same event-table schema. The two feature-panel scripts check event IDs, coordinates, genes, FDR and ΔPSI against the bundled rMATS calls, require the primary analysis without ORF exclusion, and distinguish unique mapped events from event-class assignments.
+
+The KC6-inclusive inputs are lossless copies of existing analysis outputs, not a new rMATS run. [Event-comparison panels](../docs/comparison_panels.md) documents the newly added Venn/scatter commands and their validation.

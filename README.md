@@ -6,13 +6,13 @@ This repository combines the downstream analysis modules, the supplied Figure 1/
 
 ## Reproduce the manuscript tables and panels
 
-Twenty-one compressed processed input tables are included under `inputs/`: ten complete rMATS JC tables across the two cohorts, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, two NEASE event-mapping tables, and a recovered 67-event published-coordinate table for Supplementary Figure 6. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
+Twenty-six compressed processed input tables are included under `inputs/`: fifteen complete rMATS JC tables covering the primary stromal, KC6-inclusive stromal and epithelial comparisons, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, two NEASE event-mapping tables, and a recovered 67-event published-coordinate table for Supplementary Figure 6. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
 
 Use Python 3.9 or later and R with these packages:
 
 ```r
 install.packages(c("ggplot2", "ggforce", "ragg", "gplots", "RColorBrewer",
-                   "dplyr", "tidyr", "purrr", "patchwork"))
+                   "dplyr", "tidyr", "purrr", "patchwork", "VennDiagram"))
 ```
 
 From a clone of this repository:
@@ -66,6 +66,19 @@ KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure6_published_event_co
 
 Outputs are written to `work/results/epithelium/suppfigure6/`. The reproduced overlap is 36 of 67 published events. The reference coordinates were recovered from the supplied membership tables because the original S8 workbook was absent from the archive; they have not been independently checked against that workbook. See [comparison methods and provenance](docs/suppfigure6.md). Remove `--tables-only` to draw the supplied five-panel comparison.
 
+### Figure 4A and Supplementary Figures 2B, 8 and 9A,B
+
+These panel commands use the bundled JC tables, including the newly bundled KC6-inclusive comparison:
+
+```sh
+python3 scripts/prepare_inputs.py --work-dir work
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure2B_KC6_event_overlap.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/Figure4A_SuppFigure8_DAS_overlap.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure9AB_SE_junction_support_plots.R --tables-only
+```
+
+Remove `--tables-only` to export PNG/PDF panels. The Venn layouts are portable reconstructions calculated from event memberships; the Supplementary Figure 9 scatter preserves the recovered point specifications with a configurable font. [Methods, output locations and validation](docs/comparison_panels.md) describe the full-coordinate matching and junction-support rules. No external QC logs or published-reference workbook are needed for these commands.
+
 ### Figure 4C and Supplementary Figure 10A
 
 The recovered R plotting scripts read the bundled NEASE event memberships and calculate coverage, feature-class counts and pairwise overlaps. No new NEASE annotation run is required for these plots.
@@ -116,7 +129,7 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Fig. 3D; matched isoform expression versus ΔPSI | [Figure3D_isoform_expression_vs_deltaPSI.R](scripts/Figure3D_isoform_expression_vs_deltaPSI.R), `map_events.py` |
 | Fig. 3A–D; gene/transcript model fitting from RSEM | [Figure3ABCD_DESeq2_analysis.R](scripts/Figure3ABCD_DESeq2_analysis.R) |
 | Fig. 3A–C; expression/splicing overlap source tables | [Figure3ABC_expression_splicing_overlap.R](scripts/Figure3ABC_expression_splicing_overlap.R) |
-| Fig. 4A and Supplementary Fig. 8; coordinate-matched overlap tables | [Figure4A_SuppFigure8_DAS_overlap.R](scripts/Figure4A_SuppFigure8_DAS_overlap.R) |
+| Fig. 4A and Supplementary Fig. 8; coordinate-matched overlap tables and four-set Venn plots | [Figure4A_SuppFigure8_DAS_overlap.R](scripts/Figure4A_SuppFigure8_DAS_overlap.R) |
 | Fig. 4B; stromal versus epithelial ΔPSI | [Figure4B_cross_layer_deltaPSI.R](scripts/Figure4B_cross_layer_deltaPSI.R) |
 | Fig. 4C; stromal protein-feature coverage and overlaps | [Figure4C_NEASE_feature_mapping.R](scripts/Figure4C_NEASE_feature_mapping.R) |
 | Supplementary Fig. 10A; epithelial protein-feature coverage and overlaps | [SuppFigure10A_NEASE_feature_mapping.R](scripts/SuppFigure10A_NEASE_feature_mapping.R) |
@@ -124,13 +137,15 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Supplementary Fig. 1A; QC report generation | `preprocess_reads.py raw-qc`, `trim`, `trimmed-qc`, `align`; see [QC coverage](docs/qc.md) for the final panels |
 | Supplementary Fig. 1B; raw, filtered and mapped read pairs | [SuppFigure1B_QC_read_pairs.py](scripts/SuppFigure1B_QC_read_pairs.py); supplied reconstruction, with a numeric-only mode |
 | Supplementary Table 2; STAR unique-mapping and junction-support columns | [SuppTable2_STAR_junction_QC.py](scripts/SuppTable2_STAR_junction_QC.py), [sample metadata](config/samples_stroma_qc.tsv) |
+| Supplementary Fig. 2B; KC6-inclusive versus primary event Venn | [SuppFigure2B_KC6_event_overlap.R](scripts/SuppFigure2B_KC6_event_overlap.R); also exports class counts for Supplementary Fig. 2A |
 | Supplementary Fig. 2 and Data 6; stromal sensitivity tables | `stromal_sensitivity.py`, `leave_one_out.py` |
 | Supplementary Fig. 3A,B; candidate RBP expression heatmaps | [SuppFigure3AB_RBP_expression_heatmaps.R](scripts/SuppFigure3AB_RBP_expression_heatmaps.R) |
 | Supplementary Fig. 3A,B; expression tables with DESeq2 adjusted P values | [SuppFigure3AB_RBP_expression.R](scripts/SuppFigure3AB_RBP_expression.R) |
 | Supplementary Fig. 6; exact-coordinate comparison with published Sun et al. events | [SuppFigure6_published_event_comparison.R](scripts/SuppFigure6_published_event_comparison.R) |
 | Supplementary Fig. 7B,C; epithelial PSI PCA and heatmap | [SuppFigure7BC_PSI_PCA_heatmap.R](scripts/SuppFigure7BC_PSI_PCA_heatmap.R) |
 | Supplementary Fig. 7D; epithelial gene-level UpSet | [SuppFigure7D_DAS_gene_UpSet.R](scripts/SuppFigure7D_DAS_gene_UpSet.R) |
-| Supplementary Fig. 9; SE junction-support sensitivity tables | [SuppFigure9_SE_junction_support.R](scripts/SuppFigure9_SE_junction_support.R) |
+| Supplementary Fig. 9A,B; support-filtered SE Venn and scatter | [SuppFigure9AB_SE_junction_support_plots.R](scripts/SuppFigure9AB_SE_junction_support_plots.R) |
+| Supplementary Fig. 9; additional SE junction-support sensitivity tables | [SuppFigure9_SE_junction_support.R](scripts/SuppFigure9_SE_junction_support.R) |
 
 The DAS summary and motif scripts also support the epithelial analyses in Supplementary Fig. 7. The significant-event PCA helper accepts either cohort; the dedicated `Figure1BC` script reproduces the current stromal panels. The two NEASE feature plots share [Utils_NEASE_feature_summary.R](scripts/Utils_NEASE_feature_summary.R) for event-level counting and validation.
 
@@ -140,10 +155,11 @@ Figures 2D–F and 2J–L were prepared in GraphPad Prism, as confirmed by the a
 
 ## Validation and citation
 
-The release check reproduced the primary DAS counts, expression-overlap counts, Figure 1 PCA variance and all Figure 3 event–transcript assignments. No figure images or raw-read analyses were regenerated during this check. [Validation details and limitations](docs/validation.md) distinguish numeric checks, regression tests and unexecuted upstream jobs.
+The release check reproduced the primary DAS counts, expression-overlap counts, Figure 1 PCA variance and all Figure 3 event–transcript assignments. Raw-read analyses were not rerun. Validation of the additional comparison panels covers numeric results and plot objects; visual equivalence of reconstructed Venn layouts has not been established. [Validation details and limitations](docs/validation.md) distinguish numeric checks, regression tests and unexecuted upstream jobs.
 
 ```sh
 python3 -m unittest discover -s tests -v
+Rscript --vanilla tests/test_comparison_panels.R
 ```
 
 Use [CITATION.cff](CITATION.cff) for the manuscript authors and title, and record the Git commit used. The manuscript is currently described as unpublished; no DOI is asserted. The stromal dataset is identified by [GEO GSE336375](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE336375) and the epithelial dataset by [BioProject PRJNA799648](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA799648).

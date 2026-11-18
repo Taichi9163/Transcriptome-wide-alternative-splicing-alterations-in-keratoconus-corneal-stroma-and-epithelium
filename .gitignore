@@ -41,3 +41,7 @@
 !/LICENSE
 !/inputs/reference/
 !/inputs/reference/*.gz
+!/inputs/stroma_with_kc6/
+!/inputs/stroma_with_kc6/rmats/
+!/inputs/stroma_with_kc6/rmats/*.gz
+!/tests/*.R

@@ -79,3 +79,5 @@ Use the example matching your files. `--samples /path/to/samples.tsv` selects a 
 The original fastp JSON reports, STAR logs and junction tables were not available in the inspected local locations and are not bundled. Validation used synthetic fixtures: all ten output rows and TSV bytes matched the supplied script, 30 quartiles/medians matched R, and the filename mapping, invalid-input handling and output protection passed tests. This does not constitute an independent recomputation of the manuscript's sample-level QC values.
 
 For Figure 1B, all ten synthetic sample rows and complete TSV bytes matched the supplied script, and the plotting function is unchanged. Tests also cover paired-end units, too-many-loci exclusion, source-ID mapping, invalid/mismatched inputs, and numeric-only execution with no plotting packages. No actual sample-level read counts or result images were regenerated.
+
+Independent verification against the original QC logs is outside the agreed scope of this release. The implementation checks above remain separate from verification of the manuscript QC measurements.

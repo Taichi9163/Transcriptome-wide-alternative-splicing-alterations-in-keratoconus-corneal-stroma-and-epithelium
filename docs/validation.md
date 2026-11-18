@@ -1,6 +1,6 @@
 # Release validation
 
-Checked on 18 November 2026 against the supplied analysis archive and manuscript revision. Only numeric tables and plot specifications were regenerated; no PNG, PDF or TIFF figure files were generated.
+Checked on 18 November 2026 against the supplied analysis archive and manuscript revision. The checks below distinguish numeric reproduction, plot-object construction and rendered-figure validation. Original manuscript and presentation files were not modified.
 
 ## Reproduced results
 
@@ -97,10 +97,23 @@ All 21 bundled inputs passed their checksums. The numbered script ran with `--ta
 
 All 50 drawing calls matched the supplied R functions through recording stubs, without opening a graphics device. The original reference workbook was absent: the 67 published coordinate records were recovered from the supplied comparison memberships, not independently verified against the workbook. See [provenance and methods](suppfigure6.md). No liftOver, new rMATS analysis or figure rendering was performed.
 
+## Additional event-comparison panels
+
+The Supplementary Figure 2B, Figure 4A / Supplementary Figure 8, and Supplementary Figure 9A,B commands ran from absolute paths with `KC_WORK_DIR`, using 26 checksum-verified input files. The five added inputs are complete KC6-inclusive JC tables copied from the existing analysis, not a new alignment or rMATS run.
+
+- Supplementary Figure 2B: 1,073 primary and 1,074 inclusive events, with 184/889/185 exclusive/shared/exclusive memberships. Inclusive-cohort class counts are 713/78/85/44/154 (SE/A3SS/A5SS/MXE/RI), matching the supplied figure labels.
+- Figure 4A / Supplementary Figure 8: every coordinate/direction membership in all five union tables matched the previous released implementation, and all 40 directional counts matched the saved original matrix. Shared counts are 13/1/4/0/5; SE has seven concordant and six discordant shared events.
+- Supplementary Figure 9: all 15,343 selected event keys, effects, FDRs, significance flags and four-group support counts matched the saved support audit. All 15 Venn regions and all 491 significant-event memberships matched the original region audit. Missing `NA` gene symbols are omitted only from display lists; shared-gene labels are unchanged. Pearson r = 0.1011075 and Spearman rho = 0.08498896.
+- All 15,343 scatter points and their colors, shapes, sizes and alpha values matched the recovered scatter implementation. The Venn code uses VennDiagram 1.8.2 with `ind=FALSE` to construct objects. Focused R tests cover complete coordinate identity, strict cutoffs, all directional memberships, numeric Venn labels and per-group support thresholds. The existing 20 Python tests also pass.
+
+The Venn panels are portable layout reconstructions; pixel-level equivalence is not claimed. A comparison-wrapper error generated temporary Supplementary Figure 9A/B PNG/PDF files during validation. Those files are not distributed, were not used to change the manuscript figures, and were not visually validated. The comparison was subsequently repeated with graphics-device functions disabled, producing tables only. The normal `--tables-only` entry commands also completed without images.
+
+Independent checks against original QC logs and the published S8 workbook are outside the agreed scope. Their previously documented validation limits remain in place.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
-- Figure images were not regenerated. Existing NEASE images were compared to identify their source scripts; newly rendered outputs were not visually checked. Platform fonts and plotting versions can affect layout.
-- Figure 4C and Supplementary Figures 3A,B, 6, 7D and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
+- Newly rendered outputs were not visually checked; see the temporary Figure 9 rendering noted above. Existing NEASE images were compared to identify source scripts. Platform fonts and plotting versions can affect layout.
+- Figures 4A,C and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
 - Figures 2D–F and 2J–L were prepared in GraphPad Prism, as confirmed by the authors. No custom plotting scripts are required for those panels. Their Prism workflows were not rerun during code validation; the RNA-seq PSI source-table export for Figures 2D–F remains included.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.

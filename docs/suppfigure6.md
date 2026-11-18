@@ -42,3 +42,5 @@ For a self-contained release, `inputs/reference/Sun2022_published_event_coordina
 Source archive: `supplementary6.zip`, SHA-256 `125cf47f2b0eb97ff9e38a9a9dc2eb3d656bff0acc599f4f21f736d744300547`. The manifest records the recovered table's uncompressed checksum. The original Sun et al. publication is distributed under [CC BY](https://creativecommons.org/licenses/by/4.0/); credit that study when using its event coordinates. The repository's MIT license applies to the analysis code and does not replace attribution to the published data source.
 
 The release check reproduced all six supplied comparison tables byte for byte and the 36/16/15 audit counts. All 50 drawing calls matched the supplied R functions using non-rendering recording stubs. No figure image was regenerated or visually compared during this check.
+
+Independent verification against the original reference workbook is outside the agreed scope of this release. This does not change the documented provenance of the recovered coordinate subset.
