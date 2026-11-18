@@ -1,0 +1,11 @@
+sample_id	source_id	sample_name	rin
+Control1	N_1	Control 1	7.6
+Control2	N_38	Control 2	7.5
+Control3	N_42	Control 3	5.6
+Control4	N_46	Control 4	6.0
+KC1	KC_3	Keratoconus 1	6.3
+KC2	KC_2	Keratoconus 2	7.6
+KC3	KC_6	Keratoconus 3	5.8
+KC4	KC_4	Keratoconus 4	7.3
+KC5	KC_5	Keratoconus 5	5.7
+KC6	KC_1	Keratoconus 6	7.6

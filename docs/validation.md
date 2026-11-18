@@ -75,10 +75,32 @@ The 35 stromal and 45 epithelial drawing calls, including all labels and coordin
 
 No new NEASE reference mapping, pathway-enrichment run or figure image was generated. The existing-image comparison establishes provenance; it is not a visual test of newly rendered public-script output. Figure 4C's outer axis titles and numeric tick labels remain separate annotations in the original PowerPoint composition.
 
+## Supplied STAR junction-QC script
+
+`STAR_junction_QC.py` was incorporated as `SuppTable2_STAR_junction_QC.py`. The definitions and output columns are retained; sample labels/RIN are in `config/samples_stroma_qc.tsv`, with explicit filename options for original source prefixes and the repository's per-sample alignment layout.
+
+On synthetic STAR files for all ten samples, the adapted script matched every output value and the complete TSV bytes of the supplied script. Thirty quartiles/medians from ten vectors (including singletons and fractional interpolation) matched R `quantile(type=7)`. Tests cover zero-support exclusion, separation of unique and multimapper support, unchanged pair counts, sample-ID mapping including KC6, missing/malformed inputs and protection of existing results. At this junction-only check, all 14 automated tests passed (eight existing analysis/workflow tests and six QC tests); the subsequent Figure 1B addition brings the suite to 20.
+
+The original `Log.final.out` and `SJ.out.tab` files were not found in the inspected local locations. No study QC values were recomputed or filled in from synthetic data, and no QC images or read alignments were regenerated. The script supplies only the unique-mapping/junction columns of Supplementary Table 2; see [QC coverage](qc.md) for Supplementary Figure 1 and other table columns.
+
+## Supplied Supplementary Figure 1B reconstruction
+
+`Keratoconus_QC_ReadPairs.py` was adapted as `SuppFigure1B_QC_read_pairs.py`, with explicit study/source IDs and a `--tables-only` option. The supplied source says it reconstructs the plot from the reported methods and has not been verified against the original plotting code; this release retains that distinction.
+
+On synthetic reports for all ten samples, every TSV value and the entire TSV file matched the supplied code. The plotting function's parsed Python syntax tree is unchanged. Tests check division of fastp reads by two, unchanged STAR pair counts, exclusion of too-many-loci mappings, all sample mappings, odd/invalid counts, inconsistent input totals, duplicate log metrics and output protection. Tables-only mode ran from another directory with third-party Python packages disabled. All 20 automated tests passed, including the six additional read-pair tests.
+
+No original fastp JSON/STAR log set was supplied or found in the inspected locations. The manuscript's actual sample-level read counts were not recomputed, and no image was rendered. Unlike the supplied script's warning, mismatched fastp filtered-pair and STAR input-pair totals now stop the calculation; the valid-input arithmetic is unchanged.
+
+## Supplied Supplementary Figure 6 comparison
+
+All 21 bundled inputs passed their checksums. The numbered script ran with `--tables-only` from a separate working directory. The five membership tables and the count summary matched the six supplied TSV files byte for byte. Reanalysis totals (SE/A3SS/A5SS/MXE/RI) were 1,214/274/227/154/746; published totals were 33/3/6/11/14; intersections were 16/1/5/4/10. The additional audit reproduced 36 shared significant events, 16 exact matches outside the significant set (all with FDR ≥ 0.05), and 15 without an exact match.
+
+All 50 drawing calls matched the supplied R functions through recording stubs, without opening a graphics device. The original reference workbook was absent: the 67 published coordinate records were recovered from the supplied comparison memberships, not independently verified against the workbook. See [provenance and methods](suppfigure6.md). No liftOver, new rMATS analysis or figure rendering was performed.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
 - Figure images were not regenerated. Existing NEASE images were compared to identify their source scripts; newly rendered outputs were not visually checked. Platform fonts and plotting versions can affect layout.
-- Figure 4C and Supplementary Figures 3A,B, 7D and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
+- Figure 4C and Supplementary Figures 3A,B, 6, 7D and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
 - Figures 2D–F and 2J–L were prepared in GraphPad Prism, as confirmed by the authors. No custom plotting scripts are required for those panels. Their Prism workflows were not rerun during code validation; the RNA-seq PSI source-table export for Figures 2D–F remains included.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.

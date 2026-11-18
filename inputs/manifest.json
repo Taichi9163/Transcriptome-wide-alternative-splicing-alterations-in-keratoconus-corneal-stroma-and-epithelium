@@ -118,5 +118,11 @@
     "destination": "data/epithelium/nease/SE_events.tsv",
     "sha256": "d8e4fe1359136d0faab772ef8dfd046d766cb84499e7a18957d285a9bb49f028",
     "bytes": 122173
+  },
+  {
+    "file": "inputs/reference/Sun2022_published_event_coordinates.tsv.gz",
+    "destination": "data/reference/Sun2022_published_event_coordinates.tsv",
+    "sha256": "07943236119c1966eb9a3a47986129800ba682263b751ac82ee60c745e74f108",
+    "bytes": 5441
   }
 ]

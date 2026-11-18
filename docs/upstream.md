@@ -1,6 +1,6 @@
 # Ubuntu read-processing workflow
 
-This is a path-safe reconstruction of the supplied commands, not a record of a newly executed FASTQ analysis. The manuscript reports fastp 0.20.0, STAR 2.7.11a, RSEM 1.3.1 and rMATS-turbo 4.3.0, with GRCh38/Ensembl release 114. Original FastQC, MultiQC and sashimi tool versions were not supplied. Record the versions of all executables when running the workflow. The original environment was named `shortread`; its environment lock was not supplied, so an untested replacement lock is not presented as the original environment.
+This is a path-safe reconstruction of the supplied commands, not a record of a newly executed FASTQ analysis. The manuscript reports FastQC 0.12.1, MultiQC 1.29, fastp 0.20.0, STAR 2.7.11a, RSEM 1.3.1, rMATS-turbo 4.3.0 and rmats2sashimiplot 3.0.0, with GRCh38/Ensembl release 114. Record the versions of all executables when running the workflow. The original environment was named `shortread`; its environment lock was not supplied, so an untested replacement lock is not presented as the original environment.
 
 ## Set up paths
 
@@ -43,6 +43,8 @@ The source-ID mapping was checked against the study's RSEM sample annotation. In
 For new rMATS runs, cases are group 1 and controls are group 2; within-group order follows the sample sheet. Each rMATS output directory includes `sample_order.tsv`, `cases.txt` and `controls.txt`. The historical bundled rMATS tables preserve their existing PSI-vector order. Their displayed numbered labels identify within-group positions; this release does not assert that the historical BAM list order has been independently recovered from those tables.
 
 After `quantify`, `sample_sheets/genes.tsv` and `sample_sheets/isoforms.tsv` contain absolute paths for the nine primary specimens and can be passed to `Figure3ABCD_DESeq2_analysis.R`. These generated paths are local outputs and are not committed to GitHub.
+
+After `align`, run `SuppTable2_STAR_junction_QC.py --star-dir /path/to/analysis/results/upstream/align --layout per-sample --output /path/to/analysis/results/qc/Supplementary_Table2_STAR_junction_QC.tsv` to summarize unique-mapping and junction support across all ten specimens. It reads the alignment logs, uses the QC metadata in study-label order, and leaves the alignment outputs unchanged. For Supplementary Figure 1B, `SuppFigure1B_QC_read_pairs.py` reads both the `trim` fastp JSON reports and the `align` STAR logs; use `--layout per-sample --tables-only` to export counts without images. See [Supplementary Figure 1 / Table 2 QC](qc.md) for complete commands, original flat-file layouts and the remaining report sources.
 
 ## Connect to downstream modules
 

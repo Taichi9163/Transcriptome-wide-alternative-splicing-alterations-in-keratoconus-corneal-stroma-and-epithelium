@@ -6,7 +6,7 @@ This repository combines the downstream analysis modules, the supplied Figure 1/
 
 ## Reproduce the manuscript tables and panels
 
-Twenty compressed processed input tables are included under `inputs/`: ten complete rMATS JC tables across the two cohorts, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, and two NEASE event-mapping tables. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
+Twenty-one compressed processed input tables are included under `inputs/`: ten complete rMATS JC tables across the two cohorts, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, two candidate-RBP TPM matrices, two NEASE event-mapping tables, and a recovered 67-event published-coordinate table for Supplementary Figure 6. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
 
 Use Python 3.9 or later and R with these packages:
 
@@ -55,6 +55,17 @@ KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure7D_DAS_gene_UpSet.R 
 
 Remove `--tables-only` to generate the figures. The heatmap script processes both cohorts, or accepts `stroma` or `epithelium` to select one panel. Outputs are written to `work/results/<cohort>/suppfigure3/` and `work/results/epithelium/suppfigure7/`. The recovered heatmap scripts select 19 stromal and 23 epithelial RBP genes. The epithelial UpSet adapts the supplied Figure 1D implementation and checks 805 significant events, 609 genes and 314 SE-only genes; the original Supplementary Figure 7D script was not located.
 
+### Supplementary Figure 6
+
+The supplied comparison script matches all event coordinates against the published Sun et al. event set, using FDR < 0.05 without a ΔPSI cutoff.
+
+```sh
+python3 scripts/prepare_inputs.py --work-dir work
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure6_published_event_comparison.R --tables-only
+```
+
+Outputs are written to `work/results/epithelium/suppfigure6/`. The reproduced overlap is 36 of 67 published events. The reference coordinates were recovered from the supplied membership tables because the original S8 workbook was absent from the archive; they have not been independently checked against that workbook. See [comparison methods and provenance](docs/suppfigure6.md). Remove `--tables-only` to draw the supplied five-panel comparison.
+
 ### Figure 4C and Supplementary Figure 10A
 
 The recovered R plotting scripts read the bundled NEASE event memberships and calculate coverage, feature-class counts and pairwise overlaps. No new NEASE annotation run is required for these plots.
@@ -83,6 +94,8 @@ python3 scripts/preprocess_reads.py trim --work-dir /path/to/analysis --execute
 
 **Study sample KC6 corresponds to the original read prefix `KC_1`, whereas study sample KC3 corresponds to `KC_6`.** The supplied sample sheet records this mapping and includes all ten specimens for preprocessing. Only the nine primary specimens enter the primary rMATS comparison. The second rMATS comparison includes KC6. Read the [Ubuntu workflow guide](docs/upstream.md) before execution.
 
+For Supplementary Figure 1B, [SuppFigure1B_QC_read_pairs.py](scripts/SuppFigure1B_QC_read_pairs.py) reads paired-end fastp JSON reports and STAR logs; add `--tables-only` to export counts without images. For the STAR unique-mapping and splice-junction columns of Supplementary Table 2, use [SuppTable2_STAR_junction_QC.py](scripts/SuppTable2_STAR_junction_QC.py) with the original `Log.final.out` and `SJ.out.tab` files. The [QC guide](docs/qc.md) describes both QC scripts, study/source filename mapping, required reports and validation limits. The supplied Figure 1B script identifies itself as a reconstruction of the plotting workflow.
+
 ## Analyses by manuscript component
 
 R filenames start with the corresponding `Figure` or `SuppFigure` number, followed by the analysis or panel content. Click a filename to open its code. Scripts that supply source tables are identified below; not every script draws the final assembled panel.
@@ -108,9 +121,13 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Fig. 4C; stromal protein-feature coverage and overlaps | [Figure4C_NEASE_feature_mapping.R](scripts/Figure4C_NEASE_feature_mapping.R) |
 | Supplementary Fig. 10A; epithelial protein-feature coverage and overlaps | [SuppFigure10A_NEASE_feature_mapping.R](scripts/SuppFigure10A_NEASE_feature_mapping.R) |
 | Fig. 4C,D and Supplementary Fig. 10; NEASE calculation and Reactome plots | `nease_analysis.py`, `reactome_top10.py` |
+| Supplementary Fig. 1A; QC report generation | `preprocess_reads.py raw-qc`, `trim`, `trimmed-qc`, `align`; see [QC coverage](docs/qc.md) for the final panels |
+| Supplementary Fig. 1B; raw, filtered and mapped read pairs | [SuppFigure1B_QC_read_pairs.py](scripts/SuppFigure1B_QC_read_pairs.py); supplied reconstruction, with a numeric-only mode |
+| Supplementary Table 2; STAR unique-mapping and junction-support columns | [SuppTable2_STAR_junction_QC.py](scripts/SuppTable2_STAR_junction_QC.py), [sample metadata](config/samples_stroma_qc.tsv) |
 | Supplementary Fig. 2 and Data 6; stromal sensitivity tables | `stromal_sensitivity.py`, `leave_one_out.py` |
 | Supplementary Fig. 3A,B; candidate RBP expression heatmaps | [SuppFigure3AB_RBP_expression_heatmaps.R](scripts/SuppFigure3AB_RBP_expression_heatmaps.R) |
 | Supplementary Fig. 3A,B; expression tables with DESeq2 adjusted P values | [SuppFigure3AB_RBP_expression.R](scripts/SuppFigure3AB_RBP_expression.R) |
+| Supplementary Fig. 6; exact-coordinate comparison with published Sun et al. events | [SuppFigure6_published_event_comparison.R](scripts/SuppFigure6_published_event_comparison.R) |
 | Supplementary Fig. 7B,C; epithelial PSI PCA and heatmap | [SuppFigure7BC_PSI_PCA_heatmap.R](scripts/SuppFigure7BC_PSI_PCA_heatmap.R) |
 | Supplementary Fig. 7D; epithelial gene-level UpSet | [SuppFigure7D_DAS_gene_UpSet.R](scripts/SuppFigure7D_DAS_gene_UpSet.R) |
 | Supplementary Fig. 9; SE junction-support sensitivity tables | [SuppFigure9_SE_junction_support.R](scripts/SuppFigure9_SE_junction_support.R) |

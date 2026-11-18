@@ -6,10 +6,12 @@ All bundled files are losslessly gzip-compressed. `manifest.json` records each d
 | --- | --- |
 | `stroma/rmats/*.MATS.JC.txt.gz` | Five complete stromal rMATS JC tables from the supplied Figure 1/Figure 3 archive; primary five-case/four-control comparison |
 | `stroma/expression/*_deseq2.tsv.gz` | Gene and transcript DESeq2 result tables from the same supplied archive |
-| `epithelium/rmats/*.MATS.JC.txt.gz` | Five complete JC tables from the local Sun2022 `after_rMATS/results` analysis, seven samples per group; input to Supplementary Figure 7D |
+| `epithelium/rmats/*.MATS.JC.txt.gz` | Five complete JC tables from the local Sun2022 `after_rMATS/results` analysis, seven samples per group; inputs to Supplementary Figures 6 and 7D |
 | `<cohort>/rmaps/pVal.*.vs.bg.RNAmap.txt.gz` | Original stromal (Yamashita2026) and epithelial (Sun2022) rMAPS3 output tables, 114 motifs × eight regions per direction; candidate selection is recomputed from these P values |
 | `<cohort>/rbp/tpm.tsv.gz` | Candidate-gene TPM values and Ensembl IDs from the saved outputs of the recovered RBP heatmap scripts; 19 genes × nine samples for stroma and 23 × 14 for epithelium |
 | `<cohort>/nease/SE_events.tsv.gz` | Complete event-preserving NEASE exports from the local `python_revision_20261010/results` analyses; 698 stromal and 450 epithelial SE events, with the optional ORF exclusion disabled |
+
+The additional `reference/Sun2022_published_event_coordinates.tsv.gz` contains 67 published event coordinates recovered from the supplied Supplementary Figure 6 membership tables. The original reference workbook was not included in the archive. [Supplementary Figure 6 provenance](../docs/suppfigure6.md) documents the extraction, source citation, attribution, matching rules and the lack of independent verification against that workbook.
 
 The recovered source scripts were `stroma_rMAPS_hit_RNA_heatmap_BH.R` and `epithelium_Sun2022_rMAPS_hit_RNA_heatmap_BH.R` in the project's `RBP_expression_heatmap/scripts/` directory. Their saved `*_TPM.csv` values and `*_metadata.csv` gene IDs are combined into each bundled `tpm.tsv`. Sample labels and their order are retained from those exports. These matrices contain the candidate genes only; they do not replace full RSEM quantifications or support a new genome-wide expression analysis.
 
