@@ -43,7 +43,7 @@ The R scripts passed syntax checks; Python scripts passed compilation checks. Re
 | purrr | 1.2.2 |
 | patchwork | 1.3.2 |
 
-`check_environment.R` records the versions installed in each reproduction environment. These are the release-check versions, not a claim that all original analyses used the same environment.
+`Setup_check_R_packages.R` records the versions installed in each reproduction environment. These are the release-check versions, not a claim that all original analyses used the same environment.
 
 The earlier downstream release check reproduced the 414 gene and 448 isoform DE call sets using DESeq2 1.52.0 and tximport 1.40.0. The manuscript reports tximport 1.34.0; isoform fold changes differed by at most 0.000028 in that check. The current bundled-table run uses the supplied DESeq2 tables directly and does not refit those models.
 

@@ -42,13 +42,13 @@ The source-ID mapping was checked against the study's RSEM sample annotation. In
 
 For new rMATS runs, cases are group 1 and controls are group 2; within-group order follows the sample sheet. Each rMATS output directory includes `sample_order.tsv`, `cases.txt` and `controls.txt`. The historical bundled rMATS tables preserve their existing PSI-vector order. Their displayed numbered labels identify within-group positions; this release does not assert that the historical BAM list order has been independently recovered from those tables.
 
-After `quantify`, `sample_sheets/genes.tsv` and `sample_sheets/isoforms.tsv` contain absolute paths for the nine primary specimens and can be passed to `differential_expression.R`. These generated paths are local outputs and are not committed to GitHub.
+After `quantify`, `sample_sheets/genes.tsv` and `sample_sheets/isoforms.tsv` contain absolute paths for the nine primary specimens and can be passed to `Figure3ABCD_DESeq2_analysis.R`. These generated paths are local outputs and are not committed to GitHub.
 
 ## Connect to downstream modules
 
 Copy or link the five rMATS JC tables from `results/upstream/rmats/primary/` into `data/stroma/rmats/` **in a new work directory**. The inclusive outputs belong under `data/stroma_with_kc6/rmats/`. Keep read-derived results separate from the checksum-verified bundled inputs, because new software versions can change numerical results.
 
-Run `call_das.R stroma`, then `selected_exons.R` from that work directory. The latter writes a sample-level PSI table and `results/stroma/sashimi_events.tsv` for the ZEB2, ROCK2 and TPM2 events in the manuscript. To render sashimi plots:
+Run `Figure1A_DAS_event_summary.R stroma`, then `Figure2DEF_selected_exon_PSI.R` from that work directory. The latter writes a sample-level PSI table and `results/stroma/sashimi_events.tsv` for the ZEB2, ROCK2 and TPM2 events in the manuscript. To render sashimi plots:
 
 ```sh
 python3 /path/to/repository/scripts/preprocess_reads.py sashimi \

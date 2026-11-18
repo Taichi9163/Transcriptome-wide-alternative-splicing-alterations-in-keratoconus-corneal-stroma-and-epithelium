@@ -28,11 +28,19 @@ def main():
     prepare(work)
     environment = dict(os.environ, KC_WORK_DIR=str(work))
     steps = [
-        [rscript, "--vanilla", str(SCRIPTS / "check_environment.R")],
-        [rscript, "--vanilla", str(SCRIPTS / "prepare_data.R")],
+        [rscript, "--vanilla", str(SCRIPTS / "Setup_check_R_packages.R")],
+        [rscript, "--vanilla", str(SCRIPTS / "Setup_prepare_Figure1_Figure3_data.R")],
         [sys.executable, str(SCRIPTS / "map_events.py"), "--work-dir", str(work)],
     ]
-    for name in ("figure1BC", "figure1D", "figure3A", "figure3B", "figure3C", "figure3D"):
+    panels = (
+        "Figure1BC_PSI_PCA_heatmap",
+        "Figure1D_DAS_gene_UpSet",
+        "Figure3A_DEG_DAS_Venn",
+        "Figure3B_gene_expression_vs_deltaPSI",
+        "Figure3C_isoform_DAS_Venn",
+        "Figure3D_isoform_expression_vs_deltaPSI",
+    )
+    for name in panels:
         steps.append([rscript, "--vanilla", str(SCRIPTS / f"{name}.R")]
                      + (["--tables-only"] if args.tables_only else []))
     for command in steps:

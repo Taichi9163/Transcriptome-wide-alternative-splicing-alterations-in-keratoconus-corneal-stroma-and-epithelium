@@ -8,7 +8,7 @@ suppressPackageStartupMessages({
 
 args0 <- grep("^--file=", commandArgs(FALSE), value = TRUE)
 
-source(file.path(dirname(normalizePath(sub("^--file=", "", args0[1]))), "common.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", args0[1]))), "Utils_plotting.R"))
 
 output_dir <- file.path(ROOT, "results/stroma/figure3")
 

@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
 
 args0 <- grep("^--file=", commandArgs(FALSE), value = TRUE)
 
-source(file.path(dirname(normalizePath(sub("^--file=", "", args0[1]))), "common.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", args0[1]))), "Utils_plotting.R"))
 
 deg_file <- file.path(ROOT, "data/stroma/expression/gene_deseq2.tsv")
 
