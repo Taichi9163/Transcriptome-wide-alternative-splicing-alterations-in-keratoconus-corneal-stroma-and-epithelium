@@ -80,4 +80,5 @@ No new NEASE reference mapping, pathway-enrichment run or figure image was gener
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
 - Figure images were not regenerated. Existing NEASE images were compared to identify their source scripts; newly rendered outputs were not visually checked. Platform fonts and plotting versions can affect layout.
 - Figure 4C and Supplementary Figures 3A,B, 7D and 10A have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
+- Figures 2D–F and 2J–L were prepared in GraphPad Prism, as confirmed by the authors. No custom plotting scripts are required for those panels. Their Prism workflows were not rerun during code validation; the RNA-seq PSI source-table export for Figures 2D–F remains included.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.
