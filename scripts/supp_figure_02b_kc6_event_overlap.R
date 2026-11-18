@@ -2,9 +2,9 @@
 # KC6 sensitivity: event-level overlap, not overlap of run-local numeric IDs.
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
 script_dir <- dirname(normalizePath(sub("^--file=", "", arg)))
-source(file.path(script_dir, "Utils_plotting.R"))
-source(file.path(script_dir, "Utils_splicing_events.R"))
-source(file.path(script_dir, "Utils_Venn_plots.R"))
+source(file.path(script_dir, "utils_plotting.R"))
+source(file.path(script_dir, "utils_splicing_events.R"))
+source(file.path(script_dir, "utils_venn_plots.R"))
 if (any(!commandArgs(TRUE) %in% "--tables-only")) stop("Unknown argument")
 out <- file.path(ROOT, "results/stroma/suppfigure2")
 calls <- list(); class_counts <- list()

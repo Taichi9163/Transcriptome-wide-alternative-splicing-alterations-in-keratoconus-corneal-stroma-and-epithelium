@@ -2,7 +2,7 @@
 suppressPackageStartupMessages({ library(DESeq2); library(tximport) })
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 3L || !args[1] %in% c("gene", "isoform")) {
-  stop("Usage: Rscript scripts/Figure3ABCD_DESeq2_analysis.R gene|isoform samples.tsv output_dir")
+  stop("Usage: Rscript scripts/figure_03abcd_deseq2_analysis.R gene|isoform samples.tsv output_dir")
 }
 isoform <- args[1] == "isoform"
 samples <- read.delim(args[2], stringsAsFactors = FALSE)

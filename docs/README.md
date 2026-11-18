@@ -6,6 +6,7 @@
 
 | Guide | Use it to |
 | --- | --- |
+| [Script naming convention](script_naming.md) | Understand filename prefixes and find renamed scripts |
 | [Figure-to-code index](figures.md) | Locate scripts for a main figure, supplementary figure or source table |
 | [Reproduction guide](reproduce.md) | Set up the bundled inputs and run the numbered workflows |
 | [Input provenance](../inputs/README.md) | Identify the source and scope of each included dataset |

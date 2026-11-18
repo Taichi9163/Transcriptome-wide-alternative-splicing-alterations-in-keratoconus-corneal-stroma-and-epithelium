@@ -177,7 +177,7 @@ def execute(job):
 
 
 def export_expression_samples(work, settings, samples):
-    """Write primary-cohort RSEM sheets consumed by Figure3ABCD_DESeq2_analysis.R."""
+    """Write primary-cohort RSEM sheets consumed by figure_03abcd_deseq2_analysis.R."""
     output = absolute(work, settings["output_dir"])
     directory = output / "sample_sheets"
     directory.mkdir(parents=True, exist_ok=True)

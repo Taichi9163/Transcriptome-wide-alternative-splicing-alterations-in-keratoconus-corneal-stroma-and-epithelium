@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
 repo <- dirname(dirname(normalizePath(sub("^--file=", "", arg))))
-source(file.path(repo, "tests/no_graphics.R"))
-source(file.path(repo, "scripts/Utils_Reactome_enrichment.R"))
+source(file.path(repo, "tests/utils_no_graphics.R"))
+source(file.path(repo, "scripts/utils_reactome_enrichment.R"))
 expect_error <- function(expression) {
     failed <- inherits(try(force(expression), silent = TRUE), "try-error")
     stopifnot(failed)

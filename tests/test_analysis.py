@@ -7,8 +7,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from map_events import forms, match_events
-from preprocess_reads import Job, execute, plan, read_samples, REPOSITORY
+from figure_03d_event_transcript_mapping import forms, match_events
+from workflow_preprocess_reads import Job, execute, plan, read_samples, REPOSITORY
 
 
 class SpliceStructureTests(unittest.TestCase):

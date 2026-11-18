@@ -2,7 +2,7 @@
 
 [Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
 
-[SuppFigure6_published_event_comparison.R](../scripts/SuppFigure6_published_event_comparison.R) adapts `supplementary6/scripts/supplementary6.R` from the authors' supplied archive. It compares the epithelial reanalysis with the 67 corneal rMATS events attributed to Supplementary Table S8 of:
+[supp_figure_06_published_event_comparison.R](../scripts/supp_figure_06_published_event_comparison.R) adapts `supplementary6/scripts/supplementary6.R` from the authors' supplied archive. It compares the epithelial reanalysis with the 67 corneal rMATS events attributed to Supplementary Table S8 of:
 
 Sun X, Zhang H, Shan M, Dong Y, Zhang L, Chen L and Wang Y (2022). *Comprehensive Transcriptome Analysis of Patients With Keratoconus Highlights the Regulation of Immune Responses and Inflammatory Processes*. Frontiers in Genetics 13:782709. [doi:10.3389/fgene.2022.782709](https://doi.org/10.3389/fgene.2022.782709).
 
@@ -11,8 +11,8 @@ Sun X, Zhang H, Shan M, Dong Y, Zhang L, Chen L and Wang Y (2022). *Comprehensiv
 From the repository root, using base R and Python 3.9 or later:
 
 ```sh
-python3 scripts/prepare_inputs.py --work-dir work
-KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure6_published_event_comparison.R --tables-only
+python3 scripts/setup_prepare_inputs.py --work-dir work
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/supp_figure_06_published_event_comparison.R --tables-only
 ```
 
 Outputs are written to `work/results/epithelium/suppfigure6/`: `venn_counts.tsv`, five event-membership tables, and `published_event_audit.tsv`. The comparison needs no GTF download or new rMATS run. Remove `--tables-only` to generate the supplied composite PNG/PDF and five individual PDFs; PNG generation also requires `ragg`. Circle areas are not proportional to counts. Font selection uses `FIGURE_FONT` (default `sans`).

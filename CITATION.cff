@@ -4,8 +4,8 @@ title: "Transcriptome-wide alternative splicing alterations in keratoconus corne
 type: software
 authors:
   - name: "Keratoconus splicing study contributors"
-repository-code: "https://github.com/Taichi9163/keratoconus-splicing-analysis"
-url: "https://github.com/Taichi9163/keratoconus-splicing-analysis"
+repository-code: "https://github.com/Taichi9163/Transcriptome-wide-alternative-splicing-alterations-in-keratoconus-corneal-stroma-and-epithelium"
+url: "https://github.com/Taichi9163/Transcriptome-wide-alternative-splicing-alterations-in-keratoconus-corneal-stroma-and-epithelium"
 license: MIT
 keywords:
   - keratoconus

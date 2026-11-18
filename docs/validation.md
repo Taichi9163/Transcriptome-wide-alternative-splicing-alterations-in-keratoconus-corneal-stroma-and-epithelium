@@ -45,7 +45,7 @@ The R scripts passed syntax checks; Python scripts passed compilation checks. Re
 | purrr | 1.2.2 |
 | patchwork | 1.3.2 |
 
-`Setup_check_R_packages.R` records the versions installed in each reproduction environment. These are the release-check versions, not a claim that all original analyses used the same environment.
+`setup_check_r_packages.R` records the versions installed in each reproduction environment. These are the release-check versions, not a claim that all original analyses used the same environment.
 
 The earlier downstream release check reproduced the 414 gene and 448 isoform DE call sets using DESeq2 1.52.0 and tximport 1.40.0. The manuscript reports tximport 1.34.0; isoform fold changes differed by at most 0.000028 in that check. The current bundled-table run uses the supplied DESeq2 tables directly and does not refit those models.
 
@@ -79,7 +79,7 @@ No new NEASE reference mapping, pathway-enrichment run or figure image was gener
 
 ## Supplied STAR junction-QC script
 
-`STAR_junction_QC.py` was incorporated as `SuppTable2_STAR_junction_QC.py`. The definitions and output columns are retained; sample labels/RIN are in `config/samples_stroma_qc.tsv`, with explicit filename options for original source prefixes and the repository's per-sample alignment layout.
+`STAR_junction_QC.py` was incorporated as `supp_table_02_star_junction_qc.py`. The definitions and output columns are retained; sample labels/RIN are in `config/samples_stroma_qc.tsv`, with explicit filename options for original source prefixes and the repository's per-sample alignment layout.
 
 On synthetic STAR files for all ten samples, the adapted script matched every output value and the complete TSV bytes of the supplied script. Thirty quartiles/medians from ten vectors (including singletons and fractional interpolation) matched R `quantile(type=7)`. Tests cover zero-support exclusion, separation of unique and multimapper support, unchanged pair counts, sample-ID mapping including KC6, missing/malformed inputs and protection of existing results. At this junction-only check, all 14 automated tests passed (eight existing analysis/workflow tests and six QC tests); the subsequent Figure 1B addition brings the suite to 20.
 
@@ -87,7 +87,7 @@ The original `Log.final.out` and `SJ.out.tab` files were not found in the inspec
 
 ## Supplied Supplementary Figure 1B reconstruction
 
-`Keratoconus_QC_ReadPairs.py` was adapted as `SuppFigure1B_QC_read_pairs.py`, with explicit study/source IDs and a `--tables-only` option. The supplied source says it reconstructs the plot from the reported methods and has not been verified against the original plotting code; this release retains that distinction.
+`Keratoconus_QC_ReadPairs.py` was adapted as `supp_figure_01b_qc_read_pairs.py`, with explicit study/source IDs and a `--tables-only` option. The supplied source says it reconstructs the plot from the reported methods and has not been verified against the original plotting code; this release retains that distinction.
 
 On synthetic reports for all ten samples, every TSV value and the entire TSV file matched the supplied code. The plotting function's parsed Python syntax tree is unchanged. Tests check division of fastp reads by two, unchanged STAR pair counts, exclusion of too-many-loci mappings, all sample mappings, odd/invalid counts, inconsistent input totals, duplicate log metrics and output protection. Tables-only mode ran from another directory with third-party Python packages disabled. All 20 automated tests passed, including the six additional read-pair tests.
 
@@ -118,16 +118,22 @@ All 28 bundled inputs passed their SHA-256 checks. The new wrapper's numeric-onl
 
 The native rMAPS3 selection uses inclusive ΔPSI cutoffs at ±0.10, unlike the general DAS summaries' strict boundary. Tests preserve that distinction, missing-PSI behavior, strict background boundaries, last-qualifying-row deduplication, strand identity and exclusion of cross-group conflicts. Preview mode created no files. Mock execution checked command arguments, paths with spaces, Fisher-test environment, native-coordinate verification, output protection and failure status. All 25 Python tests passed. No native motif scan or P-value recalculation was executed; the original source/environment revision remains unverified, as described in [rMAPS3 provenance](rmaps3.md).
 
-Both numbered Reactome R entry scripts ran with `--tables-only` from another working directory. Graphics-device functions were disabled through `tests/no_graphics.R` before startup; the startup guard was confirmed active. Each complete table has 1,823 pathways, with 64 stromal and 26 epithelial pathways at adjusted P ≤ 0.05. Independent BH recomputation differed from the saved adjusted values by at most 2.23e-16.
+Both numbered Reactome R entry scripts ran with `--tables-only` from another working directory. Graphics-device functions were disabled through `tests/utils_no_graphics.R` before startup; the startup guard was confirmed active. Each complete table has 1,823 pathways, with 64 stromal and 26 epithelial pathways at adjusted P ≤ 0.05. Independent BH recomputation differed from the saved adjusted values by at most 2.23e-16.
 
 All twenty selected pathway IDs, ranks, names, gene lists and distinct-gene counts matched the saved corrected top-ten tables exactly. NEASE scores and raw/adjusted P values, including −log10 values, matched at relative tolerance 1e-12 and absolute tolerance 1e-14 (maximum absolute serialized difference below 4.85e-14). Both plot objects retained all ten finite points, including the 14-gene epithelial pathway omitted by the old R size cap. Focused R tests also checked equal-name pathways, tied scores, the inclusive 0.05 boundary, duplicate genes, invalid IDs, incomplete BH tables and invalid scores.
 
 No figures were generated during this addition, and no Word or PowerPoint file was modified. The R scripts are adaptations of the older plotting sources using the corrected numerical results; rendered visual equivalence was not assessed. The complete NEASE enrichment calculation was not repeated.
 
+## Script-name standardization
+
+All 49 analysis, workflow and helper scripts now follow the [shared naming convention](script_naming.md). A comparison with the preceding versions confirmed that script contents changed only where filenames, imports or workflow entry-point names needed updating. All 33 input and configuration files retained their SHA-256 hashes.
+
+All 41 R files and 15 Python files, including tests, passed syntax checks. The 25 Python tests and both focused R test scripts passed. The renamed `workflow_run_manuscript.py --tables-only` command completed from a separate working directory with graphics devices disabled, exercising all nine steps for Figure 1B–D and Figure 3A–D. It retained 4,047 Figure 3D pairs from 995 events and 765 genes, including 42 DE pairs. All checked local documentation links and anchors resolved. No figure files were generated, and no Word or PowerPoint file was modified.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
 - Newly rendered outputs were not visually checked; see the temporary Figure 9 rendering noted above. Existing NEASE images were compared to identify source scripts. Platform fonts and plotting versions can affect layout.
-- Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Native rMAPS3 execution requires an external engine and genome; upstream NEASE and other expression modules require their separately documented dependencies or inputs.
+- Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B have separate commands using bundled inputs; they are not part of `workflow_run_manuscript.py`. Native rMAPS3 execution requires an external engine and genome; upstream NEASE and other expression modules require their separately documented dependencies or inputs.
 - Figures 2D–F and 2J–L were prepared in GraphPad Prism, as confirmed by the authors. No custom plotting scripts are required for those panels. Their Prism workflows were not rerun during code validation; the RNA-seq PSI source-table export for Figures 2D–F remains included.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.

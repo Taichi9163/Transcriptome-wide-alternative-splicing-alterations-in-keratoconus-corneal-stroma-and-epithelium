@@ -2,9 +2,9 @@
 # Numeric regressions for event identity, strict thresholds and plot memberships.
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
 repo <- dirname(dirname(normalizePath(sub("^--file=", "", arg))))
-source(file.path(repo, "scripts/Utils_plotting.R"))
-source(file.path(repo, "scripts/Utils_splicing_events.R"))
-source(file.path(repo, "scripts/Utils_Venn_plots.R"))
+source(file.path(repo, "scripts/utils_plotting.R"))
+source(file.path(repo, "scripts/utils_splicing_events.R"))
+source(file.path(repo, "scripts/utils_venn_plots.R"))
 expect_error <- function(expression) {
     stopifnot(inherits(tryCatch(force(expression), error = identity), "error"))
 }

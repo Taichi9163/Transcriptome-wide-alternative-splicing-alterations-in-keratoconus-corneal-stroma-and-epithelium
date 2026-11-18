@@ -106,7 +106,7 @@ run_reactome_panel <- function(cohort, panel, output_folder) {
             i <- i + 2L
         } else stop("Usage: [--tables-only] [--pathways PATH]")
     }
-    if (!file.exists(path)) stop("Missing pathway table: ", path, "; run prepare_inputs.py first.")
+    if (!file.exists(path)) stop("Missing pathway table: ", path, "; run setup_prepare_inputs.py first.")
     result <- reactome_top10(path)
     plot <- reactome_plot(result$top, cohort, FONT)
     # Check all ten points before any output. Building layers does not render.

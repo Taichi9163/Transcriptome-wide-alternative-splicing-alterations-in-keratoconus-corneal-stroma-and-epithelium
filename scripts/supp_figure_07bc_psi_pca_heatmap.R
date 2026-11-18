@@ -6,10 +6,10 @@ suppressPackageStartupMessages({
   library(RColorBrewer)
 })
 script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1])
-source(file.path(dirname(normalizePath(script)), "Utils_plotting.R"))
+source(file.path(dirname(normalizePath(script)), "utils_plotting.R"))
 args <- setdiff(commandArgs(trailingOnly = TRUE), "--tables-only")
 if (length(args) != 1 || !args %in% c("stroma", "epithelium")) {
-  stop("Usage: Rscript scripts/SuppFigure7BC_PSI_PCA_heatmap.R stroma|epithelium [--tables-only]")
+  stop("Usage: Rscript scripts/supp_figure_07bc_psi_pca_heatmap.R stroma|epithelium [--tables-only]")
 }
 cohort <- args[1]
 output <- file.path(ROOT, "results", cohort, "figures")

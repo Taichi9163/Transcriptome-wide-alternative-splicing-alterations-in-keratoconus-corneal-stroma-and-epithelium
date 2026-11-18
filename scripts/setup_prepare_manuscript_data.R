@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # Prepare manuscript tables with strict FDR < 0.05 and absolute delta PSI > 0.1.
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
-source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "Utils_plotting.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "utils_plotting.R"))
 out <- file.path(ROOT, "results/stroma/manuscript")
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(ROOT, "results/stroma/figure3"), recursive = TRUE, showWarnings = FALSE)

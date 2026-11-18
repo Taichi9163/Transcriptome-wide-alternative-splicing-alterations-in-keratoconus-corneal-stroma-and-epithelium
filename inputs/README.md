@@ -2,7 +2,7 @@
 
 [Repository overview](../README.md) · [Reproduction guide](../docs/reproduce.md) · [Checksum manifest](manifest.json)
 
-All bundled files are losslessly gzip-compressed. `manifest.json` records each destination, uncompressed byte count and SHA-256 checksum. `scripts/prepare_inputs.py` verifies these values and refuses to replace different existing inputs.
+All bundled files are losslessly gzip-compressed. `manifest.json` records each destination, uncompressed byte count and SHA-256 checksum. `scripts/setup_prepare_inputs.py` verifies these values and refuses to replace different existing inputs.
 
 | Input | Source and purpose |
 | --- | --- |
@@ -31,7 +31,7 @@ The Figure 4C plotting source is `outputs/nease_overlap_preview_20261012/plot_ov
 
 The public scripts retain those drawing specifications and calculate their labels from the bundled event exports instead of copying fixed counts. Original NEASE domain, motif and residue-evidence annotation tables independently confirmed all memberships. The stromal counts are 276 mapped of 698 events, with 264 domain, 50 residue and seven motif assignments; the epithelial counts are 135 mapped of 450, with 129, 15 and two assignments. Inclusive domain/residue, domain/motif and residue/motif intersections are 41/4/3 in stroma and 10/1/0 in epithelium. The three-class intersections are three and zero. These data describe annotated events and do not measure functional protein changes.
 
-The bundled NEASE tables are saved processed mappings, not a rerun of the reference annotation or pathway enrichment. `nease_analysis.py` provides the upstream calculation and exports the same event-table schema. The two feature-panel scripts check event IDs, coordinates, genes, FDR and ΔPSI against the bundled rMATS calls, require the primary analysis without ORF exclusion, and distinguish unique mapped events from event-class assignments.
+The bundled NEASE tables are saved processed mappings, not a rerun of the reference annotation or pathway enrichment. `analysis_nease.py` provides the upstream calculation and exports the same event-table schema. The two feature-panel scripts check event IDs, coordinates, genes, FDR and ΔPSI against the bundled rMATS calls, require the primary analysis without ORF exclusion, and distinguish unique mapped events from event-class assignments.
 
 The KC6-inclusive inputs are lossless copies of existing analysis outputs, not a new rMATS run. [Event-comparison panels](../docs/comparison_panels.md) documents the newly added Venn/scatter commands and their validation.
 

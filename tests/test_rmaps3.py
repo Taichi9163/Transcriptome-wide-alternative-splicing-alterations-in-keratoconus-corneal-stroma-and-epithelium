@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY / "scripts"))
-import run_rmaps3 as rmaps
+import workflow_run_rmaps3 as rmaps
 
 CONFIG = json.loads((REPOSITORY / "config/rmaps3.json").read_text())
 
@@ -64,7 +64,7 @@ class RmapsTests(unittest.TestCase):
     def test_dry_run_writes_nothing(self):
         with tempfile.TemporaryDirectory(prefix="rmaps preview ") as tmp:
             work = Path(tmp) / "absent work"
-            command = [sys.executable, str(REPOSITORY / "scripts/run_rmaps3.py"), "run",
+            command = [sys.executable, str(REPOSITORY / "scripts/workflow_run_rmaps3.py"), "run",
                        "--work-dir", str(work), "--rmaps-dir", str(Path(tmp) / "source with spaces"),
                        "--fasta-root", str(Path(tmp) / "fasta with spaces")]
             result = subprocess.run(command, check=True, capture_output=True, text=True)

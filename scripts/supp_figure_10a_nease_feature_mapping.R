@@ -4,8 +4,8 @@
 # Counts and labels are calculated from SE_events.tsv; --tables-only creates no images.
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
 script_dir <- dirname(normalizePath(sub("^--file=", "", arg)))
-source(file.path(script_dir, "Utils_plotting.R"))
-source(file.path(script_dir, "Utils_NEASE_feature_summary.R"))
+source(file.path(script_dir, "utils_plotting.R"))
+source(file.path(script_dir, "utils_nease_feature_summary.R"))
 summary <- read_nease_feature_summary("epithelium", "SuppFigure10A")
 total <- summary$total
 mapped <- summary$mapped

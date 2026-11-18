@@ -21,8 +21,8 @@ Effects are defined as **keratoconus minus control**. The reference is GRCh38 wi
 The following workflow reproduces the numerical source tables and checks plot layers for **Figure 1B–D and Figure 3A–D**, using the bundled processed inputs. Python 3.9+ and R are required; release checks used R 4.6.1.
 
 ```sh
-git clone https://github.com/Taichi9163/keratoconus-splicing-analysis.git
-cd keratoconus-splicing-analysis
+git clone https://github.com/Taichi9163/Transcriptome-wide-alternative-splicing-alterations-in-keratoconus-corneal-stroma-and-epithelium.git
+cd Transcriptome-wide-alternative-splicing-alterations-in-keratoconus-corneal-stroma-and-epithelium
 ```
 
 Install the R packages used by the manuscript panels:
@@ -35,8 +35,8 @@ install.packages(c("ggplot2", "ggforce", "ragg", "gplots", "RColorBrewer",
 Prepare the inputs and run without creating figure files:
 
 ```sh
-python3 scripts/prepare_inputs.py --work-dir work --download-reference
-python3 scripts/run_manuscript.py --work-dir work --tables-only
+python3 scripts/setup_prepare_inputs.py --work-dir work --download-reference
+python3 scripts/workflow_run_manuscript.py --work-dir work --tables-only
 ```
 
 The reference download is approximately 64 MB. To use an existing GTF, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Inputs are checksum-verified; outputs are written beneath `work/results/`.
@@ -70,7 +70,7 @@ Raw FASTQ/BAM files, genome references, manuscript documents and experimental im
 
 | Location | Contents |
 | --- | --- |
-| [scripts/](scripts/) | Numbered figure scripts, shared helpers and native-tool wrappers |
+| [scripts/](scripts/) | Numbered figure scripts, shared helpers and native-tool wrappers; [naming convention](docs/script_naming.md) |
 | [config/](config/) | Sample annotations, paths and recorded analysis settings |
 | [inputs/](inputs/) | Processed inputs and checksum manifest |
 | [docs/](docs/README.md) | Reproduction instructions, methods and provenance |
@@ -84,7 +84,7 @@ Please cite the associated manuscript and record the Git commit used in your ana
 
 > Yuasa T, Ueda N, Yamashita Y, et al. *Transcriptome-wide alternative splicing alterations in keratoconus corneal stroma and epithelium.* Manuscript, 2026.
 
-The manuscript is currently recorded as unpublished; no article DOI is assigned in this repository. For code questions or reproducibility issues, use [GitHub Issues](https://github.com/Taichi9163/keratoconus-splicing-analysis/issues).
+The manuscript is currently recorded as unpublished; no article DOI is assigned in this repository. For code questions or reproducibility issues, use [GitHub Issues](https://github.com/Taichi9163/Transcriptome-wide-alternative-splicing-alterations-in-keratoconus-corneal-stroma-and-epithelium/issues).
 
 ## License
 

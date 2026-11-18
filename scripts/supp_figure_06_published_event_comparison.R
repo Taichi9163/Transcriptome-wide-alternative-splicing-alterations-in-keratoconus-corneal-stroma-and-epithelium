@@ -3,7 +3,7 @@
 # The reference coordinates were recovered from the supplied membership tables;
 # see docs/suppfigure6.md. No genome-build conversion is applied.
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
-source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "Utils_plotting.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "utils_plotting.R"))
 args <- commandArgs(trailingOnly = TRUE)
 if (any(!args %in% "--tables-only")) stop("Only --tables-only is supported; set paths with KC_WORK_DIR.")
 

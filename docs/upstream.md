@@ -9,14 +9,14 @@ This is a path-safe reconstruction of the supplied commands, not a record of a n
 1. Activate an Ubuntu environment containing the tools required by the selected stage.
 2. Copy and edit `config/upstream.json`. Set `genome_fasta`, `annotation_gtf`, `output_dir`, `threads`, `rmats_command` and `sashimi_command`.
 3. Copy and edit `config/samples_stroma.tsv`. FASTQ paths are relative to `--work-dir`, or may be absolute. Do not change the study labels to match the original file prefixes.
-4. Supply the GRCh38 primary-assembly FASTA and **uncompressed** release-114 GTF. The `.gtf.gz` downloaded by `prepare_inputs.py` is used directly for downstream mapping; extract a separate `.gtf` copy for STAR/RSEM/rMATS.
+4. Supply the GRCh38 primary-assembly FASTA and **uncompressed** release-114 GTF. The `.gtf.gz` downloaded by `setup_prepare_inputs.py` is used directly for downstream mapping; extract a separate `.gtf` copy for STAR/RSEM/rMATS.
 
 The default rMATS command is `rmats.py` on `PATH`. For a source installation set `rmats_command` to `["python", "/path/to/rmats-turbo/rmats.py"]`. Commands are argument lists, not shell strings. Spaces in directory names are supported. Because rMATS BAM lists are comma-separated, BAM paths must not contain commas or line breaks.
 
 ## Run stages
 
 ```sh
-python3 scripts/preprocess_reads.py all --config config/upstream.json \
+python3 scripts/workflow_preprocess_reads.py all --config config/upstream.json \
   --samples config/samples_stroma.tsv --work-dir /path/to/analysis
 ```
 
@@ -44,18 +44,18 @@ The source-ID mapping was checked against the study's RSEM sample annotation. In
 
 For new rMATS runs, cases are group 1 and controls are group 2; within-group order follows the sample sheet. Each rMATS output directory includes `sample_order.tsv`, `cases.txt` and `controls.txt`. The historical bundled rMATS tables preserve their existing PSI-vector order. Their displayed numbered labels identify within-group positions; this release does not assert that the historical BAM list order has been independently recovered from those tables.
 
-After `quantify`, `sample_sheets/genes.tsv` and `sample_sheets/isoforms.tsv` contain absolute paths for the nine primary specimens and can be passed to `Figure3ABCD_DESeq2_analysis.R`. These generated paths are local outputs and are not committed to GitHub.
+After `quantify`, `sample_sheets/genes.tsv` and `sample_sheets/isoforms.tsv` contain absolute paths for the nine primary specimens and can be passed to `figure_03abcd_deseq2_analysis.R`. These generated paths are local outputs and are not committed to GitHub.
 
-After `align`, run `SuppTable2_STAR_junction_QC.py --star-dir /path/to/analysis/results/upstream/align --layout per-sample --output /path/to/analysis/results/qc/Supplementary_Table2_STAR_junction_QC.tsv` to summarize unique-mapping and junction support across all ten specimens. It reads the alignment logs, uses the QC metadata in study-label order, and leaves the alignment outputs unchanged. For Supplementary Figure 1B, `SuppFigure1B_QC_read_pairs.py` reads both the `trim` fastp JSON reports and the `align` STAR logs; use `--layout per-sample --tables-only` to export counts without images. See [Supplementary Figure 1 / Table 2 QC](qc.md) for complete commands, original flat-file layouts and the remaining report sources.
+After `align`, run `supp_table_02_star_junction_qc.py --star-dir /path/to/analysis/results/upstream/align --layout per-sample --output /path/to/analysis/results/qc/Supplementary_Table2_STAR_junction_QC.tsv` to summarize unique-mapping and junction support across all ten specimens. It reads the alignment logs, uses the QC metadata in study-label order, and leaves the alignment outputs unchanged. For Supplementary Figure 1B, `supp_figure_01b_qc_read_pairs.py` reads both the `trim` fastp JSON reports and the `align` STAR logs; use `--layout per-sample --tables-only` to export counts without images. See [Supplementary Figure 1 / Table 2 QC](qc.md) for complete commands, original flat-file layouts and the remaining report sources.
 
 ## Connect to downstream modules
 
 Copy or link the five rMATS JC tables from `results/upstream/rmats/primary/` into `data/stroma/rmats/` **in a new work directory**. The inclusive outputs belong under `data/stroma_with_kc6/rmats/`. Keep read-derived results separate from the checksum-verified bundled inputs, because new software versions can change numerical results.
 
-Run `Figure1A_DAS_event_summary.R stroma`, then `Figure2DEF_selected_exon_PSI.R` from that work directory. The latter writes a sample-level PSI table and `results/stroma/sashimi_events.tsv` for the ZEB2, ROCK2 and TPM2 events in the manuscript. To render sashimi plots:
+Run `figure_01a_das_event_summary.R stroma`, then `figure_02def_selected_exon_psi.R` from that work directory. The latter writes a sample-level PSI table and `results/stroma/sashimi_events.tsv` for the ZEB2, ROCK2 and TPM2 events in the manuscript. To render sashimi plots:
 
 ```sh
-python3 /path/to/repository/scripts/preprocess_reads.py sashimi \
+python3 /path/to/repository/scripts/workflow_preprocess_reads.py sashimi \
   --work-dir /path/to/analysis \
   --events /path/to/analysis/results/stroma/sashimi_events.tsv --execute
 ```

@@ -1,5 +1,5 @@
 # Exact event identity and directional memberships shared by comparison panels.
-# Source Utils_plotting.R first to define ROOT and output helpers.
+# Source utils_plotting.R first to define ROOT and output helpers.
 RMATS_COORDS <- list(
     SE = c("chr", "strand", "exonStart_0base", "exonEnd", "upstreamES", "upstreamEE", "downstreamES", "downstreamEE"),
     A3SS = c("chr", "strand", "longExonStart_0base", "longExonEnd", "shortES", "shortEE", "flankingES", "flankingEE"),

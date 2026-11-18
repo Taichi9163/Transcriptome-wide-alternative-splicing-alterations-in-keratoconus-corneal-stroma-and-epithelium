@@ -9,10 +9,10 @@ from pathlib import Path
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY / "scripts"))
-from SuppFigure1B_QC_read_pairs import (
+from supp_figure_01b_qc_read_pairs import (
     collect_rows, fastp_path, read_fastp, read_star_log, write_table,
 )
-from SuppTable2_STAR_junction_QC import DEFAULT_SAMPLES, read_samples, sample_paths
+from supp_table_02_star_junction_qc import DEFAULT_SAMPLES, read_samples, sample_paths
 
 
 def fixture(root, sample, index=0, layout="flat", file_labels="study"):
@@ -90,7 +90,7 @@ class ReadPairQCTests(unittest.TestCase):
             for i, sample in enumerate(samples):
                 fixture(root, sample, i)
             result = subprocess.run([
-                sys.executable, "-S", str(REPOSITORY / "scripts/SuppFigure1B_QC_read_pairs.py"),
+                sys.executable, "-S", str(REPOSITORY / "scripts/supp_figure_01b_qc_read_pairs.py"),
                 "--fastp-dir", str(root / "fastp"), "--star-dir", str(root / "star"),
                 "--output-dir", str(root / "out"), "--tables-only",
             ], cwd=root, capture_output=True, text=True)

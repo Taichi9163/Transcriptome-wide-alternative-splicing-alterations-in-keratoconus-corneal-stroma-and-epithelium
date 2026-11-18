@@ -16,7 +16,7 @@ For Figure 3B, select the largest absolute ΔPSI per DAS gene, breaking ties by 
 
 ## Event–transcript correspondence
 
-`map_events.py` uses [Ensembl release 114](https://ftp.ensembl.org/pub/release-114/gtf/homo_sapiens/). It converts GTF exon starts to 0-based half-open intervals and keeps rMATS coordinates in that same convention. Gene, chromosome and strand must match. A transcript in the same gene alone is insufficient.
+`figure_03d_event_transcript_mapping.py` uses [Ensembl release 114](https://ftp.ensembl.org/pub/release-114/gtf/homo_sapiens/). It converts GTF exon starts to 0-based half-open intervals and keeps rMATS coordinates in that same convention. Gene, chromosome and strand must match. A transcript in the same gene alone is insufficient.
 
 | Event | Inclusion-compatible structure | Skipping-compatible structure |
 | --- | --- | --- |
@@ -33,8 +33,8 @@ Figure 3C distinguishes the 55-gene overlap at gene level from the subset of 29 
 
 ## Sensitivity and scope
 
-`leave_one_out.py` holds the primary 1,073-event DAS set fixed and recalculates mean case PSI minus mean control PSI after omitting each of the nine samples. It compares effects with the reported rMATS ΔPSI; it does not rerun rMATS or claim new FDR values. `KC_pos1` etc. denote original PSI-vector positions. The median changes can include small rounding differences because rMATS reports rounded PSI and ΔPSI values.
+`supp_data_06_leave_one_out.py` holds the primary 1,073-event DAS set fixed and recalculates mean case PSI minus mean control PSI after omitting each of the nine samples. It compares effects with the reported rMATS ΔPSI; it does not rerun rMATS or claim new FDR values. `KC_pos1` etc. denote original PSI-vector positions. The median changes can include small rounding differences because rMATS reports rounded PSI and ΔPSI values.
 
-`stromal_sensitivity.py` separately evaluates junction support and the KC6-inclusive rMATS calls. Cross-run event matching uses exact class-specific coordinates, chromosome and strand, rather than run-local numeric IDs. See the additional-analysis guide for these inputs.
+`supp_data_06_stromal_sensitivity.py` separately evaluates junction support and the KC6-inclusive rMATS calls. Cross-run event matching uses exact class-specific coordinates, chromosome and strand, rather than run-local numeric IDs. See the additional-analysis guide for these inputs.
 
 Figure generation uses portable PDF devices and an installed font (`FIGURE_FONT`, default `sans`). Font metrics and plotting-library versions may change appearance. The submitted PowerPoint composition, gel measurements and conceptual schematic are outside this computational reproduction.

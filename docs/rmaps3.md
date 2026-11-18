@@ -2,13 +2,13 @@
 
 [Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
 
-`scripts/run_rmaps3.py` supplies the upstream SE motif workflow for Figure 1E,F and Supplementary Figure 7E,F. It reconstructs the commands recorded in both study `log.motifMap.txt` files on 30 June 2026, replacing workstation paths with command-line options. It does not vendor or modify the external rMAPS3 engine.
+`scripts/workflow_run_rmaps3.py` supplies the upstream SE motif workflow for Figure 1E,F and Supplementary Figure 7E,F. It reconstructs the commands recorded in both study `log.motifMap.txt` files on 30 June 2026, replacing workstation paths with command-line options. It does not vendor or modify the external rMAPS3 engine.
 
 ## Verify selection without generating figures
 
 ```sh
-python3 scripts/prepare_inputs.py --work-dir work
-python3 scripts/run_rmaps3.py audit --work-dir work
+python3 scripts/setup_prepare_inputs.py --work-dir work
+python3 scripts/workflow_run_rmaps3.py audit --work-dir work
 ```
 
 This mode needs Python 3.9+ only. It checks the complete SE input checksum, reconstructs all exon groups, and compares every coordinate and row order with checksums of the saved native coordinate files. It writes three `*.coord.txt` files and `selection_audit.json` under `work/results/<cohort>/rmaps3_audit/`. Identical files can be reused; different files are not overwritten. It does not read genome sequences, calculate motif P values, or run any plotting code.
@@ -41,7 +41,7 @@ Follow the upstream [genome and plotting setup](https://github.com/UofLBioinform
 
 ```sh
 # Preview only: no external tools run and no files are created.
-python3 scripts/run_rmaps3.py run --work-dir work \
+python3 scripts/workflow_run_rmaps3.py run --work-dir work \
   --rmaps-dir /path/to/rMAPS3 --fasta-root /path/to/genomedata \
   --python /path/to/rmaps-env/bin/python
 ```

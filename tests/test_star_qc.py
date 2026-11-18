@@ -9,7 +9,7 @@ from pathlib import Path
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY / "scripts"))
-from SuppTable2_STAR_junction_QC import (
+from supp_table_02_star_junction_qc import (
     DEFAULT_SAMPLES, generate_rows, percentile_type7, read_samples,
     read_star_log, read_unique_junction_support, sample_paths, write_rows,
 )
@@ -61,7 +61,7 @@ class StarQCTests(unittest.TestCase):
                 self.assertEqual(row["Supported splice junctions"], 4)
                 self.assertEqual(row["Median [Q1-Q3]"], "5.5 [1.75-9.25]")
             output = root / "output/qc.tsv"
-            subprocess.run([sys.executable, str(REPOSITORY / "scripts/SuppTable2_STAR_junction_QC.py"),
+            subprocess.run([sys.executable, str(REPOSITORY / "scripts/supp_table_02_star_junction_qc.py"),
                             "--star-dir", str(root / "source"), "--file-labels", "source",
                             "--output", str(output)], cwd=root, check=True, capture_output=True)
             with output.open() as f:

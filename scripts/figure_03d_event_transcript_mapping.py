@@ -13,7 +13,7 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from prepare_inputs import GTF_NAME, GTF_SHA256, digest
+from setup_prepare_inputs import GTF_NAME, GTF_SHA256, digest
 
 
 def read_table(path):

@@ -1,6 +1,6 @@
 # Shared Figure 1D / Supplementary Figure 7D gene-level UpSet implementation.
 # The epithelial panel adapts the supplied stromal code; its original source was not located.
-# Call from a numbered entry script after loading Utils_plotting.R.
+# Call from a numbered entry script after loading utils_plotting.R.
 suppressPackageStartupMessages({
     library(ggplot2)
     library(dplyr)

@@ -15,7 +15,7 @@ import shlex
 import subprocess
 import sys
 
-from prepare_inputs import install_input
+from setup_prepare_inputs import install_input
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 COORD_COLUMNS = (

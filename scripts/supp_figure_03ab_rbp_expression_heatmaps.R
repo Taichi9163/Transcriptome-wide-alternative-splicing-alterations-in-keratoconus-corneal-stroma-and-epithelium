@@ -5,7 +5,7 @@
 # Inputs and outputs are relative to KC_WORK_DIR (the current directory by default).
 
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
-source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "Utils_plotting.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "utils_plotting.R"))
 args <- setdiff(commandArgs(trailingOnly = TRUE), "--tables-only")
 if (length(args) > 1L || (length(args) == 1L && !args %in% c("stroma", "epithelium"))) {
     stop("Usage: Rscript script.R [stroma|epithelium] [--tables-only]")

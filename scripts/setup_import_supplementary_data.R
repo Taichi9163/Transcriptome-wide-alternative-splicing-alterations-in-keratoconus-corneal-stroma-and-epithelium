@@ -3,7 +3,7 @@
 library(readxl)
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 2L || !args[1] %in% c("stroma", "epithelium", "motifs")) {
-  stop("Usage: Rscript scripts/Setup_import_supplementary_data.R stroma|epithelium|motifs workbook.xlsx")
+  stop("Usage: Rscript scripts/setup_import_supplementary_data.R stroma|epithelium|motifs workbook.xlsx")
 }
 write_input <- function(x, tissue, module, filename) {
   dest <- file.path("data", tissue, module)

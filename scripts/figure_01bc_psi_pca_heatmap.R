@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
     library(RColorBrewer)
 })
 arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)[1]
-source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "Utils_plotting.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", arg))), "utils_plotting.R"))
 out <- file.path(ROOT, "results/stroma/figure1")
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 d <- read_tsv(file.path(ROOT, "results/stroma/manuscript/psi_matrix.tsv"))

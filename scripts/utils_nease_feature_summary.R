@@ -1,5 +1,5 @@
 # Summarize the event-preserving NEASE output for Figure 4C / Supplementary Figure 10A.
-# Load Utils_plotting.R first. All counts and text labels come from event memberships.
+# Load utils_plotting.R first. All counts and text labels come from event memberships.
 # The lower bar counts event-class assignments, not unique mapped events.
 
 read_nease_feature_summary <- function(cohort, panel) {

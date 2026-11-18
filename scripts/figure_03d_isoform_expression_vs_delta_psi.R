@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
 
 args0 <- grep("^--file=", commandArgs(FALSE), value = TRUE)
 
-source(file.path(dirname(normalizePath(sub("^--file=", "", args0[1]))), "Utils_plotting.R"))
+source(file.path(dirname(normalizePath(sub("^--file=", "", args0[1]))), "utils_plotting.R"))
 
 root <- ROOT
 

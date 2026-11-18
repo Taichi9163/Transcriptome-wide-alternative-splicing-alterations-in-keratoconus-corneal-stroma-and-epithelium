@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from prepare_inputs import GTF_NAME, prepare
+from setup_prepare_inputs import GTF_NAME, prepare
 
 SCRIPTS = Path(__file__).resolve().parent
 
@@ -24,21 +24,21 @@ def main():
         parser.error("Rscript was not found. See the installation instructions in README.md.")
     reference = work / "data/reference" / GTF_NAME
     if not reference.is_file():
-        parser.error("Run prepare_inputs.py with --gtf or --download-reference first.")
+        parser.error("Run setup_prepare_inputs.py with --gtf or --download-reference first.")
     prepare(work)
     environment = dict(os.environ, KC_WORK_DIR=str(work))
     steps = [
-        [rscript, "--vanilla", str(SCRIPTS / "Setup_check_R_packages.R")],
-        [rscript, "--vanilla", str(SCRIPTS / "Setup_prepare_Figure1_Figure3_data.R")],
-        [sys.executable, str(SCRIPTS / "map_events.py"), "--work-dir", str(work)],
+        [rscript, "--vanilla", str(SCRIPTS / "setup_check_r_packages.R")],
+        [rscript, "--vanilla", str(SCRIPTS / "setup_prepare_manuscript_data.R")],
+        [sys.executable, str(SCRIPTS / "figure_03d_event_transcript_mapping.py"), "--work-dir", str(work)],
     ]
     panels = (
-        "Figure1BC_PSI_PCA_heatmap",
-        "Figure1D_DAS_gene_UpSet",
-        "Figure3A_DEG_DAS_Venn",
-        "Figure3B_gene_expression_vs_deltaPSI",
-        "Figure3C_isoform_DAS_Venn",
-        "Figure3D_isoform_expression_vs_deltaPSI",
+        "figure_01bc_psi_pca_heatmap",
+        "figure_01d_das_gene_upset",
+        "figure_03a_deg_das_venn",
+        "figure_03b_gene_expression_vs_delta_psi",
+        "figure_03c_isoform_das_venn",
+        "figure_03d_isoform_expression_vs_delta_psi",
     )
     for name in panels:
         steps.append([rscript, "--vanilla", str(SCRIPTS / f"{name}.R")]

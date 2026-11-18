@@ -1,7 +1,7 @@
 # Candidate RBP expression, using gene identifiers from Ensembl annotation.
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 2L || !args[1] %in% c("stroma", "epithelium")) {
-  stop("Usage: Rscript scripts/SuppFigure3AB_RBP_expression.R stroma|epithelium gene_symbols.tsv")
+  stop("Usage: Rscript scripts/supp_figure_03ab_rbp_expression.R stroma|epithelium gene_symbols.tsv")
 }
 root <- file.path("results", args[1])
 map <- unique(read.delim(args[2])[c("gene_id", "gene_symbol")])

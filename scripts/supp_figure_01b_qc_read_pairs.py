@@ -16,7 +16,7 @@ import json
 import sys
 from pathlib import Path
 
-from SuppTable2_STAR_junction_QC import DEFAULT_SAMPLES, read_samples, sample_paths
+from supp_table_02_star_junction_qc import DEFAULT_SAMPLES, read_samples, sample_paths
 
 
 def get_nonnegative_int(value, description: str):

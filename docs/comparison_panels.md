@@ -5,10 +5,10 @@
 These entry scripts run directly from the bundled rMATS JC tables, without a GTF download, workbook import or new alignment. Paths are resolved under `KC_WORK_DIR`; scripts may be called by absolute path from another directory. Install `VennDiagram` in R in addition to the packages listed in the README. `ragg` is needed only when exporting images.
 
 ```sh
-python3 scripts/prepare_inputs.py --work-dir work
-KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure2B_KC6_event_overlap.R --tables-only
-KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/Figure4A_SuppFigure8_DAS_overlap.R --tables-only
-KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure9AB_SE_junction_support_plots.R --tables-only
+python3 scripts/setup_prepare_inputs.py --work-dir work
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/supp_figure_02b_kc6_event_overlap.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/figure_04a_supp_figure_08_das_overlap.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/supp_figure_09ab_se_junction_support_plots.R --tables-only
 ```
 
 `--tables-only` writes numeric results and builds plot objects without opening graphics devices. Remove the flag to create PNG/PDF panels. Use a separate work directory for each new run, as result tables may be replaced within that directory. The Venn layouts are portable reconstructions, not copies of the original PowerPoint geometry. Areas are not proportional to set sizes. Four-set gene labels are listed below the diagram rather than in the original callout boxes. Supplementary Figure 8 is exported as four individual panels (A3SS, A5SS, MXE and RI, corresponding to A–D).
@@ -36,7 +36,7 @@ The Venn uses the 491 qualifying events significant in either cohort; the scatte
 
 The scatter specification comes from `outputs/supplementary_figure8_font_v3_20261015/build/scatter.R`, whose earlier figure number became Supplementary Figure 9 in the supplied November revision. Point coordinates, color, shape, size and alpha agree for all 15,343 events. `FIGURE_FONT` replaces the hard-coded Arial dependency. The old PDF-editing implementation of panel A depended on a temporary embedded figure and fixed PDF drawing-operation indices; the public implementation calculates its counts and labels from event memberships.
 
-The existing `SuppFigure9_SE_junction_support.R` remains the broader numeric audit, including additional sensitivity thresholds and reconciliation with the Figure 4B exports. The new `SuppFigure9AB` command is a standalone panel workflow and does not require running that audit first.
+The existing `supp_figure_09_se_junction_support.R` remains the broader numeric audit, including additional sensitivity thresholds and reconciliation with the Figure 4B exports. The `supp_figure_09ab_se_junction_support_plots.R` command is a standalone panel workflow and does not require running that audit first.
 
 ## Input provenance and validation
 
