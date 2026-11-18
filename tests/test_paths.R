@@ -1,9 +1,8 @@
 #!/usr/bin/env Rscript
-# Work-directory precedence, explicit path overrides and shared PSI parsing.
+# Work-directory precedence and explicit path overrides.
 script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1])
 repo <- dirname(dirname(normalizePath(script)))
 source(file.path(repo, "scripts/utils_paths.R"))
-source(file.path(repo, "scripts/utils_psi.R"))
 expect_error <- function(expression) {
   stopifnot(inherits(tryCatch(force(expression), error = identity), "error"))
 }
@@ -25,9 +24,4 @@ stopifnot(resolve_path("data/input.tsv", explicit_root) == file.path(explicit_ro
 stopifnot(resolve_path(explicit_root, environment_root) == explicit_root)
 stopifnot(resolve_path("~/input.tsv", explicit_root) == path.expand("~/input.tsv"))
 
-expected <- matrix(c(0, 1, 0.5, NA_real_), nrow = 2, byrow = TRUE)
-stopifnot(identical(parse_psi(c("0,1", "0.5,NA"), 2), expected))
-for (invalid in list("1,2", "0,Inf", "0,word", "0,1,0")) {
-  expect_error(parse_psi(invalid, 2))
-}
-message("Portable R paths and PSI parsing checks passed.")
+message("Portable R path checks passed.")

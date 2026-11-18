@@ -12,7 +12,7 @@ All script basenames use **lowercase snake_case**. Figure, supplementary figure,
 | Supplementary data | `supp_data_<number>_<purpose>` | `supp_data_06_leave_one_out.py` |
 | Input preparation and dependency checks | `setup_<purpose>` | `setup_prepare_inputs.py` |
 | Multi-step or external-tool execution | `workflow_<purpose>` | `workflow_run_manuscript.py` |
-| Analyses shared across panels or optional analyses | `analysis_<purpose>` | `analysis_nease.py` |
+| Analyses shared across manuscript panels | `analysis_<purpose>` | `analysis_nease.py` |
 | Shared helpers | `utils_<purpose>` | `utils_plotting.R` |
 | Tests | `test_<purpose>` | `test_reactome_panels.R` |
 
@@ -25,13 +25,10 @@ The rename updates script imports, helper sources, workflow entry points, tests 
 Use the current paths below in new commands. Old-name wrapper scripts are not retained; previous versions remain available in Git history.
 
 <details>
-<summary>Show the complete filename mapping</summary>
+<summary>Show filename mappings for retained scripts</summary>
 
 | Previous filename | Current script |
 | --- | --- |
-| `Analysis_PCA_all_events.R` | [analysis_pca_all_events.R](../scripts/analysis_pca_all_events.R) |
-| `Analysis_PCA_including_KC6.R` | [analysis_pca_including_kc6.R](../scripts/analysis_pca_including_kc6.R) |
-| `Analysis_PCA_variable_events.R` | [analysis_pca_variable_events.R](../scripts/analysis_pca_variable_events.R) |
 | `Figure1A_DAS_event_summary.R` | [figure_01a_das_event_summary.R](../scripts/figure_01a_das_event_summary.R) |
 | `Figure1BC_PSI_PCA_heatmap.R` | [figure_01bc_psi_pca_heatmap.R](../scripts/figure_01bc_psi_pca_heatmap.R) |
 | `Figure1D_DAS_gene_UpSet.R` | [figure_01d_das_gene_upset.R](../scripts/figure_01d_das_gene_upset.R) |
@@ -61,7 +58,6 @@ Use the current paths below in new commands. Old-name wrapper scripts are not re
 | `SuppFigure7BC_PSI_PCA_heatmap.R` | [supp_figure_07bc_psi_pca_heatmap.R](../scripts/supp_figure_07bc_psi_pca_heatmap.R) |
 | `SuppFigure7D_DAS_gene_UpSet.R` | [supp_figure_07d_das_gene_upset.R](../scripts/supp_figure_07d_das_gene_upset.R) |
 | `SuppFigure9AB_SE_junction_support_plots.R` | [supp_figure_09ab_se_junction_support_plots.R](../scripts/supp_figure_09ab_se_junction_support_plots.R) |
-| `SuppFigure9_SE_junction_support.R` | [supp_figure_09_se_junction_support.R](../scripts/supp_figure_09_se_junction_support.R) |
 | `SuppTable2_STAR_junction_QC.py` | [supp_table_02_star_junction_qc.py](../scripts/supp_table_02_star_junction_qc.py) |
 | `Utils_DAS_gene_UpSet.R` | [utils_das_gene_upset.R](../scripts/utils_das_gene_upset.R) |
 | `Utils_NEASE_feature_summary.R` | [utils_nease_feature_summary.R](../scripts/utils_nease_feature_summary.R) |
@@ -74,7 +70,6 @@ Use the current paths below in new commands. Old-name wrapper scripts are not re
 | `nease_analysis.py` | [analysis_nease.py](../scripts/analysis_nease.py) |
 | `prepare_inputs.py` | [setup_prepare_inputs.py](../scripts/setup_prepare_inputs.py) |
 | `preprocess_reads.py` | [workflow_preprocess_reads.py](../scripts/workflow_preprocess_reads.py) |
-| `reactome_top10.py` | [analysis_reactome_top10.py](../scripts/analysis_reactome_top10.py) |
 | `run_manuscript.py` | [workflow_run_manuscript.py](../scripts/workflow_run_manuscript.py) |
 | `run_rmaps3.py` | [workflow_run_rmaps3.py](../scripts/workflow_run_rmaps3.py) |
 | `stromal_sensitivity.py` | [supp_data_06_stromal_sensitivity.py](../scripts/supp_data_06_stromal_sensitivity.py) |

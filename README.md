@@ -4,7 +4,7 @@
 
 [Quick start](#quick-start) · [Figure-to-code index](docs/figures.md) · [Reproduction guide](docs/reproduce.md) · [Data](#data) · [Citation](#citation)
 
-This repository provides the RNA-seq and alternative-splicing analyses for the manuscript version dated **18 November 2026**: read processing, differential splicing, RBP motif enrichment, gene/isoform expression integration, cross-layer comparisons, and NEASE/Reactome analysis.
+This repository provides the RNA-seq and alternative-splicing analyses for the manuscript version dated **18 November 2026**: read processing, differential splicing, RBP motif enrichment, gene/isoform expression integration, cross-layer comparisons, and NEASE/Reactome analysis. Code is limited to results reported in the main text, figures, tables and supplementary data, together with the preprocessing and shared utilities needed to reproduce them.
 
 ## Study design
 

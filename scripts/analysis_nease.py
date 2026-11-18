@@ -19,7 +19,6 @@ from utils_paths import add_work_dir_argument
 def parse_arguments(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("tissue", choices=["stroma", "epithelium"])
-    parser.add_argument("--orf-filter", action="store_true")
     add_work_dir_argument(parser)
     return parser.parse_args(argv)
 
@@ -56,7 +55,7 @@ def keyset(df, columns):
 
 
 def run_analysis(args):
-    """Run native NEASE with the manuscript settings and record provenance."""
+    """Run the primary feature mapping and Reactome analysis reported in the paper."""
     os.environ.setdefault("MPLBACKEND", "Agg")
     import numpy as np
     import pandas as pd
@@ -66,8 +65,6 @@ def run_analysis(args):
     input_file = args.work_dir / "results" / args.tissue / "das/SE.tsv"
     raw_file = args.work_dir / "data" / args.tissue / "rmats/SE.MATS.JC.txt"
     output_dir = args.work_dir / "results" / args.tissue / "nease"
-    if args.orf_filter:
-        output_dir = output_dir / "sensitivity_orf_filtered"
     for directory in ("results", "provenance"):
         (output_dir / directory).mkdir(parents=True, exist_ok=True)
     events = pd.read_csv(input_file, sep="\t", dtype={"ID": str, "GeneID": str})
@@ -95,7 +92,7 @@ def run_analysis(args):
         {g, int(s), int(e)} in reference.non_coding
         for g, s, e in zip(events.GeneID, events.Start_1based, events.exonEnd)
     ]
-    events["Excluded_by_NEASE_ORF_filter"] = events.Listed_in_NEASE_ORF_exclusion & args.orf_filter
+    events["Excluded_by_NEASE_ORF_filter"] = False
     original_cols = [
         "Event_ID",
         "ID",
@@ -130,7 +127,7 @@ def run_analysis(args):
         organism="Human",
         input_type="Standard",
         p_value_cutoff=0.05,
-        remove_non_in_frame=args.orf_filter,
+        remove_non_in_frame=False,
         only_divisible_by_3=False,
         min_delta=0.1,
         only_DDIs=False,
@@ -196,43 +193,6 @@ def run_analysis(args):
     }
     assert native_pdb_pairs == keyset(residues, ["Gene stable ID", "Interaction_partner_NCBI_ID"])
 
-    # Sensitivity to ORF filtering and rMATS's unconverted start coordinate.
-    all_events = events[original_cols].copy()
-    all_events["Excluded_by_NEASE_ORF_filter"] = False
-    nofilter = annotation_tables(all_events, reference)
-    unconverted = events[original_cols].copy()
-    unconverted["Start_1based"] = unconverted.exonStart_0base
-    unconverted["Excluded_by_NEASE_ORF_filter"] = [
-        {g, int(s), int(e)} in reference.non_coding
-        for g, s, e in zip(unconverted.GeneID, unconverted.Start_1based, unconverted.exonEnd)
-    ]
-    legacy = annotation_tables(unconverted, reference)
-    sensitivities = []
-    filtered_events = events[original_cols].copy()
-    filtered_events["Excluded_by_NEASE_ORF_filter"] = filtered_events.Listed_in_NEASE_ORF_exclusion
-    filtered = annotation_tables(filtered_events, reference)
-    for label, tables, excluded in [
-        ("1-based, ORF filter enabled", filtered, int(events.Listed_in_NEASE_ORF_exclusion.sum())),
-        ("1-based, ORF filter disabled", nofilter, 0),
-        (
-            "Unconverted rMATS start, ORF filter enabled",
-            legacy,
-            int(unconverted.Excluded_by_NEASE_ORF_filter.sum()),
-        ),
-    ]:
-        sensitivities.append(
-            {
-                "Analysis": label,
-                "Input_events": len(events),
-                "Excluded_events": excluded,
-                "Mapped_events": len(set().union(*(set(x.Event_ID) for x in tables))),
-                "Domain_events": tables[0].Event_ID.nunique(),
-                "Motif_events": tables[1].Event_ID.nunique(),
-                "Residue_evidence_events": tables[2].Event_ID.nunique(),
-            }
-        )
-    sensitivity = pd.DataFrame(sensitivities)
-    save_table(sensitivity, output_dir, "Sensitivity")
     # Keep complete native outputs and pathway tests, including nonsignificant rows.
     for name, df in [
         ("SE_events", events),
@@ -245,15 +205,13 @@ def run_analysis(args):
         ("Affected_edges", analysis.get_edges()),
     ]:
         save_table(df, output_dir, name)
-    pathways = {}
-    for database in ["Reactome", "KEGG"]:
-        pathways[database] = analysis.enrich(database=[database], cutoff=0.05)
-        assert pathways[database]["Pathway ID"].is_unique
-        assert set(pathways[database]["Pathway ID"]) == set(
-            original_pathways.loc[original_pathways.source == database, "external_id"]
-        )
-        save_table(pathways[database], output_dir, f"{database}_Python")
-    save_table(analysis.enrichment, output_dir, "All_pathways_uncorrected")
+    # The manuscript reports Reactome enrichment only.
+    reactome = analysis.enrich(database=["Reactome"], cutoff=0.05)
+    assert reactome["Pathway ID"].is_unique
+    assert set(reactome["Pathway ID"]) == set(
+        original_pathways.loc[original_pathways.source == "Reactome", "external_id"]
+    )
+    save_table(reactome, output_dir, "Reactome_Python")
 
     gene_sets = [set(t["Gene stable ID"]) for t in [domains, motifs, residues]]
     summary = {
@@ -277,8 +235,7 @@ def run_analysis(args):
         "domain_annotation_rows": len(domains),
         "motif_annotation_rows": len(motifs),
         "residue_evidence_rows": len(residues),
-        "Reactome_significant": int((pathways["Reactome"]["adj p_value"] <= 0.05).sum()),
-        "KEGG_significant": int((pathways["KEGG"]["adj p_value"] <= 0.05).sum()),
+        "Reactome_significant": int((reactome["adj p_value"] <= 0.05).sum()),
     }
     refdir = Path(reference.__file__).parent
     manifest = {

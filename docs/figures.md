@@ -2,7 +2,7 @@
 
 [Repository overview](../README.md) · [Reproduction guide](reproduce.md) · [Input provenance](../inputs/README.md) · [Validation](validation.md)
 
-Computational sources for the **18 November 2026 manuscript** are listed below. Source-table scripts provide values used in a panel; they do not necessarily export the final assembled layout. Figure filenames follow the manuscript numbering and the [shared naming convention](script_naming.md).
+Computational sources for the **18 November 2026 manuscript** are listed below. The repository contains code for reported main-text results, figures, tables and supplementary data, together with their required preprocessing and shared helpers. Source-table scripts provide values used in a panel; they do not necessarily export the final assembled layout. Figure filenames follow the manuscript numbering and the [shared naming convention](script_naming.md).
 
 [Figure 1](#figure-1) · [Figure 2](#figure-2) · [Figure 3](#figure-3) · [Figure 4](#figure-4) · [Supplementary material](#supplementary-figures-and-tables) · [Supplementary data](#supplementary-data)
 
@@ -41,7 +41,7 @@ Sashimi plotting requires STAR-aligned BAM files. The selected-event script supp
 | Fig. 3A–D; gene/transcript model fitting from RSEM | [figure_03abcd_deseq2_analysis.R](../scripts/figure_03abcd_deseq2_analysis.R) |
 | Fig. 3A–C; expression/splicing overlap source tables | [figure_03abc_expression_splicing_overlap.R](../scripts/figure_03abc_expression_splicing_overlap.R) |
 
-`workflow_run_manuscript.py` reproduces Figure 3A–D from the bundled DESeq2 tables and the release-114 GTF. Refitting expression models requires RSEM quantifications and sample annotations; see [gene and isoform expression](additional_analyses.md#gene-and-isoform-expression).
+`workflow_run_manuscript.py` reproduces Figure 3A–D from the bundled DESeq2 tables and the release-114 GTF. Refitting expression models requires RSEM quantifications and sample annotations; see [gene and isoform expression](manuscript_methods.md#gene-and-isoform-expression).
 
 ## Figure 4
 
@@ -51,10 +51,10 @@ Sashimi plotting requires STAR-aligned BAM files. The selected-event script supp
 | Fig. 4B; stromal versus epithelial ΔPSI | [figure_04b_cross_layer_delta_psi.R](../scripts/figure_04b_cross_layer_delta_psi.R) |
 | Fig. 4C; stromal protein-feature coverage and overlaps | [figure_04c_nease_feature_mapping.R](../scripts/figure_04c_nease_feature_mapping.R) |
 | Fig. 4D; stromal Reactome top-ten R panel | [figure_04d_reactome_enrichment.R](../scripts/figure_04d_reactome_enrichment.R) |
-| Fig. 4C,D and Supplementary Fig. 10; upstream NEASE calculation and revised Python plot implementation | [analysis_nease.py](../scripts/analysis_nease.py), [analysis_reactome_top10.py](../scripts/analysis_reactome_top10.py) |
+| Fig. 4C,D and Supplementary Fig. 10; upstream NEASE feature mapping and Reactome calculation | [analysis_nease.py](../scripts/analysis_nease.py) |
 | Fig. 4E; conceptual summary | Separately assembled artwork |
 
-Figure 4C,D R scripts use bundled corrected NEASE outputs. New NEASE calculations require the [external environment](additional_analyses.md#nease-and-reactome). The retained [analysis_reactome_top10.py](../scripts/analysis_reactome_top10.py) is the revised Python plotting implementation; see [Reactome provenance](reactome.md) for the R adaptation.
+Figure 4C,D R scripts use bundled corrected NEASE outputs. New NEASE calculations require the [external environment](manuscript_methods.md#nease-and-reactome). See [Reactome provenance](reactome.md) for the numbered R implementation.
 
 ## Supplementary figures and tables
 
@@ -73,7 +73,6 @@ Figure 4C,D R scripts use bundled corrected NEASE outputs. New NEASE calculation
 | Supplementary Fig. 7D; epithelial gene-level UpSet | [supp_figure_07d_das_gene_upset.R](../scripts/supp_figure_07d_das_gene_upset.R) |
 | Supplementary Fig. 7E,F; epithelial motif analysis | [workflow_run_rmaps3.py](../scripts/workflow_run_rmaps3.py), [motif statistics](../scripts/figure_01ef_rbp_motif_statistics.R), [motif heatmaps](../scripts/figure_01ef_rbp_motif_heatmaps.R) |
 | Supplementary Fig. 8A–D; A3SS/A5SS/MXE/RI cross-layer overlaps | [figure_04a_supp_figure_08_das_overlap.R](../scripts/figure_04a_supp_figure_08_das_overlap.R) |
-| Supplementary Fig. 9; additional SE junction-support sensitivity tables | [supp_figure_09_se_junction_support.R](../scripts/supp_figure_09_se_junction_support.R) |
 | Supplementary Fig. 9A,B; support-filtered SE Venn and scatter | [supp_figure_09ab_se_junction_support_plots.R](../scripts/supp_figure_09ab_se_junction_support_plots.R) |
 | Supplementary Fig. 10A; epithelial protein-feature coverage and overlaps | [supp_figure_10a_nease_feature_mapping.R](../scripts/supp_figure_10a_nease_feature_mapping.R) |
 | Supplementary Fig. 10B; epithelial Reactome top-ten R panel | [supp_figure_10b_reactome_enrichment.R](../scripts/supp_figure_10b_reactome_enrichment.R) |
@@ -94,8 +93,13 @@ Figure S1B is the supplied reconstruction; Figure S7D adapts the Figure 1D imple
 
 These modules export analysis tables underlying the supplementary material; they do not assemble the final formatted Excel workbooks.
 
-## Shared preparation and optional analyses
+## Shared preparation
 
-The primary workflow uses [workflow_run_manuscript.py](../scripts/workflow_run_manuscript.py), [setup_prepare_inputs.py](../scripts/setup_prepare_inputs.py), [setup_check_r_packages.R](../scripts/setup_check_r_packages.R), [setup_prepare_manuscript_data.R](../scripts/setup_prepare_manuscript_data.R), and [utils_plotting.R](../scripts/utils_plotting.R). [setup_import_supplementary_data.R](../scripts/setup_import_supplementary_data.R) imports supplementary workbooks for additional modules. Shared counting and plot helpers remain in `scripts/`.
+The primary workflow uses [workflow_run_manuscript.py](../scripts/workflow_run_manuscript.py), [setup_prepare_inputs.py](../scripts/setup_prepare_inputs.py), [setup_check_r_packages.R](../scripts/setup_check_r_packages.R), [setup_prepare_manuscript_data.R](../scripts/setup_prepare_manuscript_data.R), and [utils_plotting.R](../scripts/utils_plotting.R). [setup_import_supplementary_data.R](../scripts/setup_import_supplementary_data.R) imports supplementary workbooks for the reported source-table analyses. Shared counting and plot helpers remain in `scripts/`.
 
-Optional PCA analyses are [analysis_pca_all_events.R](../scripts/analysis_pca_all_events.R), [analysis_pca_variable_events.R](../scripts/analysis_pca_variable_events.R), and [analysis_pca_including_kc6.R](../scripts/analysis_pca_including_kc6.R). They are not assigned to numbered panels in this manuscript; their dependencies and execution order are in [additional analyses](additional_analyses.md#optional-plots-and-pca-sensitivity).
+| Required helper | Manuscript use |
+| --- | --- |
+| [utils_paths.R](../scripts/utils_paths.R), [utils_paths.py](../scripts/utils_paths.py) | Portable input/output paths for all entry points |
+| [utils_das_gene_upset.R](../scripts/utils_das_gene_upset.R) | Figure 1D and Supplementary Figure 7D |
+| [utils_splicing_events.R](../scripts/utils_splicing_events.R) | Figure 4A and Supplementary Figures 2B, 8 and 9 |
+| [utils_venn_plots.R](../scripts/utils_venn_plots.R) | Figure 4A and Supplementary Figures 2B, 8 and 9A |

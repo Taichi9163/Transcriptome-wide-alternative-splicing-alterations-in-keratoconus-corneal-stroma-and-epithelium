@@ -1,15 +1,15 @@
-# Additional analyses
+# Manuscript methods and source tables
 
 [Repository overview](../README.md) · [Documentation](README.md) · [Figure-to-code index](figures.md)
 
-These modules complement the bundled manuscript workflow. Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B can run directly from the bundled processed inputs, as shown in the [reproduction guide](reproduce.md). Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
+These modules reproduce reported manuscript results and supplementary source tables. Figures 4A,C,D and Supplementary Figures 2B, 3A,B, 6, 7D, 8, 9A,B and 10A,B can run directly from the bundled processed inputs, as shown in the [reproduction guide](reproduce.md). Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
 
 ## Dependencies and native inputs
 
 In addition to the main workflow packages, install the dependencies for the modules you use:
 
 ```r
-install.packages(c("readxl", "data.table", "ggrepel", "reshape2", "stringr", "BiocManager"))
+install.packages(c("readxl", "reshape2", "BiocManager"))
 BiocManager::install(c("DESeq2", "tximport"))
 ```
 
@@ -35,7 +35,6 @@ Rscript --vanilla scripts/figure_01a_das_event_summary.R epithelium
 Rscript --vanilla scripts/figure_01a_das_event_summary.R stroma_with_kc6
 Rscript --vanilla scripts/figure_04a_supp_figure_08_das_overlap.R --tables-only
 Rscript --vanilla scripts/figure_04b_cross_layer_delta_psi.R --tables-only
-Rscript --vanilla scripts/supp_figure_09_se_junction_support.R
 python3 scripts/supp_data_06_stromal_sensitivity.py
 Rscript --vanilla scripts/figure_01ef_rbp_motif_statistics.R
 ```
@@ -91,22 +90,19 @@ python3.12 -m venv .venv
 .venv/bin/python scripts/analysis_nease.py epithelium
 ```
 
-After a new NEASE run, use the numbered R script with `--pathways results/<cohort>/nease/results/Reactome_Python.tsv` and `--tables-only` for numeric checks. The retained `analysis_reactome_top10.py` is an optional Python implementation; use `--tables-only` to export its numerical table without figures.
+After a new NEASE run, use the numbered R script with `--pathways results/<cohort>/nease/results/Reactome_Python.tsv` and `--tables-only` for numeric checks.
 
-The primary run keeps all input SE events for mapping. Pass `--orf-filter` to run the additional ORF-filtered sensitivity analysis in a separate output directory.
+The NEASE command keeps all primary significant SE events for mapping and exports the reported Reactome results. The numbered R scripts supply the pathway panels.
 
 The standalone Venn and junction-support panel commands are described in [event-comparison panels](comparison_panels.md); they need no supplementary-workbook import.
 
-## Optional plots and PCA sensitivity
+## Epithelial PCA and motif panels
 
-The motif and PCA commands generate figure files by default; add `--tables-only` to suppress image export. The optional PCA scripts still write larger numerical caches. The three sensitivity scripts depend on the preceding scripts in the order shown.
+The PCA and heatmap use significant DAS events, as reported in Supplementary Figure 7B,C. The motif command supplies Figure 1E,F and Supplementary Figure 7E,F.
 
 ```sh
-Rscript --vanilla scripts/supp_figure_07bc_psi_pca_heatmap.R epithelium --tables-only
-Rscript --vanilla scripts/figure_01ef_rbp_motif_heatmaps.R
-Rscript --vanilla scripts/analysis_pca_all_events.R
-Rscript --vanilla scripts/analysis_pca_variable_events.R
-Rscript --vanilla scripts/analysis_pca_including_kc6.R
+Rscript --vanilla scripts/supp_figure_07bc_psi_pca_heatmap.R epithelium --work-dir work --tables-only
+Rscript --vanilla scripts/figure_01ef_rbp_motif_heatmaps.R --work-dir work --tables-only
 ```
 
-Remove `--tables-only` from `supp_figure_07bc_psi_pca_heatmap.R` to generate its PCA and heatmap PDFs. Use the dedicated manuscript workflow for the current stromal Figure 1B–D panels.
+Remove `--tables-only` to export these manuscript panels. The primary manuscript workflow supplies the stromal Figure 1B,C panels.

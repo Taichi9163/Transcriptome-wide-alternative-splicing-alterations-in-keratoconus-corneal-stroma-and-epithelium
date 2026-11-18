@@ -10,7 +10,7 @@ DAS requires rMATS JC FDR < 0.05 and |IncLevelDifference| > 0.10. DE genes/isofo
 
 DAS gene counts and expression integration use Ensembl GeneID. Figure 1D and the reconstructed Supplementary Figure 7D follow the supplied gene-symbol UpSet, with GeneID as fallback when a symbol is absent. The two identifiers give the same totals of 807 stromal and 609 epithelial genes for these inputs; they should not be assumed equivalent for other datasets.
 
-Figure 1B uses centered, scaled event-level PSI in `prcomp`. Figure 1C clusters Euclidean distances of unscaled PSI using Ward.D2, then uses row Z scores for colors. The significant-event PCA describes a set selected using the group labels. The optional all-event and variance-ranked PCA modules avoid significance-based event selection.
+Figure 1B uses centered, scaled event-level PSI in `prcomp`. Figure 1C clusters Euclidean distances of unscaled PSI using Ward.D2, then uses row Z scores for colors. The significant-event PCA describes a set selected using the group labels.
 
 For Figure 3B, select the largest absolute ΔPSI per DAS gene, breaking ties by smaller FDR and then original row order across SE, RI, A5SS, A3SS and MXE. Of 807 DAS genes, 805 have finite matched gene-expression effects. DEG-only genes are retained in exported source tables but omitted from the scatter.
 
@@ -35,6 +35,6 @@ Figure 3C distinguishes the 55-gene overlap at gene level from the subset of 29 
 
 `supp_data_06_leave_one_out.py` holds the primary 1,073-event DAS set fixed and recalculates mean case PSI minus mean control PSI after omitting each of the nine samples. It compares effects with the reported rMATS ΔPSI; it does not rerun rMATS or claim new FDR values. `KC_pos1` etc. denote original PSI-vector positions. The median changes can include small rounding differences because rMATS reports rounded PSI and ΔPSI values.
 
-`supp_data_06_stromal_sensitivity.py` separately evaluates junction support and the KC6-inclusive rMATS calls. Cross-run event matching uses exact class-specific coordinates, chromosome and strand, rather than run-local numeric IDs. See the additional-analysis guide for these inputs.
+`supp_data_06_stromal_sensitivity.py` separately evaluates junction support and the KC6-inclusive rMATS calls. Cross-run event matching uses exact class-specific coordinates, chromosome and strand, rather than run-local numeric IDs. See the manuscript-methods guide for these inputs.
 
 Figure generation uses portable PDF devices and an installed font (`FIGURE_FONT`, default `sans`). Font metrics and plotting-library versions may change appearance. The submitted PowerPoint composition, gel measurements and conceptual schematic are outside this computational reproduction.

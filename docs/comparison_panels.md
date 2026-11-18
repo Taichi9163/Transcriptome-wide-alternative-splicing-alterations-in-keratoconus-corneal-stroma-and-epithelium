@@ -36,7 +36,7 @@ The Venn uses the 491 qualifying events significant in either cohort; the scatte
 
 The scatter specification comes from `outputs/supplementary_figure8_font_v3_20261015/build/scatter.R`, whose earlier figure number became Supplementary Figure 9 in the supplied November revision. Point coordinates, color, shape, size and alpha agree for all 15,343 events. `FIGURE_FONT` replaces the hard-coded Arial dependency. The old PDF-editing implementation of panel A depended on a temporary embedded figure and fixed PDF drawing-operation indices; the public implementation calculates its counts and labels from event memberships.
 
-The existing `supp_figure_09_se_junction_support.R` remains the broader numeric audit, including additional sensitivity thresholds and reconciliation with the Figure 4B exports. The `supp_figure_09ab_se_junction_support_plots.R` command is a standalone panel workflow and does not require running that audit first.
+The `supp_figure_09ab_se_junction_support_plots.R` command exports the event memberships, junction-support values and correlations used in the reported panels. It runs directly from the bundled JC tables.
 
 ## Input provenance and validation
 

@@ -54,17 +54,16 @@ The [filename convention](script_naming.md) distinguishes numbered figure script
 | --- | --- |
 | [utils_paths.R](../scripts/utils_paths.R), [utils_paths.py](../scripts/utils_paths.py) | Work-directory selection and path resolution |
 | [utils_plotting.R](../scripts/utils_plotting.R) | Tabular output and manuscript figure export |
-| [utils_psi.R](../scripts/utils_psi.R) | Validated PSI-vector parsing shared by the three optional PCA analyses |
 | [utils_splicing_events.R](../scripts/utils_splicing_events.R) | Complete event-coordinate identity and directional memberships |
 | [utils_nease_feature_summary.R](../scripts/utils_nease_feature_summary.R) | Protein-feature membership summaries |
 | [utils_reactome_enrichment.R](../scripts/utils_reactome_enrichment.R) | Reactome selection, numerical checks and plot construction |
 
-R uses two-space indentation and Python uses four-space indentation. Python command-line processing is inside `main()`; importing a module does not start an analysis or create result directories. NEASE-specific libraries are loaded only when its analysis is requested. The optional Python Reactome implementation separates pathway selection from plotting.
+R uses two-space indentation and Python uses four-space indentation. Python command-line processing is inside `main()`; importing a module does not start an analysis or create result directories. NEASE-specific libraries are loaded only when its analysis is requested. The numbered Reactome R scripts supply both manuscript pathway panels.
 
 The refactor preserves the study's thresholds, sample order, event definitions, output column names and result filenames. Selection rules that differ between analyses remain distinct: in particular, the native rMAPS3 inclusive ΔPSI boundary is not replaced with the strict boundary used in general DAS summaries.
 
 ## Numerical checks without figures
 
-Use `--tables-only` for supported plotting scripts. It also works for the motif heatmaps, the optional Python Reactome implementation and the three optional PCA scripts. Motif heatmaps export their selected adjusted-P matrices before any layout construction. Optional PCA runs still write their numerical caches, which can be large; they are separate from the main manuscript workflow.
+Use `--tables-only` for supported plotting scripts. Motif heatmaps export their selected adjusted-P matrices before any layout construction. The retained PCA scripts use significant DAS events for Figure 1B and Supplementary Figure 7B.
 
 Native rMAPS3 and upstream processing retain preview-by-default behavior; `--execute` runs the external commands. Native NEASE is a separate analysis and is not run by the manuscript table workflow. See the [validation record](validation.md) for what was executed and what was checked without rerunning the full native analysis.

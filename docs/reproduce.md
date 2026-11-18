@@ -27,7 +27,7 @@ python3 scripts/supp_data_06_leave_one_out.py --work-dir work
 python3 scripts/workflow_run_manuscript.py --work-dir work
 ```
 
-To use an existing reference instead of downloading it, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Input preparation reuses identical files and refuses to overwrite different files. Set `FIGURE_FONT` to select an installed font; the default is `sans`. The commands on this page write analysis outputs in the selected work directory. The primary workflow and the numbered commands using `KC_WORK_DIR` accept absolute script paths. Older modules listed in [additional analyses](additional_analyses.md) use the current working directory.
+To use an existing reference instead of downloading it, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Input preparation reuses identical files and refuses to overwrite different files. Set `FIGURE_FONT` to select an installed font; the default is `sans`. The commands on this page write analysis outputs in the selected work directory. The primary workflow and the numbered commands using `KC_WORK_DIR` accept absolute script paths. Older modules listed in [additional analyses](manuscript_methods.md) use the current working directory.
 
 Use a separate work directory for each new run: analysis result tables may be replaced within that directory.
 
@@ -138,7 +138,7 @@ For Supplementary Figure 1B, [supp_figure_01b_qc_read_pairs.py](../scripts/supp_
 
 ## Other numeric analyses and dependencies
 
-The [figure-to-code index](figures.md) lists every manuscript component covered by this repository. The [additional-analysis guide](additional_analyses.md) covers DAS summaries, the Figure 4B comparison, gene/isoform model fitting, RBP expression statistics, NEASE calculation and optional PCA analyses. Some of these older modules expect `data/` and `results/` beneath the current working directory. Follow their documented order and input requirements.
+The [figure-to-code index](figures.md) lists every manuscript component covered by this repository. The [manuscript-methods guide](manuscript_methods.md) covers DAS summaries, the Figure 4B comparison, gene/isoform model fitting, RBP expression statistics and NEASE calculation. Every analysis entry point accepts `--work-dir`; follow the documented order and input requirements.
 
 The bundled-table workflow uses Python 3.9+ and R. NEASE uses a separate Python 3.12 environment with [recorded requirements](../requirements-nease.txt). The native rMAPS3 engine, Ubuntu read-processing tools and their references require separate setup; they are not installed by `setup_prepare_inputs.py`.
 

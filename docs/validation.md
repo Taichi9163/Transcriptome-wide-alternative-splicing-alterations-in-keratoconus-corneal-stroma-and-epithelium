@@ -4,6 +4,8 @@
 
 Checked on 18 November 2026 against the supplied analysis archive and manuscript revision. The checks below distinguish numeric reproduction, plot-object construction and rendered-figure validation. Original manuscript and presentation files were not modified.
 
+The current repository is restricted to reported manuscript results and their required support code. Earlier validation sections document the code present at the time of each check; they do not imply that exploratory modules remain in the current release.
+
 ## Reproduced results
 
 | Check | Result |
@@ -144,6 +146,16 @@ The preceding commit (`4065e23`) was retained as the comparison baseline. Its 22
 - All 44 R files and 17 Python files, including tests and helpers, passed parsing. Formatting changes were checked against parsed expressions. All bundled inputs and configuration files remained unchanged.
 
 This work generated numerical tables only. No figure image, Word file or PowerPoint file was created or modified. Native read processing, DESeq2 refitting, full NEASE enrichment and the optional large PCA workflows retain the previously documented validation limits.
+
+## Restriction to manuscript results
+
+The 18 November 2026 manuscript and Supplementary Data 3 and 6 were inspected without modification. The current `scripts/` directory contains 46 files, each linked from the [figure-to-code index](figures.md) to a reported result or a required preprocessing/helper role.
+
+The three exploratory PCA variants and their exclusive PSI helper were removed, together with the duplicate Python Reactome plotting implementation and the broader junction-support audit. The significant-event PCA implementations for Figure 1B and Supplementary Figure 7B remain. The numbered Supplementary Figure 9 command already supplies the reported support-filtered memberships and correlations. NEASE now exports only the primary feature mapping and Reactome results; the unreported KEGG and ORF/coordinate-comparison branches were removed.
+
+The window-corrected BH and BY columns are present in Supplementary Data 3 and were retained. The coverage, KC6-inclusion and single-sample-omission calculations in Supplementary Data 6 were also retained, as were the candidate-RBP expression statistics reported in the text.
+
+All remaining R/Python scripts passed parsing, the 29 Python tests and three R test scripts passed, and local documentation links and helper references resolved. A mocked NEASE engine compared the previous and restricted entry points: all ten retained primary TSV exports were byte-identical, primary analysis settings agreed, and the retained summary fields agreed. This checks dispatch and export behavior; it is not a new native enrichment run. Bundled inputs and configuration files were unchanged, no images were generated, and the manuscript files retained their original SHA-256 fingerprints.
 
 ## Limits of this validation
 

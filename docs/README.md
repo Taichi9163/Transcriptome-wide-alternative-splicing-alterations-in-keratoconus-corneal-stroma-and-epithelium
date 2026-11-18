@@ -23,7 +23,7 @@
 | Figure 4D and Supplementary Figure 10B | [Reactome R panels](reactome.md) |
 | Figure 4A and Supplementary Figures 2B, 8 and 9 | [Event-comparison panels](comparison_panels.md) |
 | Supplementary Figure 6 | [Published-event comparison](suppfigure6.md) |
-| DESeq2, RBP expression, NEASE and additional PCA workflows | [Additional analyses](additional_analyses.md) |
+| DESeq2, RBP expression, NEASE and manuscript source tables | [Manuscript methods](manuscript_methods.md) |
 
 Commands that use `--tables-only` export numerical results without figure files. Native tools and older modules have their own interfaces; consult the relevant guide before running them. The repository's scope is RNA-seq and alternative-splicing analysis; experimental RT-PCR statistics and manual figure assembly are separate.
 
