@@ -13,6 +13,8 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from utils_paths import add_work_dir_argument
+
 from setup_prepare_inputs import GTF_NAME, GTF_SHA256, digest
 
 
@@ -51,9 +53,11 @@ def forms(event, exons):
         return int(event[key] if key in event else event["X" + key])
 
     def complete_chain(target):
-        return (target in exons
-                and (coordinate("upstreamEE"), target[0]) in junctions
-                and (target[1], coordinate("downstreamES")) in junctions)
+        return (
+            target in exons
+            and (coordinate("upstreamEE"), target[0]) in junctions
+            and (target[1], coordinate("downstreamES")) in junctions
+        )
 
     event_type = event["EventType"]
     if event_type == "SE":
@@ -72,18 +76,20 @@ def forms(event, exons):
             # Match the alternative boundary and shared local sequence.
             # Variation at the distal end does not alter this splice event.
             if long_exon[1] <= flank[0]:
-                return ((alternative[1], flank[0]) in junctions
-                        and any(start <= alternative[0] and end == alternative[1]
-                                for start, end in exons))
-            return ((flank[1], alternative[0]) in junctions
-                    and any(start == alternative[0] and end >= alternative[1]
-                            for start, end in exons))
+                return (alternative[1], flank[0]) in junctions and any(
+                    start <= alternative[0] and end == alternative[1] for start, end in exons
+                )
+            return (flank[1], alternative[0]) in junctions and any(
+                start == alternative[0] and end >= alternative[1] for start, end in exons
+            )
 
         inclusion, skipping = connected(long_exon), connected(short_exon)
     elif event_type == "RI":
         # A single exon must span the complete retained-intron model.
-        inclusion = any(start <= coordinate("riExonStart_0base")
-                        and end >= coordinate("riExonEnd") for start, end in exons)
+        inclusion = any(
+            start <= coordinate("riExonStart_0base") and end >= coordinate("riExonEnd")
+            for start, end in exons
+        )
         skipping = (coordinate("upstreamEE"), coordinate("downstreamES")) in junctions
     else:
         raise ValueError(f"Unsupported event class: {event_type}")
@@ -109,9 +115,16 @@ def read_annotation(path, genes):
                 all_ids.add(transcript_id)
             if gene_id not in genes or fields[2] != "exon":
                 continue
-            transcript = transcripts.setdefault(transcript_id, dict(
-                gene=gene_id, chrom=fields[0].removeprefix("chr"), strand=fields[6],
-                exons=[], version=attributes.get("transcript_version", "")))
+            transcript = transcripts.setdefault(
+                transcript_id,
+                dict(
+                    gene=gene_id,
+                    chrom=fields[0].removeprefix("chr"),
+                    strand=fields[6],
+                    exons=[],
+                    version=attributes.get("transcript_version", ""),
+                ),
+            )
             transcript["exons"].append((int(fields[3]) - 1, int(fields[4])))
     return transcripts, all_ids
 
@@ -126,26 +139,41 @@ def match_events(events, expression, transcripts):
         matched = []
         for transcript_id in by_gene[event["GeneID"]]:
             transcript = transcripts[transcript_id]
-            if (transcript["chrom"] != event["chr"].removeprefix("chr")
-                    or transcript["strand"] != event["strand"]):
+            if (
+                transcript["chrom"] != event["chr"].removeprefix("chr")
+                or transcript["strand"] != event["strand"]
+            ):
                 continue
             for form in forms(event, transcript["exons"]):
                 result = expression.get(transcript_id, {})
-                plotted = (math.isfinite(number(result.get("log2FoldChange")))
-                           and math.isfinite(number(result.get("pvalue"))))
+                plotted = math.isfinite(number(result.get("log2FoldChange"))) and math.isfinite(
+                    number(result.get("pvalue"))
+                )
                 row = dict(
-                    EventKey=event_key, EventType=event["EventType"], EventID=event["ID"],
-                    GeneID=event["GeneID"], GeneSymbol=event["geneSymbol"],
-                    Chromosome=event["chr"], Strand=event["strand"],
-                    TranscriptID=transcript_id, TranscriptVersion=transcript["version"],
-                    Form=form, DeltaPSI=number(event["IncLevelDifference"]),
-                    DAS_FDR=number(event["FDR"]), PSI_KC=event["IncLevel1"],
+                    EventKey=event_key,
+                    EventType=event["EventType"],
+                    EventID=event["ID"],
+                    GeneID=event["GeneID"],
+                    GeneSymbol=event["geneSymbol"],
+                    Chromosome=event["chr"],
+                    Strand=event["strand"],
+                    TranscriptID=transcript_id,
+                    TranscriptVersion=transcript["version"],
+                    Form=form,
+                    DeltaPSI=number(event["IncLevelDifference"]),
+                    DAS_FDR=number(event["FDR"]),
+                    PSI_KC=event["IncLevel1"],
                     PSI_Control=event["IncLevel2"],
                     log2FoldChange=result.get("log2FoldChange", ""),
-                    padj=result.get("padj", ""), pvalue=result.get("pvalue", ""),
+                    padj=result.get("padj", ""),
+                    pvalue=result.get("pvalue", ""),
                     baseMean=result.get("baseMean", ""),
-                    DE_isoform=str(result.get("DE_isoform", "FALSE")).upper(), Plotted=plotted,
-                    ExonChain_0based=";".join(f"{start}-{end}" for start, end in sorted(transcript["exons"])))
+                    DE_isoform=str(result.get("DE_isoform", "FALSE")).upper(),
+                    Plotted=plotted,
+                    ExonChain_0based=";".join(
+                        f"{start}-{end}" for start, end in sorted(transcript["exons"])
+                    ),
+                )
                 matched.append(row)
         if any(row["Plotted"] for row in matched):
             status = "mapped_tested"
@@ -153,21 +181,31 @@ def match_events(events, expression, transcripts):
             status = "mapped_no_tested_isoform"
         else:
             status = "no_compatible_annotated_transcript"
-        audit.append(dict(
-            EventKey=event_key, GeneID=event["GeneID"], GeneSymbol=event["geneSymbol"],
-            EventType=event["EventType"], DeltaPSI=event["IncLevelDifference"],
-            Inclusion_annotated=sum(row["Form"] == "Inclusion" for row in matched),
-            Skipping_annotated=sum(row["Form"] == "Skipping" for row in matched),
-            Inclusion_tested=sum(row["Form"] == "Inclusion" and row["Plotted"] for row in matched),
-            Skipping_tested=sum(row["Form"] == "Skipping" and row["Plotted"] for row in matched),
-            Status=status))
+        audit.append(
+            dict(
+                EventKey=event_key,
+                GeneID=event["GeneID"],
+                GeneSymbol=event["geneSymbol"],
+                EventType=event["EventType"],
+                DeltaPSI=event["IncLevelDifference"],
+                Inclusion_annotated=sum(row["Form"] == "Inclusion" for row in matched),
+                Skipping_annotated=sum(row["Form"] == "Skipping" for row in matched),
+                Inclusion_tested=sum(
+                    row["Form"] == "Inclusion" and row["Plotted"] for row in matched
+                ),
+                Skipping_tested=sum(
+                    row["Form"] == "Skipping" and row["Plotted"] for row in matched
+                ),
+                Status=status,
+            )
+        )
         pairs.extend(matched)
     return pairs, audit
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--work-dir", type=Path, default=Path.cwd())
+    add_work_dir_argument(parser)
     args = parser.parse_args()
     output = args.work_dir / "results/stroma/manuscript"
     gtf = args.work_dir / "data/reference" / GTF_NAME
@@ -187,15 +225,21 @@ def main():
     write_table(output / "event_mapping_audit.tsv", audit)
     write_table(output / "isoform_scatter_displayed_pairs.tsv", plotted)
     summary = dict(
-        source_events=len(events), source_genes=len(genes), gtf_transcripts=len(all_ids),
-        tested_isoforms=len(expression), tested_isoforms_in_gtf=len(set(expression) & all_ids),
-        mapping_pairs=len(pairs), plotted_pairs=len(plotted),
+        source_events=len(events),
+        source_genes=len(genes),
+        gtf_transcripts=len(all_ids),
+        tested_isoforms=len(expression),
+        tested_isoforms_in_gtf=len(set(expression) & all_ids),
+        mapping_pairs=len(pairs),
+        plotted_pairs=len(plotted),
         plotted_events=len({row["EventKey"] for row in plotted}),
         plotted_genes=len({row["GeneID"] for row in plotted}),
         mapped_DE_pairs=sum(row["DE_isoform"] == "TRUE" for row in plotted),
         mapped_DE_genes=len({row["GeneID"] for row in plotted if row["DE_isoform"] == "TRUE"}),
         audit_status=dict(Counter(row["Status"] for row in audit)),
-        form_counts=dict(Counter(row["Form"] for row in plotted)), reference_sha256=reference_hash)
+        form_counts=dict(Counter(row["Form"] for row in plotted)),
+        reference_sha256=reference_hash,
+    )
     (output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
 

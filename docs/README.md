@@ -26,3 +26,5 @@
 | DESeq2, RBP expression, NEASE and additional PCA workflows | [Additional analyses](additional_analyses.md) |
 
 Commands that use `--tables-only` export numerical results without figure files. Native tools and older modules have their own interfaces; consult the relevant guide before running them. The repository's scope is RNA-seq and alternative-splicing analysis; experimental RT-PCR statistics and manual figure assembly are separate.
+
+See [code organization and portable paths](code_organization.md) for the shared work-directory interface and helper modules.

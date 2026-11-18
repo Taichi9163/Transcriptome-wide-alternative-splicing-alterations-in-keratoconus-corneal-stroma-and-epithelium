@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from utils_paths import add_work_dir_argument
+
 from setup_prepare_inputs import GTF_NAME, prepare
 
 SCRIPTS = Path(__file__).resolve().parent
@@ -14,8 +16,10 @@ SCRIPTS = Path(__file__).resolve().parent
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--work-dir", type=Path, default=Path.cwd())
-    parser.add_argument("--tables-only", action="store_true", help="Build plot layers without generating images")
+    add_work_dir_argument(parser)
+    parser.add_argument(
+        "--tables-only", action="store_true", help="Build plot layers without generating images"
+    )
     args = parser.parse_args()
     work = args.work_dir.resolve()
     work.mkdir(parents=True, exist_ok=True)
@@ -30,7 +34,12 @@ def main():
     steps = [
         [rscript, "--vanilla", str(SCRIPTS / "setup_check_r_packages.R")],
         [rscript, "--vanilla", str(SCRIPTS / "setup_prepare_manuscript_data.R")],
-        [sys.executable, str(SCRIPTS / "figure_03d_event_transcript_mapping.py"), "--work-dir", str(work)],
+        [
+            sys.executable,
+            str(SCRIPTS / "figure_03d_event_transcript_mapping.py"),
+            "--work-dir",
+            str(work),
+        ],
     ]
     panels = (
         "figure_01bc_psi_pca_heatmap",
@@ -41,10 +50,16 @@ def main():
         "figure_03d_isoform_expression_vs_delta_psi",
     )
     for name in panels:
-        steps.append([rscript, "--vanilla", str(SCRIPTS / f"{name}.R")]
-                     + (["--tables-only"] if args.tables_only else []))
+        steps.append(
+            [rscript, "--vanilla", str(SCRIPTS / f"{name}.R")]
+            + (["--tables-only"] if args.tables_only else [])
+        )
     for command in steps:
-        print("Running:", Path(command[2] if command[1] == "--vanilla" else command[1]).name, flush=True)
+        print(
+            "Running:",
+            Path(command[2] if command[1] == "--vanilla" else command[1]).name,
+            flush=True,
+        )
         subprocess.run(command, cwd=work, env=environment, check=True)
     print(f"Complete: {work / 'results/stroma'}")
 

@@ -1,9 +1,12 @@
 #!/usr/bin/env Rscript
 # Figure 3C: structural event-matched DE genes nested within the gene-level intersection.
+#
+# Paths: --work-dir DIR > KC_WORK_DIR > current directory.
+
 suppressPackageStartupMessages({
-    library(ggplot2)
-    library(ggforce)
-    library(ragg)
+  library(ggplot2)
+  library(ggforce)
+  library(ragg)
 })
 
 args0 <- grep("^--file=", commandArgs(FALSE), value = TRUE)
@@ -31,10 +34,12 @@ de <- m$GeneID[m$DE_isoform]
 shared <- intersect(das, de)
 
 stopifnot(length(das) == 807, length(de) == 410, length(shared) == 55, length(matched) == 29, all(matched %in%
-    shared), nrow(d) == 4047, sum(d$DE_isoform) == 42, !anyDuplicated(paste(d$EventKey, d$TranscriptID)))
+  shared), nrow(d) == 4047, sum(d$DE_isoform) == 42, !anyDuplicated(paste(d$EventKey, d$TranscriptID)))
 
-counts <- c(DAS_only = length(setdiff(das, de)), DE_gene_only = length(setdiff(de, das)), Shared_event_unconfirmed = length(setdiff(shared,
-    matched)), Event_matched = length(matched))
+counts <- c(DAS_only = length(setdiff(das, de)), DE_gene_only = length(setdiff(de, das)), Shared_event_unconfirmed = length(setdiff(
+  shared,
+  matched
+)), Event_matched = length(matched))
 
 stopifnot(identical(unname(counts), c(752L, 355L, 26L, 29L)))
 
@@ -54,13 +59,13 @@ top <- head(top, 10)
 
 stopifnot(nrow(top) == 10, all(top$GeneID %in% matched))
 
-write.table(top, file.path(out, "event_matched_top10_by_abs_STAT.tsv"), sep = "\t", quote = FALSE,
-    row.names = FALSE)
+write.table(top, file.path(out, "event_matched_top10_by_abs_STAT.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
 
 m$EventMatchedDE <- m$GeneID %in% matched
 
 m$Category <- ifelse(m$EventMatchedDE, "Event-matched overlap", ifelse(m$DAS & m$DE_isoform, "Gene-level overlap; event correspondence unconfirmed",
-    ifelse(m$DAS, "DAS only", "DE isoform gene only")))
+  ifelse(m$DAS, "DAS only", "DE isoform gene only")
+))
 
 write.table(m, file.path(out, "Figure3C_gene_membership.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -78,31 +83,77 @@ inner <- data.frame(x0 = 0, y0 = -0.22, r = 0.3)
 
 theta <- seq(0, 2 * pi, length.out = 1001)
 
-stopifnot(all((inner$x0 + inner$r * cos(theta) + 0.65)^2 + (inner$y0 + inner$r * sin(theta))^2 <
-    1.05^2), all((inner$x0 + inner$r * cos(theta) - 0.65)^2 + (inner$y0 + inner$r * sin(theta))^2 <
-    1.05^2))
+stopifnot(
+  all((inner$x0 + inner$r * cos(theta) + 0.65)^2 + (inner$y0 + inner$r * sin(theta))^2 < 1.05^2),
+  all((inner$x0 + inner$r * cos(theta) - 0.65)^2 + (inner$y0 + inner$r * sin(theta))^2 < 1.05^2)
+)
 
-pC <- ggplot() + geom_circle(data = circles, aes(x0 = x0, y0 = y0, r = r, fill = set, color = set),
-    alpha = 0.2, linewidth = 0.5, show.legend = FALSE) + geom_polygon(data = lens, aes(x, y), fill = "#E5E5E5",
-    color = NA) + geom_circle(data = inner, aes(x0 = x0, y0 = y0, r = r), fill = "#00C878", color = "#008E55",
-    alpha = 0.65, linewidth = 0.5) + annotate("text", x = c(-1.08, 1.08, 0, 0), y = c(0, 0, 0.48,
-    -0.22), label = as.character(counts), family = FONT, size = 5) + annotate("text", x = -0.93,
-    y = 1.25, label = "DAS genes", family = FONT, size = 4.8) + annotate("text", x = 0.93, y = 1.25,
-    label = "Genes with\nDE isoforms", family = FONT, size = 4.8, lineheight = 1) + annotate("point",
-    x = -1.19, y = 1.74, color = "#00C878", size = 3.8) + annotate("text", x = -1.03, y = 1.74,
-    label = "Event-matched DE isoform genes", hjust = 0, family = FONT, size = 4.1) + annotate("point",
-    x = -1.19, y = 1.48, color = "#BDBDBD", size = 3.8) + annotate("text", x = -1.03, y = 1.48,
-    label = "Other gene-level overlap", hjust = 0, family = FONT, size = 4.1) + annotate("point",
-    x = 0, y = -0.47, color = "#111111", size = 1.8) + annotate("segment", x = 0, xend = 0, y = -0.47,
-    yend = -1.16, color = "#444444", linewidth = 0.4) + annotate("rect", xmin = -1.1, xmax = 1.1,
-    ymin = -2.08, ymax = -1.16, fill = "white", color = "#555555", linewidth = 0.32) + annotate("text",
+pC <- ggplot() +
+  geom_circle(
+    data = circles, aes(x0 = x0, y0 = y0, r = r, fill = set, color = set), alpha = 0.2,
+    linewidth = 0.5, show.legend = FALSE
+  ) +
+  geom_polygon(data = lens, aes(x, y), fill = "#E5E5E5", color = NA) +
+  geom_circle(
+    data = inner, aes(x0 = x0, y0 = y0, r = r), fill = "#00C878", color = "#008E55", alpha = 0.65,
+    linewidth = 0.5
+  ) +
+  annotate("text",
+    x = c(-1.08, 1.08, 0, 0), y = c(0, 0, 0.48, -0.22), label = as.character(counts),
+    family = FONT, size = 5
+  ) +
+  annotate("text",
+    x = -0.93, y = 1.25, label = "DAS genes", family = FONT,
+    size = 4.8
+  ) +
+  annotate("text",
+    x = 0.93, y = 1.25, label = "Genes with\nDE isoforms", family = FONT,
+    size = 4.8, lineheight = 1
+  ) +
+  annotate("point", x = -1.19, y = 1.74, color = "#00C878", size = 3.8) +
+  annotate("text",
+    x = -1.03, y = 1.74, label = "Event-matched DE isoform genes", hjust = 0, family = FONT,
+    size = 4.1
+  ) +
+  annotate("point", x = -1.19, y = 1.48, color = "#BDBDBD", size = 3.8) +
+  annotate("text",
+    x = -1.03, y = 1.48, label = "Other gene-level overlap", hjust = 0, family = FONT, size = 4.1
+  ) +
+  annotate("point", x = 0, y = -0.47, color = "#111111", size = 1.8) +
+  annotate("segment",
+    x = 0, xend = 0,
+    y = -0.47, yend = -1.16, color = "#444444", linewidth = 0.4
+  ) +
+  annotate("rect",
+    xmin = -1.1, xmax = 1.1,
+    ymin = -2.08, ymax = -1.16, fill = "white", color = "#555555", linewidth = 0.32
+  ) +
+  annotate("text",
     x = -0.55, y = -1.62, label = paste(labels[1:5], collapse = "\n"), family = FONT, fontface = "italic",
-    size = 3.5, lineheight = 1) + annotate("text", x = 0.55, y = -1.62, label = paste(labels[6:10],
-    collapse = "\n"), family = FONT, fontface = "italic", size = 3.5, lineheight = 1) + annotate("text",
-    x = -1.88, y = 1.82, label = "C", hjust = 0, family = FONT, size = 7, fontface = "bold") + scale_fill_manual(values = c(DAS = "#FFD21A",
-    DE = "#1565FF")) + scale_color_manual(values = c(DAS = "#FFD21A", DE = "#1565FF")) + coord_fixed(xlim = c(-1.92,
-    1.92), ylim = c(-2.18, 1.96), clip = "off") + theme_void(base_family = FONT) + theme(plot.background = element_rect(fill = "white",
-    color = NA), plot.margin = margin(5, 5, 5, 5))
+    size = 3.5, lineheight = 1
+  ) +
+  annotate("text",
+    x = 0.55, y = -1.62, label = paste(labels[6:10], collapse = "\n"),
+    family = FONT, fontface = "italic", size = 3.5, lineheight = 1
+  ) +
+  annotate("text",
+    x = -1.88, y = 1.82,
+    label = "C", hjust = 0, family = FONT, size = 7, fontface = "bold"
+  ) +
+  scale_fill_manual(values = c(
+    DAS = "#FFD21A",
+    DE = "#1565FF"
+  )) +
+  scale_color_manual(values = c(DAS = "#FFD21A", DE = "#1565FF")) +
+  coord_fixed(xlim = c(
+    -1.92,
+    1.92
+  ), ylim = c(-2.18, 1.96), clip = "off") +
+  theme_void(base_family = FONT) +
+  theme(plot.background = element_rect(
+    fill = "white",
+    color = NA
+  ), plot.margin = margin(5, 5, 5, 5))
 
 save_panel(pC, file.path(out, "Figure3C"), 6.2, 6.65)
 

@@ -1,12 +1,20 @@
-# Candidate RBP expression, using gene identifiers from Ensembl annotation.
-args <- commandArgs(trailingOnly = TRUE)
+#!/usr/bin/env Rscript
+# Candidate RBP expression, using gene identifiers from Ensembl annotation.  Paths: --work-dir DIR,
+# then KC_WORK_DIR, then the current directory.
+#
+# Paths: --work-dir DIR > KC_WORK_DIR > current directory.
+
+script_file <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1])
+source(file.path(dirname(normalizePath(script_file)), "utils_paths.R"))
+
+args <- script_arguments()
 if (length(args) != 2L || !args[1] %in% c("stroma", "epithelium")) {
   stop("Usage: Rscript scripts/supp_figure_03ab_rbp_expression.R stroma|epithelium gene_symbols.tsv")
 }
-root <- file.path("results", args[1])
-map <- unique(read.delim(args[2])[c("gene_id", "gene_symbol")])
-motif <- read.csv("results/motif_tests/all_motif_region_results.csv")
-selected <- subset(motif, tissue == args[1] & original_BH < 5e-5)
+root <- work_path("results", args[1])
+map <- unique(read.delim(resolve_path(args[2]))[c("gene_id", "gene_symbol")])
+motif <- read.csv(work_path("results/motif_tests/all_motif_region_results.csv"))
+selected <- subset(motif, tissue == args[1] & original_BH < 5e-05)
 symbols <- sort(unique(selected$rbp_label))
 tpm <- read.delim(file.path(root, "gene/tpm.tsv"), check.names = FALSE)
 de <- read.delim(file.path(root, "gene/wald.tsv"))

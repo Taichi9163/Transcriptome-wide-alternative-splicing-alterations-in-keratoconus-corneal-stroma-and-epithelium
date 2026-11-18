@@ -1,5 +1,8 @@
 #!/usr/bin/env Rscript
 # PCA and Ward.D2 clustering of significant, PSI-complete events in one cohort.
+#
+# Paths: --work-dir DIR > KC_WORK_DIR > current directory.
+
 suppressPackageStartupMessages({
   library(ggplot2)
   library(gplots)
@@ -7,7 +10,7 @@ suppressPackageStartupMessages({
 })
 script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1])
 source(file.path(dirname(normalizePath(script)), "utils_plotting.R"))
-args <- setdiff(commandArgs(trailingOnly = TRUE), "--tables-only")
+args <- setdiff(script_arguments(), "--tables-only")
 if (length(args) != 1 || !args %in% c("stroma", "epithelium")) {
   stop("Usage: Rscript scripts/supp_figure_07bc_psi_pca_heatmap.R stroma|epithelium [--tables-only]")
 }
@@ -22,8 +25,9 @@ matrices <- lapply(event_types, function(event_type) {
   stopifnot(length(unique(lengths(cases))) == 1, length(unique(lengths(controls))) == 1)
   n_cases <- lengths(cases)[1]
   n_controls <- lengths(controls)[1]
-  psi <- cbind(matrix(as.numeric(unlist(cases)), ncol = n_cases, byrow = TRUE),
-               matrix(as.numeric(unlist(controls)), ncol = n_controls, byrow = TRUE))
+  psi <- cbind(matrix(as.numeric(unlist(cases)), ncol = n_cases, byrow = TRUE), matrix(as.numeric(unlist(controls)),
+    ncol = n_controls, byrow = TRUE
+  ))
   rownames(psi) <- paste(event_type, events$ID, sep = ":")
   colnames(psi) <- c(paste0("Keratoconus", seq_len(n_cases)), paste0("Control", seq_len(n_controls)))
   psi
@@ -37,8 +41,7 @@ sample_group <- ifelse(grepl("^Control", colnames(x)), "Control", "Keratoconus")
 row_tree <- as.dendrogram(hclust(dist(x), method = "ward.D2"))
 column_tree <- as.dendrogram(hclust(dist(t(x)), method = "ward.D2"))
 # Rotate only the top branch to put the group with more controls on the left.
-if (sum(grepl("^Control", labels(column_tree[[2]]))) >
-    sum(grepl("^Control", labels(column_tree[[1]])))) {
+if (sum(grepl("^Control", labels(column_tree[[2]]))) > sum(grepl("^Control", labels(column_tree[[1]])))) {
   tree_attributes <- attributes(column_tree)
   column_tree <- column_tree[c(2, 1)]
   attributes(column_tree) <- tree_attributes
@@ -51,20 +54,31 @@ write_tsv(data.frame(PC = seq_along(variance), Variance_percent = variance), fil
 write_tsv(data.frame(Sample = labels(column_tree)), file.path(output, "das_heatmap_sample_order.tsv"))
 plot <- ggplot(scores, aes(PC1, PC2, color = Group, shape = Group)) +
   geom_point(size = 5) +
-  scale_color_manual(values = c(Control = "black", Keratoconus = case_color)) +
+  scale_color_manual(values = c(
+    Control = "black",
+    Keratoconus = case_color
+  )) +
   scale_shape_manual(values = c(Control = point_shape, Keratoconus = point_shape)) +
   labs(x = sprintf("PC1 (%.3g%%)", variance[1]), y = sprintf("PC2 (%.3g%%)", variance[2])) +
-  xlim(40, -40) + ylim(-40, 40) + theme_linedraw(base_size = 15) +
-  theme(aspect.ratio = 1, panel.border = element_rect(fill = NA, linewidth = 1),
-        panel.grid = element_line(linewidth = 1, colour = "black", linetype = "dashed"))
+  xlim(
+    40,
+    -40
+  ) +
+  ylim(-40, 40) +
+  theme_linedraw(base_size = 15) +
+  theme(aspect.ratio = 1, panel.border = element_rect(
+    fill = NA,
+    linewidth = 1
+  ), panel.grid = element_line(linewidth = 1, colour = "black", linetype = "dashed"))
 invisible(ggplot_build(plot))
 if (!TABLES_ONLY) {
   pdf_device(file.path(output, "das_heatmap.pdf"), 10, 8)
-  heatmap.2(x, col = rev(colorRampPalette(brewer.pal(10, "RdBu"))(256)),
-    scale = "row", dendrogram = "both", key = TRUE, keysize = 1.5,
-    density.info = "none", trace = "none", Rowv = row_tree, Colv = column_tree,
-    ColSideColors = ifelse(sample_group == "Control", "black", case_color),
-    cexRow = 0.4, cexCol = 1, margins = c(7, 6), main = "")
+  heatmap.2(x,
+    col = rev(colorRampPalette(brewer.pal(10, "RdBu"))(256)), scale = "row", dendrogram = "both",
+    key = TRUE, keysize = 1.5, density.info = "none", trace = "none", Rowv = row_tree, Colv = column_tree,
+    ColSideColors = ifelse(sample_group == "Control", "black", case_color), cexRow = 0.4, cexCol = 1,
+    margins = c(7, 6), main = ""
+  )
   dev.off()
   ggsave(file.path(output, "das_pca.pdf"), plot, width = 6, height = 6, device = pdf_device)
 }

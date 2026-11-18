@@ -130,6 +130,21 @@ All 49 analysis, workflow and helper scripts now follow the [shared naming conve
 
 All 41 R files and 15 Python files, including tests, passed syntax checks. The 25 Python tests and both focused R test scripts passed. The renamed `workflow_run_manuscript.py --tables-only` command completed from a separate working directory with graphics devices disabled, exercising all nine steps for Figure 1B–D and Figure 3A–D. It retained 4,047 Figure 3D pairs from 995 events and 765 genes, including 42 DE pairs. All checked local documentation links and anchors resolved. No figure files were generated, and no Word or PowerPoint file was modified.
 
+## Code readability and portable-path refactor
+
+All 49 existing scripts were reviewed and organized, with three shared helpers added for R/Python paths and PSI parsing. Every analysis entry point accepts `--work-dir`; the same `KC_WORK_DIR` fallback is available in both languages. The [code organization guide](code_organization.md) defines relative-path resolution and the helper responsibilities. No personal machine path is required in scripts or configuration files.
+
+The preceding commit (`4065e23`) was retained as the comparison baseline. Its 22 numerical commands ran in a separate work directory. The revised commands ran from outside their work directory with explicit `--work-dir` arguments; the motif-heatmap table export was checked as an additional command. Graphics devices were disabled throughout these R checks.
+
+- All 158 unchanged result files matched byte for byte. Three provenance tables differed only in the recorded work-directory paths; their other fields and input checksums matched. No preceding result file was missing.
+- The shared PSI parser matched each of the three original implementations across 9,000 tested sample vectors. No full optional PCA rerun or large PCA cache regeneration was performed.
+- All four newly exported motif adjusted-P matrices matched the original selection function, including motif order and region names, with numeric tolerance 1e-12.
+- Both Python Reactome top-ten selections matched the original numerical statements exactly. Its new `--tables-only` command ran with matplotlib imports blocked and wrote no images. NEASE event-annotation helper results matched the original helpers on synthetic inclusive-boundary and excluded-event cases; the full native enrichment calculation was not rerun.
+- All 29 Python tests and three R test scripts passed. These include work-directory precedence, paths containing spaces, absolute and home-relative paths, malformed arguments, PSI validation and all existing analysis/QC regressions. Every Python entry point supports `--help` without optional analysis packages; importing the modules created no outputs or analysis state.
+- All 44 R files and 17 Python files, including tests and helpers, passed parsing. Formatting changes were checked against parsed expressions. All bundled inputs and configuration files remained unchanged.
+
+This work generated numerical tables only. No figure image, Word file or PowerPoint file was created or modified. Native read processing, DESeq2 refitting, full NEASE enrichment and the optional large PCA workflows retain the previously documented validation limits.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.

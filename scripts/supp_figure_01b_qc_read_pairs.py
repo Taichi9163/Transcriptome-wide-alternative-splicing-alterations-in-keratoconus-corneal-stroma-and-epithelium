@@ -16,6 +16,8 @@ import json
 import sys
 from pathlib import Path
 
+from utils_paths import add_work_dir_argument, resolve_path
+
 from supp_table_02_star_junction_qc import DEFAULT_SAMPLES, read_samples, sample_paths
 
 
@@ -80,22 +82,32 @@ def read_star_log(path: Path):
 def make_plot(rows, outdir: Path, dpi: int):
     try:
         import matplotlib
+
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
         import numpy as np
     except ImportError as exc:
-        raise RuntimeError("Plotting requires matplotlib and numpy: pip install matplotlib numpy") from exc
+        raise RuntimeError(
+            "Plotting requires matplotlib and numpy: pip install matplotlib numpy"
+        ) from exc
 
     x = np.arange(len(rows))
     width = 0.23
     fig, ax = plt.subplots(figsize=(11.5, 5.5))
     for i, (key, caption, color) in enumerate(
-        (("Raw read pairs", "Raw Reads", "#080808"),
-         ("Filtered read pairs", "Filtered Reads", "#818181"),
-         ("Mapped read pairs", "Mapped Reads", "#bcbcbc"))
+        (
+            ("Raw read pairs", "Raw Reads", "#080808"),
+            ("Filtered read pairs", "Filtered Reads", "#818181"),
+            ("Mapped read pairs", "Mapped Reads", "#bcbcbc"),
+        )
     ):
-        ax.bar(x + (i - 1) * width, [r[key] / 1_000_000 for r in rows],
-               width=width, label=caption, color=color)
+        ax.bar(
+            x + (i - 1) * width,
+            [r[key] / 1_000_000 for r in rows],
+            width=width,
+            label=caption,
+            color=color,
+        )
     ax.set_ylabel("Number of read pairs (million)", fontsize=12)
     ax.set_xticks(x)
     ax.set_xticklabels([r["Sample"] for r in rows], rotation=43, ha="right")
@@ -135,15 +147,17 @@ def collect_rows(fastp_dir, star_dir, samples, layout="flat", file_labels="study
                 f"{sample['sample_id']}: STAR input pairs ({star_input:,}) differ from "
                 f"fastp filtered pairs ({filtered:,}); check the input reports and sample mapping."
             )
-        rows.append({
-            "Sample": sample["sample_name"],
-            "Raw read pairs": raw,
-            "Filtered read pairs": filtered,
-            "Mapped read pairs": unique + multiple,
-            "Uniquely mapped read pairs": unique,
-            "Multimapped read pairs": multiple,
-            "STAR input read pairs": star_input,
-        })
+        rows.append(
+            {
+                "Sample": sample["sample_name"],
+                "Raw read pairs": raw,
+                "Filtered read pairs": filtered,
+                "Mapped read pairs": unique + multiple,
+                "Uniquely mapped read pairs": unique,
+                "Multimapped read pairs": multiple,
+                "STAR input read pairs": star_input,
+            }
+        )
     return rows
 
 
@@ -163,36 +177,53 @@ def write_table(path, rows):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--fastp-dir", type=Path, required=True)
     parser.add_argument("--star-dir", type=Path, required=True)
-    parser.add_argument("--samples", type=Path, default=DEFAULT_SAMPLES, help="QC metadata TSV in output order")
+    parser.add_argument(
+        "--samples", type=Path, default=DEFAULT_SAMPLES, help="QC metadata TSV in output order"
+    )
     parser.add_argument("--layout", choices=("flat", "per-sample"), default="flat")
-    parser.add_argument("--file-labels", choices=("study", "source"), default="study",
-                        help="Study labels (KC1/Control1) or original prefixes (KC_3/N_1)")
+    parser.add_argument(
+        "--file-labels",
+        choices=("study", "source"),
+        default="study",
+        help="Study labels (KC1/Control1) or original prefixes (KC_3/N_1)",
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("results/qc/suppfigure1"))
-    parser.add_argument("--tables-only", action="store_true", help="Write numeric TSV without generating images")
+    parser.add_argument(
+        "--tables-only", action="store_true", help="Write numeric TSV without generating images"
+    )
     parser.add_argument("--dpi", type=int, default=300)
+    add_work_dir_argument(parser)
     args = parser.parse_args()
     if args.dpi < 50:
         parser.error("--dpi must be at least 50")
-    fastp_dir, star_dir = args.fastp_dir.expanduser(), args.star_dir.expanduser()
+    fastp_dir, star_dir = resolve_path(args.fastp_dir, args.work_dir), resolve_path(
+        args.star_dir, args.work_dir
+    )
     if not fastp_dir.is_dir() or not star_dir.is_dir():
         parser.error("Both --fastp-dir and --star-dir must exist")
-    samples = read_samples(args.samples.expanduser())
+    samples = read_samples(resolve_path(args.samples, args.work_dir))
     rows = collect_rows(fastp_dir, star_dir, samples, args.layout, args.file_labels)
-    outdir = args.output_dir.expanduser()
+    outdir = resolve_path(args.output_dir, args.work_dir)
     if not args.tables_only:
         for extension in ("png", "pdf"):
             path = outdir / f"Supplementary_Figure_1B_ReadPairs.{extension}"
             if path.exists():
-                raise FileExistsError(f"Existing figure preserved: {path}. Choose a new --output-dir.")
+                raise FileExistsError(
+                    f"Existing figure preserved: {path}. Choose a new --output-dir."
+                )
     table = outdir / "Keratoconus_Raw_Filtered_Mapped_Reads.tsv"
     write_table(table, rows)
     print("Sample\tRaw (M pairs)\tFiltered (M pairs)\tMapped (M pairs)")
     for row in rows:
-        print(f"{row['Sample']}\t{row['Raw read pairs']/1e6:.3f}\t"
-              f"{row['Filtered read pairs']/1e6:.3f}\t{row['Mapped read pairs']/1e6:.3f}")
+        print(
+            f"{row['Sample']}\t{row['Raw read pairs']/1e6:.3f}\t"
+            f"{row['Filtered read pairs']/1e6:.3f}\t{row['Mapped read pairs']/1e6:.3f}"
+        )
     print(f"Saved: {table}")
     if not args.tables_only:
         png, pdf = make_plot(rows, outdir, args.dpi)

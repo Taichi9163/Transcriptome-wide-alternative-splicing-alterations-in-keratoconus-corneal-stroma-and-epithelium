@@ -56,7 +56,7 @@ The SE scatter retains measured zeroes. An event needs a coordinate match, a fin
 
 ### Gene and isoform expression
 
-Use tab-delimited sample sheets with columns `sample`, `group`, and `path`. Each row identifies one biological sample, its group (`Control` or `Keratoconus`), and an RSEM result file. Paths are relative to the current work directory or absolute. Use the study sample annotation to identify the nine primary stromal specimens. Group membership and the KC6 exclusion must follow the study labels. For example, a row for study sample KC1 can point to `data/stroma/rsem/KC1.genes.results` if that is how the quantification file was named.
+Use tab-delimited sample sheets with columns `sample`, `group`, and `path`. Each row identifies one biological sample, its group (`Control` or `Keratoconus`), and an RSEM result file. Paths are relative to the directory selected with `--work-dir` or `KC_WORK_DIR`, or absolute. Use the study sample annotation to identify the nine primary stromal specimens. Group membership and the KC6 exclusion must follow the study labels. For example, a row for study sample KC1 can point to `data/stroma/rsem/KC1.genes.results` if that is how the quantification file was named.
 
 ```sh
 Rscript --vanilla scripts/figure_03abcd_deseq2_analysis.R gene data/stroma/genes.tsv results/stroma/gene
@@ -91,7 +91,7 @@ python3.12 -m venv .venv
 .venv/bin/python scripts/analysis_nease.py epithelium
 ```
 
-After a new NEASE run, use the numbered R script with `--pathways results/<cohort>/nease/results/Reactome_Python.tsv` and `--tables-only` for numeric checks. The retained `analysis_reactome_top10.py` is an optional Python plotting implementation that generates figures when run.
+After a new NEASE run, use the numbered R script with `--pathways results/<cohort>/nease/results/Reactome_Python.tsv` and `--tables-only` for numeric checks. The retained `analysis_reactome_top10.py` is an optional Python implementation; use `--tables-only` to export its numerical table without figures.
 
 The primary run keeps all input SE events for mapping. Pass `--orf-filter` to run the additional ORF-filtered sensitivity analysis in a separate output directory.
 
@@ -99,7 +99,7 @@ The standalone Venn and junction-support panel commands are described in [event-
 
 ## Optional plots and PCA sensitivity
 
-These commands generate figure files; the all-event PCA also writes larger caches. The three sensitivity scripts depend on the preceding scripts in the order shown.
+The motif and PCA commands generate figure files by default; add `--tables-only` to suppress image export. The optional PCA scripts still write larger numerical caches. The three sensitivity scripts depend on the preceding scripts in the order shown.
 
 ```sh
 Rscript --vanilla scripts/supp_figure_07bc_psi_pca_heatmap.R epithelium --tables-only

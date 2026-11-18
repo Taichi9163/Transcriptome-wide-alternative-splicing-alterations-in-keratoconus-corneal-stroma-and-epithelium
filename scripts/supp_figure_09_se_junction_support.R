@@ -1,12 +1,21 @@
-# Read-only audit of source rMATS tables; writes new tables, never source data.
-# Correlations are descriptive comparisons of independent cohorts, not tests
-# of a disease-by-tissue interaction. No additional significance testing.
-out <- "results/cross_layer/support"
+#!/usr/bin/env Rscript
+# Read-only audit of source rMATS tables; writes new tables, never source data.  Correlations are
+# descriptive comparisons of independent cohorts, not tests of a disease-by-tissue interaction. No
+# additional significance testing.  Paths: --work-dir DIR, then KC_WORK_DIR, then the current
+# directory.
+#
+# Paths: --work-dir DIR > KC_WORK_DIR > current directory.
+
+script_file <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1])
+source(file.path(dirname(normalizePath(script_file)), "utils_paths.R"))
+
+out <- work_path("results/cross_layer/support")
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
-coords <- c("chr", "strand", "exonStart_0base", "exonEnd",
-            "upstreamES", "upstreamEE", "downstreamES", "downstreamEE")
-paths <- c(stroma = "data/stroma/rmats/SE.MATS.JC.txt",
-           epithelium = "data/epithelium/rmats/SE.MATS.JC.txt")
+coords <- c(
+  "chr", "strand", "exonStart_0base", "exonEnd", "upstreamES", "upstreamEE", "downstreamES",
+  "downstreamEE"
+)
+paths <- c(stroma = work_path("data/stroma/rmats/SE.MATS.JC.txt"), epithelium = work_path("data/epithelium/rmats/SE.MATS.JC.txt"))
 numbers <- function(x) suppressWarnings(as.numeric(strsplit(as.character(x), ",", fixed = TRUE)[[1]]))
 read_support <- function(path, tissue) {
   x <- read.delim(path, check.names = FALSE, stringsAsFactors = FALSE)
@@ -21,11 +30,13 @@ read_support <- function(path, tissue) {
     ijc <- lapply(x[[paste0("IJC_SAMPLE_", g)]], numbers)
     sjc <- lapply(x[[paste0("SJC_SAMPLE_", g)]], numbers)
     n <- lengths(psi)
-    expected <- if (tissue == "epithelium") 7L else if (g == 1) 5L else 4L
+    expected <- if (tissue == "epithelium")
+      7L else if (g == 1)
+      5L else 4L
     stopifnot(all(n == expected), all(lengths(ijc) == n), all(lengths(sjc) == n))
     nf <- vapply(psi, function(v) sum(is.finite(v)), integer(1))
-    n10 <- vapply(seq_along(psi), function(i) sum(is.finite(psi[[i]]) &
-      is.finite(ijc[[i]] + sjc[[i]]) & ijc[[i]] + sjc[[i]] >= 10), integer(1))
+    n10 <- vapply(seq_along(psi), function(i) sum(is.finite(psi[[i]]) & is.finite(ijc[[i]] + sjc[[i]]) &
+      ijc[[i]] + sjc[[i]] >= 10), integer(1))
     d[[paste0("group", g, "_n_PSI")]] <- nf
     d[[paste0("group", g, "_n_10_reads")]] <- n10
     d$estimable <- d$estimable & nf >= 1
@@ -55,18 +66,22 @@ rules <- c("paired_estimable", "half_PSI_both", "all_PSI_both", "half_10_reads_b
 for (population in c("all_paired_SE", "paired_SE_DAS_union")) {
   for (rule in rules) {
     keep <- paired$paired_estimable & paired[[rule]]
-    if (population == "paired_SE_DAS_union") keep <- keep & paired$DAS_union
+    if (population == "paired_SE_DAS_union")
+      keep <- keep & paired$DAS_union
     d <- paired[keep, ]
-    x <- d$delta_stroma; y <- d$delta_epithelium
+    x <- d$delta_stroma
+    y <- d$delta_epithelium
     nonzero <- x != 0 & y != 0
-    stats[[length(stats) + 1]] <- data.frame(population = population, support_rule = rule,
-      n_events = nrow(d), stroma_only_significant = sum(d$significant_stroma & !d$significant_epithelium),
-      epithelium_only_significant = sum(d$significant_epithelium & !d$significant_stroma),
-      both_significant = sum(d$both_significant), neither_significant = sum(!d$DAS_union),
-      same_direction_nonzero = sum(x * y > 0), opposite_direction = sum(x * y < 0),
-      measured_zero_in_either = sum(!nonzero),
-      same_direction_fraction_nonzero = mean(sign(x[nonzero]) == sign(y[nonzero])),
-      pearson_r = cor(x, y), spearman_rho = cor(x, y, method = "spearman"))
+    stats[[length(stats) + 1]] <- data.frame(
+      population = population, support_rule = rule, n_events = nrow(d),
+      stroma_only_significant = sum(d$significant_stroma & !d$significant_epithelium), epithelium_only_significant = sum(d$significant_epithelium &
+        !d$significant_stroma), both_significant = sum(d$both_significant), neither_significant = sum(!d$DAS_union),
+      same_direction_nonzero = sum(x * y > 0), opposite_direction = sum(x * y < 0), measured_zero_in_either = sum(!nonzero),
+      same_direction_fraction_nonzero = mean(sign(x[nonzero]) == sign(y[nonzero])), pearson_r = cor(
+        x,
+        y
+      ), spearman_rho = cor(x, y, method = "spearman")
+    )
   }
 }
 stats <- do.call(rbind, stats)
@@ -77,8 +92,8 @@ write.csv(paired, file.path(out, "paired_SE_support_audit.csv"), row.names = FAL
 counts <- list()
 provenance <- paths
 for (event in c("SE", "RI", "A5SS", "A3SS", "MXE")) {
-  raw <- file.path("data/epithelium/rmats", paste0(event, ".MATS.JC.txt"))
-  saved <- file.path("results/epithelium/das", paste0(event, ".tsv"))
+  raw <- work_path("data/epithelium/rmats", paste0(event, ".MATS.JC.txt"))
+  saved <- work_path("results/epithelium/das", paste0(event, ".tsv"))
   x <- read.delim(raw, check.names = FALSE)
   old <- read.delim(saved, check.names = FALSE)
   group_ok <- function(v) vapply(lapply(v, numbers), function(z) any(is.finite(z)), logical(1))
@@ -87,9 +102,10 @@ for (event in c("SE", "RI", "A5SS", "A3SS", "MXE")) {
   keep <- fdr & abs(x$IncLevelDifference) > 0.1
   # Compare original rMATS IDs within each source event class, not across cohorts.
   stopifnot(setequal(as.character(x$ID[keep]), as.character(old$ID)))
-  counts[[event]] <- data.frame(event_type = event, total_raw_events = nrow(x),
-    estimable_events = sum(estimable), FDR_lt_005 = sum(fdr),
-    FDR_lt_005_abs_delta_gt_01 = sum(keep), saved_DAS_count = nrow(old), identical_ID_set = TRUE)
+  counts[[event]] <- data.frame(
+    event_type = event, total_raw_events = nrow(x), estimable_events = sum(estimable),
+    FDR_lt_005 = sum(fdr), FDR_lt_005_abs_delta_gt_01 = sum(keep), saved_DAS_count = nrow(old), identical_ID_set = TRUE
+  )
   provenance <- c(provenance, raw, saved)
 }
 counts <- do.call(rbind, counts)
@@ -97,15 +113,16 @@ stopifnot(sum(counts$FDR_lt_005_abs_delta_gt_01) == 805)
 write.csv(counts, file.path(out, "epithelium_805_reproduction.csv"), row.names = FALSE)
 
 # Independent fresh-table reconciliation with the revised Figure 4B export.
-plot <- read.csv(file.path("results/cross_layer/results", "SE_DAS_union_delta_inc_level_scatter_data.csv"))
+plot <- read.csv(work_path("results/cross_layer/results", "SE_DAS_union_delta_inc_level_scatter_data.csv"))
 expected <- paired[paired$paired_estimable & paired$DAS_union, ]
 stopifnot(setequal(plot$event_key, expected$event_key))
 idx <- match(plot$event_key, expected$event_key)
-stopifnot(all(plot$stroma_delta_inc_for_plot == expected$delta_stroma[idx]),
-          all(plot$epithelium_delta_inc_for_plot == expected$delta_epithelium[idx]))
+stopifnot(all(plot$stroma_delta_inc_for_plot == expected$delta_stroma[idx]), all(plot$epithelium_delta_inc_for_plot ==
+  expected$delta_epithelium[idx]))
 provenance <- unique(unname(provenance))
-write.csv(data.frame(path = provenance, md5 = unname(tools::md5sum(provenance))),
-          file.path(out, "input_file_checksums.csv"), row.names = FALSE)
+write.csv(data.frame(path = provenance, md5 = unname(tools::md5sum(provenance))), file.path(out, "input_file_checksums.csv"),
+  row.names = FALSE
+)
 capture.output(sessionInfo(), file = file.path(out, "audit_R_session.txt"))
 print(stats, row.names = FALSE)
 print(counts, row.names = FALSE)

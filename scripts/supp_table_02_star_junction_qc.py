@@ -21,11 +21,19 @@ import math
 import re
 from pathlib import Path
 
+from utils_paths import add_work_dir_argument, resolve_path
+
 REPOSITORY = Path(__file__).resolve().parents[1]
 DEFAULT_SAMPLES = REPOSITORY / "config/samples_stroma_qc.tsv"
 FIELDS = [
-    "Sample", "RIN", "Unique mapped read pairs", "Unique mapped (%)",
-    "Supported splice junctions", "Median junction support", "Q1", "Q3",
+    "Sample",
+    "RIN",
+    "Unique mapped read pairs",
+    "Unique mapped (%)",
+    "Supported splice junctions",
+    "Median junction support",
+    "Q1",
+    "Q3",
     "Median [Q1-Q3]",
 ]
 
@@ -102,7 +110,9 @@ def read_unique_junction_support(path):
             try:
                 support = int(fields[6])
             except ValueError as exc:
-                raise ValueError(f"Invalid unique junction count: {path}, line {line_number}") from exc
+                raise ValueError(
+                    f"Invalid unique junction count: {path}, line {line_number}"
+                ) from exc
             if support < 0:
                 raise ValueError(f"Negative unique junction count: {path}, line {line_number}")
             if support >= 1:
@@ -132,12 +142,19 @@ def generate_rows(star_dir, samples, layout="flat", file_labels="study"):
         unique_count, unique_percent = read_star_log(log_file)
         supports = read_unique_junction_support(sj_file)
         q1, median, q3 = [format_quantile(percentile_type7(supports, p)) for p in (0.25, 0.5, 0.75)]
-        rows.append({
-            "Sample": sample["sample_name"], "RIN": sample["rin"],
-            "Unique mapped read pairs": unique_count, "Unique mapped (%)": f"{unique_percent:.2f}",
-            "Supported splice junctions": len(supports), "Median junction support": median,
-            "Q1": q1, "Q3": q3, "Median [Q1-Q3]": f"{median} [{q1}-{q3}]",
-        })
+        rows.append(
+            {
+                "Sample": sample["sample_name"],
+                "RIN": sample["rin"],
+                "Unique mapped read pairs": unique_count,
+                "Unique mapped (%)": f"{unique_percent:.2f}",
+                "Supported splice junctions": len(supports),
+                "Median junction support": median,
+                "Q1": q1,
+                "Q3": q3,
+                "Median [Q1-Q3]": f"{median} [{q1}-{q3}]",
+            }
+        )
     return rows
 
 
@@ -159,24 +176,36 @@ def write_rows(output, rows):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--star-dir", type=Path, required=True, help="Directory containing existing STAR outputs")
-    parser.add_argument("--samples", type=Path, default=DEFAULT_SAMPLES, help="TSV sample metadata in output order")
+    parser.add_argument(
+        "--star-dir", type=Path, required=True, help="Directory containing existing STAR outputs"
+    )
+    parser.add_argument(
+        "--samples", type=Path, default=DEFAULT_SAMPLES, help="TSV sample metadata in output order"
+    )
     parser.add_argument("--layout", choices=("flat", "per-sample"), default="flat")
-    parser.add_argument("--file-labels", choices=("study", "source"), default="study",
-                        help="Study labels (KC1/Control1) or original prefixes (KC_3/N_1)")
-    parser.add_argument("--output", type=Path,
-                        default=Path("results/qc/Supplementary_Table2_STAR_junction_QC.tsv"))
+    parser.add_argument(
+        "--file-labels",
+        choices=("study", "source"),
+        default="study",
+        help="Study labels (KC1/Control1) or original prefixes (KC_3/N_1)",
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path("results/qc/Supplementary_Table2_STAR_junction_QC.tsv")
+    )
+    add_work_dir_argument(parser)
     args = parser.parse_args()
     try:
-        star_dir = args.star_dir.expanduser()
+        star_dir = resolve_path(args.star_dir, args.work_dir)
         if not star_dir.is_dir():
             raise ValueError(f"STAR directory does not exist: {star_dir}")
-        samples = read_samples(args.samples.expanduser())
+        samples = read_samples(resolve_path(args.samples, args.work_dir))
         rows = generate_rows(star_dir, samples, args.layout, args.file_labels)
-        write_rows(args.output.expanduser(), rows)
+        write_rows(resolve_path(args.output, args.work_dir), rows)
     except (OSError, ValueError) as exc:
         parser.exit(status=1, message=f"ERROR: {exc}\n")
-    print(f"Wrote STAR junction QC for {len(rows)} samples: {args.output.expanduser()}")
+    print(
+        f"Wrote STAR junction QC for {len(rows)} samples: {resolve_path(args.output, args.work_dir)}"
+    )
 
 
 if __name__ == "__main__":

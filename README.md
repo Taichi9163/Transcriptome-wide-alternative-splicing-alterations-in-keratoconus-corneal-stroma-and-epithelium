@@ -41,6 +41,8 @@ python3 scripts/workflow_run_manuscript.py --work-dir work --tables-only
 
 The reference download is approximately 64 MB. To use an existing GTF, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Inputs are checksum-verified; outputs are written beneath `work/results/`.
 
+All analysis entry points accept `--work-dir`, including the R scripts. Relative input/output paths are resolved beneath that directory; `KC_WORK_DIR` provides a shared default. See [code organization and portable paths](docs/code_organization.md) for examples such as `/home/user/keratoconus` and the shared helper functions.
+
 The **[reproduction guide](docs/reproduce.md)** gives commands for the other figures, workflows that do not require the GTF, optional figure export, and software setup for native analyses. Scripts are intended to reproduce these study inputs and include manuscript-specific checks.
 
 ## Find the code for a figure

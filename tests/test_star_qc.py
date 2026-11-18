@@ -1,4 +1,5 @@
 """Synthetic STAR fixtures for QC arithmetic, sample identity and output protection."""
+
 import csv
 import math
 import subprocess
@@ -10,29 +11,43 @@ from pathlib import Path
 REPOSITORY = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY / "scripts"))
 from supp_table_02_star_junction_qc import (
-    DEFAULT_SAMPLES, generate_rows, percentile_type7, read_samples,
-    read_star_log, read_unique_junction_support, sample_paths, write_rows,
+    DEFAULT_SAMPLES,
+    generate_rows,
+    percentile_type7,
+    read_samples,
+    read_star_log,
+    read_unique_junction_support,
+    sample_paths,
+    write_rows,
 )
 
 
 def write_fixture(directory, sample, index, layout="flat", file_labels="study"):
     log, sj = sample_paths(directory, sample, layout, file_labels)
     log.parent.mkdir(parents=True, exist_ok=True)
-    log.write_text(f"Uniquely mapped reads number | {1000 + index:,}\nUniquely mapped reads % | 50.25%\n")
+    log.write_text(
+        f"Uniquely mapped reads number | {1000 + index:,}\nUniquely mapped reads % | 50.25%\n"
+    )
     # Column 8 deliberately has large multimapper support, including at unique=0.
-    sj.write_text("\n".join(f"chr1\t{100 + i * 100}\t{150 + i * 100}\t1\t1\t0\t{v}\t999\t20"
-                            for i, v in enumerate([0, 10, 1, 9, 2])) + "\n\n")
+    sj.write_text(
+        "\n".join(
+            f"chr1\t{100 + i * 100}\t{150 + i * 100}\t1\t1\t0\t{v}\t999\t20"
+            for i, v in enumerate([0, 10, 1, 9, 2])
+        )
+        + "\n\n"
+    )
 
 
 class StarQCTests(unittest.TestCase):
     def test_type7_interpolation_and_singleton(self):
         values = [1, 2, 9, 10]
-        self.assertEqual([percentile_type7(values, p) for p in (0, .25, .5, .75, 1)],
-                         [1, 1.75, 5.5, 9.25, 10])
-        self.assertEqual(percentile_type7([7], .25), 7)
+        self.assertEqual(
+            [percentile_type7(values, p) for p in (0, 0.25, 0.5, 0.75, 1)], [1, 1.75, 5.5, 9.25, 10]
+        )
+        self.assertEqual(percentile_type7([7], 0.25), 7)
         with self.assertRaises(ValueError):
-            percentile_type7([], .5)
-        for p in (-.1, 1.1, math.nan):
+            percentile_type7([], 0.5)
+        for p in (-0.1, 1.1, math.nan):
             with self.assertRaises(ValueError):
                 percentile_type7(values, p)
 
@@ -42,7 +57,9 @@ class StarQCTests(unittest.TestCase):
             upstream = {r["sample_id"]: r["source_id"] for r in csv.DictReader(f, delimiter="\t")}
         self.assertEqual({r["sample_id"]: r["source_id"] for r in samples}, upstream)
         self.assertEqual(len(samples), 10)
-        self.assertEqual([r["sample_id"] for r in samples[:4]], [f"Control{i}" for i in range(1, 5)])
+        self.assertEqual(
+            [r["sample_id"] for r in samples[:4]], [f"Control{i}" for i in range(1, 5)]
+        )
         indexed = {r["sample_id"]: r for r in samples}
         self.assertEqual((indexed["KC1"]["source_id"], indexed["KC1"]["rin"]), ("KC_3", 6.3))
         self.assertEqual((indexed["KC6"]["source_id"], indexed["KC6"]["rin"]), ("KC_1", 7.6))
@@ -61,9 +78,21 @@ class StarQCTests(unittest.TestCase):
                 self.assertEqual(row["Supported splice junctions"], 4)
                 self.assertEqual(row["Median [Q1-Q3]"], "5.5 [1.75-9.25]")
             output = root / "output/qc.tsv"
-            subprocess.run([sys.executable, str(REPOSITORY / "scripts/supp_table_02_star_junction_qc.py"),
-                            "--star-dir", str(root / "source"), "--file-labels", "source",
-                            "--output", str(output)], cwd=root, check=True, capture_output=True)
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(REPOSITORY / "scripts/supp_table_02_star_junction_qc.py"),
+                    "--star-dir",
+                    str(root / "source"),
+                    "--file-labels",
+                    "source",
+                    "--output",
+                    str(output),
+                ],
+                cwd=root,
+                check=True,
+                capture_output=True,
+            )
             with output.open() as f:
                 actual = list(csv.DictReader(f, delimiter="\t"))
             self.assertEqual(len(actual), 10)
@@ -73,15 +102,21 @@ class StarQCTests(unittest.TestCase):
     def test_malformed_logs_and_junctions_are_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "input.txt"
-            for text in ["", "Uniquely mapped reads number | -1\nUniquely mapped reads % | 10%\n",
-                         "Uniquely mapped reads number | 1\nUniquely mapped reads % | nan%\n",
-                         "Uniquely mapped reads number | 1\nUniquely mapped reads % | 101%\n",
-                         "Uniquely mapped reads number | 1\nUniquely mapped reads number | 2\n"]:
+            for text in [
+                "",
+                "Uniquely mapped reads number | -1\nUniquely mapped reads % | 10%\n",
+                "Uniquely mapped reads number | 1\nUniquely mapped reads % | nan%\n",
+                "Uniquely mapped reads number | 1\nUniquely mapped reads % | 101%\n",
+                "Uniquely mapped reads number | 1\nUniquely mapped reads number | 2\n",
+            ]:
                 path.write_text(text)
                 with self.assertRaises(ValueError):
                     read_star_log(path)
-            for text in ["chr1\t1\t2\t1\t1\t0\t5\n", "chr1\t1\t2\t1\t1\t0\t-1\t0\t20\n",
-                         "chr1\t1\t2\t1\t1\t0\tbad\t0\t20\n"]:
+            for text in [
+                "chr1\t1\t2\t1\t1\t0\t5\n",
+                "chr1\t1\t2\t1\t1\t0\t-1\t0\t20\n",
+                "chr1\t1\t2\t1\t1\t0\tbad\t0\t20\n",
+            ]:
                 path.write_text(text)
                 with self.assertRaises(ValueError):
                     read_unique_junction_support(path)
