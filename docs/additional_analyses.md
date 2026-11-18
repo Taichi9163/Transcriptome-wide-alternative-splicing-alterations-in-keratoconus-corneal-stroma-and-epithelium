@@ -1,6 +1,6 @@
 # Additional analyses
 
-These modules complement the bundled manuscript workflow. They require the paper's supplementary workbooks, native rMAPS3 outputs, or RSEM quantifications.
+These modules complement the bundled manuscript workflow. Supplementary Figures 3A,B and 7D can run directly from the bundled processed inputs, as shown in the main README. Other modules require the paper's supplementary workbooks, additional native outputs, or RSEM quantifications.
 
 ## Dependencies and native inputs
 
@@ -65,7 +65,9 @@ Rscript --vanilla scripts/Figure3ABC_expression_splicing_overlap.R
 
 The model is `~ condition` with a keratoconus versus control Wald contrast. Isoforms require at least 10 counts summed across the nine stromal samples. The DESeq2 independent filtering target is 0.10 for genes and 0.05 for isoforms. Both call sets use adjusted P < 0.05 and |log2 fold change| > 1. The study analysis used DESeq2 1.52.0 and reported tximport 1.34.0. The release check used DESeq2 1.52.0 and tximport 1.40.0. All 414 gene IDs and all 448 transcript IDs matched Supplementary Data 4. Individual isoform log2 fold changes differed by up to 0.000028 from the workbook.
 
-For candidate RBP expression, run `Figure1EF_RBP_motif_statistics.R` and the corresponding gene-level model first. Supply a tab-separated Ensembl release 114 annotation with columns `gene_id` and `gene_symbol`, using IDs matching the RSEM reference. The output contains DESeq2 adjusted P values and row-wise Z scores of log10(TPM + 1).
+For the recovered candidate-RBP heatmaps, use `SuppFigure3AB_RBP_expression_heatmaps.R` with the bundled inputs. It preserves the original heatmap selection, scaling and clustering; `--tables-only` writes numeric matrices and row order without opening graphics devices. See [input provenance](../inputs/README.md) for the source matrices and their scope.
+
+For the separate candidate-expression table with DESeq2 statistics, run `Figure1EF_RBP_motif_statistics.R` and the corresponding gene-level model first. Supply a tab-separated Ensembl release 114 annotation with columns `gene_id` and `gene_symbol`, using IDs matching the RSEM reference. The output contains DESeq2 adjusted P values and row-wise Z scores of log10(TPM + 1).
 
 ```sh
 Rscript --vanilla scripts/SuppFigure3AB_RBP_expression.R stroma data/gene_symbols.tsv

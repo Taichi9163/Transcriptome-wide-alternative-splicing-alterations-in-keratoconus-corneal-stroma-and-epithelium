@@ -6,7 +6,7 @@ This repository combines the downstream analysis modules, the supplied Figure 1/
 
 ## Reproduce the manuscript tables and panels
 
-Seven compressed processed input tables are included under `inputs/stroma/`: five complete rMATS JC tables and gene/transcript DESeq2 tables. Their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
+Eighteen compressed processed input tables are included under `inputs/`: ten complete rMATS JC tables across the two cohorts, stromal gene/transcript DESeq2 tables, four rMAPS3 motif tables, and two candidate-RBP TPM matrices. Their sources and scope are described in [input provenance](inputs/README.md), and their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
 
 Use Python 3.9 or later and R with these packages:
 
@@ -42,6 +42,18 @@ The manuscript workflow deliberately checks the expected study counts. It is a r
 | `provenance/` | Installed R package versions and session information |
 
 The complete transcript mapping retains 7,287 compatible event–transcript pairs. Of these, 4,047 pairs from 995 events have finite expression effects and raw P values and enter Fig. 3D. Forty-two pairs, representing 29 genes, involve DE isoforms. Both inclusion-compatible and skipping-compatible pairs retain the **original rMATS ΔPSI**; their shapes distinguish the two forms. See [analysis conventions](docs/analysis_conventions.md) for coordinate, filtering and matching details.
+
+### Supplementary Figures 3A,B and 7D
+
+These panels use the bundled inputs and do not need the GTF or a new DESeq2 fit. From the repository root:
+
+```sh
+python3 scripts/prepare_inputs.py --work-dir work
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure3AB_RBP_expression_heatmaps.R --tables-only
+KC_WORK_DIR="$PWD/work" Rscript --vanilla scripts/SuppFigure7D_DAS_gene_UpSet.R --tables-only
+```
+
+Remove `--tables-only` to generate the figures. The heatmap script processes both cohorts, or accepts `stroma` or `epithelium` to select one panel. Outputs are written to `work/results/<cohort>/suppfigure3/` and `work/results/epithelium/suppfigure7/`. The recovered heatmap scripts select 19 stromal and 23 epithelial RBP genes. The epithelial UpSet adapts the supplied Figure 1D implementation and checks 805 significant events, 609 genes and 314 SE-only genes; the original Supplementary Figure 7D script was not located.
 
 ## Process reads on Ubuntu
 
@@ -79,13 +91,15 @@ R filenames start with the corresponding `Figure` or `SuppFigure` number, follow
 | Fig. 4B; stromal versus epithelial ΔPSI | [Figure4B_cross_layer_deltaPSI.R](scripts/Figure4B_cross_layer_deltaPSI.R) |
 | Fig. 4C,D and Supplementary Fig. 10; NEASE and Reactome | `nease_analysis.py`, `reactome_top10.py` |
 | Supplementary Fig. 2 and Data 6; stromal sensitivity tables | `stromal_sensitivity.py`, `leave_one_out.py` |
-| Supplementary Fig. 3A,B; candidate RBP expression tables | [SuppFigure3AB_RBP_expression.R](scripts/SuppFigure3AB_RBP_expression.R) |
+| Supplementary Fig. 3A,B; candidate RBP expression heatmaps | [SuppFigure3AB_RBP_expression_heatmaps.R](scripts/SuppFigure3AB_RBP_expression_heatmaps.R) |
+| Supplementary Fig. 3A,B; expression tables with DESeq2 adjusted P values | [SuppFigure3AB_RBP_expression.R](scripts/SuppFigure3AB_RBP_expression.R) |
 | Supplementary Fig. 7B,C; epithelial PSI PCA and heatmap | [SuppFigure7BC_PSI_PCA_heatmap.R](scripts/SuppFigure7BC_PSI_PCA_heatmap.R) |
+| Supplementary Fig. 7D; epithelial gene-level UpSet | [SuppFigure7D_DAS_gene_UpSet.R](scripts/SuppFigure7D_DAS_gene_UpSet.R) |
 | Supplementary Fig. 9; SE junction-support sensitivity tables | [SuppFigure9_SE_junction_support.R](scripts/SuppFigure9_SE_junction_support.R) |
 
 The DAS summary and motif scripts also support the epithelial analyses in Supplementary Fig. 7. The significant-event PCA helper accepts either cohort; the dedicated `Figure1BC` script reproduces the current stromal panels.
 
-Shared preparation uses [Setup_check_R_packages.R](scripts/Setup_check_R_packages.R), [Setup_import_supplementary_data.R](scripts/Setup_import_supplementary_data.R), [Setup_prepare_Figure1_Figure3_data.R](scripts/Setup_prepare_Figure1_Figure3_data.R), and [Utils_plotting.R](scripts/Utils_plotting.R). Additional PCA sensitivity analyses use [Analysis_PCA_all_events.R](scripts/Analysis_PCA_all_events.R), [Analysis_PCA_variable_events.R](scripts/Analysis_PCA_variable_events.R), and [Analysis_PCA_including_KC6.R](scripts/Analysis_PCA_including_KC6.R); these optional analyses are not assigned to a numbered panel in the current manuscript.
+Shared preparation uses [Setup_check_R_packages.R](scripts/Setup_check_R_packages.R), [Setup_import_supplementary_data.R](scripts/Setup_import_supplementary_data.R), [Setup_prepare_Figure1_Figure3_data.R](scripts/Setup_prepare_Figure1_Figure3_data.R), and [Utils_plotting.R](scripts/Utils_plotting.R). The two numbered UpSet entry scripts share [Utils_DAS_gene_UpSet.R](scripts/Utils_DAS_gene_UpSet.R). Additional PCA sensitivity analyses use [Analysis_PCA_all_events.R](scripts/Analysis_PCA_all_events.R), [Analysis_PCA_variable_events.R](scripts/Analysis_PCA_variable_events.R), and [Analysis_PCA_including_KC6.R](scripts/Analysis_PCA_including_KC6.R); these optional analyses are not assigned to a numbered panel in the current manuscript.
 
 The RT-PCR gel panels, their densitometry panels (Fig. 2G–L), and the conceptual summary (Fig. 4E) are not regenerated by this repository. The uploaded code bundle does not contain the original gel-intensity measurements. Source tables for the remaining modules can be imported from the paper's supplementary workbooks as described in [additional analyses](docs/additional_analyses.md).
 

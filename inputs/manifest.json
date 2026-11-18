@@ -40,5 +40,71 @@
     "destination": "data/stroma/expression/transcript_deseq2.tsv",
     "sha256": "c4414f02f7ee4e35332dd4f09d3f30797fd6841921e8c99b183450f530ceb568",
     "bytes": 14950047
+  },
+  {
+    "file": "inputs/epithelium/rmats/A3SS.MATS.JC.txt.gz",
+    "destination": "data/epithelium/rmats/A3SS.MATS.JC.txt",
+    "sha256": "db53b76b1fe3d038532d06a8fe0d4d58729dfcf01cce24afba245bd2658b744a",
+    "bytes": 3080520
+  },
+  {
+    "file": "inputs/epithelium/rmats/A5SS.MATS.JC.txt.gz",
+    "destination": "data/epithelium/rmats/A5SS.MATS.JC.txt",
+    "sha256": "8a6fcf5bbfa4e06a540d9291d14a29bd1beea5fc569fb0bd4b23ee4daa9e1a59",
+    "bytes": 2068349
+  },
+  {
+    "file": "inputs/epithelium/rmats/MXE.MATS.JC.txt.gz",
+    "destination": "data/epithelium/rmats/MXE.MATS.JC.txt",
+    "sha256": "089160df7f03cc7509840a049d7cca60a0212328a9a0decbb73cdcb3c98fd017",
+    "bytes": 3736982
+  },
+  {
+    "file": "inputs/epithelium/rmats/RI.MATS.JC.txt.gz",
+    "destination": "data/epithelium/rmats/RI.MATS.JC.txt",
+    "sha256": "966f1c744b9adc94e998884baa9470fb85849d97613146d826161fabdd9fea5d",
+    "bytes": 2302436
+  },
+  {
+    "file": "inputs/epithelium/rmats/SE.MATS.JC.txt.gz",
+    "destination": "data/epithelium/rmats/SE.MATS.JC.txt",
+    "sha256": "14e29d3d313710382ee0d7cdaff9a1b12747638bd1de82a50ab4dd89f3faf75d",
+    "bytes": 20131691
+  },
+  {
+    "file": "inputs/stroma/rmaps/pVal.up.vs.bg.RNAmap.txt.gz",
+    "destination": "data/stroma/rmaps/pVal.up.vs.bg.RNAmap.txt",
+    "sha256": "c81f5498707cd6cfc691a8b470454ba63e311f129060a08838234a85a458b73a",
+    "bytes": 21384
+  },
+  {
+    "file": "inputs/stroma/rmaps/pVal.dn.vs.bg.RNAmap.txt.gz",
+    "destination": "data/stroma/rmaps/pVal.dn.vs.bg.RNAmap.txt",
+    "sha256": "6f58bdb2acc49386932d1471b961b2c42bee345ae191603c2f2bf71fa7fcff0c",
+    "bytes": 21137
+  },
+  {
+    "file": "inputs/stroma/rbp/tpm.tsv.gz",
+    "destination": "data/stroma/rbp/tpm.tsv",
+    "sha256": "1cdcecd6fb7efe0f374f9f5c0f9c045b95ca25fbcc47b2ccc3179bea49eabf1f",
+    "bytes": 1515
+  },
+  {
+    "file": "inputs/epithelium/rmaps/pVal.up.vs.bg.RNAmap.txt.gz",
+    "destination": "data/epithelium/rmaps/pVal.up.vs.bg.RNAmap.txt",
+    "sha256": "7ca7d226029bcd84b802f5ad50d9f6d40618c7bfc549af0ac5f1c3fa17c5c9c8",
+    "bytes": 21040
+  },
+  {
+    "file": "inputs/epithelium/rmaps/pVal.dn.vs.bg.RNAmap.txt.gz",
+    "destination": "data/epithelium/rmaps/pVal.dn.vs.bg.RNAmap.txt",
+    "sha256": "05595a93fecce787aeb3f48e86ce0c8a5d56e6c217dfc7692a82e672519ddf34",
+    "bytes": 21043
+  },
+  {
+    "file": "inputs/epithelium/rbp/tpm.tsv.gz",
+    "destination": "data/epithelium/rbp/tpm.tsv",
+    "sha256": "834c8f706b2b5ff24f650e4943814c60d173cf0f7813f690e38b46bf56db594d",
+    "bytes": 2454
   }
 ]

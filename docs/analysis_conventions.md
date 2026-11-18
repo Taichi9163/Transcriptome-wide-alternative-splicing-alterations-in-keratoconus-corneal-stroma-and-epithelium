@@ -2,11 +2,11 @@
 
 ## Data and thresholds
 
-The bundled numeric tables come from the analysis package supplied with the manuscript revision of 18 November 2026. Compression is lossless; `inputs/manifest.json` records the SHA-256 checksum and byte count of each uncompressed source. The complete gene table preserves its original row-name field (the header has one fewer field than the data rows); the transcript table has explicit `TranscriptID` and `GeneID` columns.
+The bundled numeric tables come from the supplied analysis package and the recovered local analyses for the manuscript revision of 18 November 2026; see [input provenance](../inputs/README.md). Compression is lossless; `inputs/manifest.json` records the SHA-256 checksum and byte count of each uncompressed source. The complete gene table preserves its original row-name field (the header has one fewer field than the data rows); the transcript table has explicit `TranscriptID` and `GeneID` columns.
 
 DAS requires rMATS JC FDR < 0.05 and |IncLevelDifference| > 0.10. DE genes/isoforms require DESeq2 adjusted P < 0.05 and |log2 fold change| > 1. All comparisons use keratoconus minus control. Missing effects are never replaced by zero.
 
-DAS gene counts and expression integration use Ensembl GeneID. Figure 1D follows the supplied gene-symbol UpSet, with GeneID as fallback when a symbol is absent. The two identifiers give the same total of 807 for these inputs; they should not be assumed equivalent for other datasets.
+DAS gene counts and expression integration use Ensembl GeneID. Figure 1D and the reconstructed Supplementary Figure 7D follow the supplied gene-symbol UpSet, with GeneID as fallback when a symbol is absent. The two identifiers give the same totals of 807 stromal and 609 epithelial genes for these inputs; they should not be assumed equivalent for other datasets.
 
 Figure 1B uses centered, scaled event-level PSI in `prcomp`. Figure 1C clusters Euclidean distances of unscaled PSI using Ward.D2, then uses row Z scores for colors. The significant-event PCA describes a set selected using the group labels. The optional all-event and variance-ranked PCA modules avoid significance-based event selection.
 

@@ -47,9 +47,18 @@ The R scripts passed syntax checks; Python scripts passed compilation checks. Re
 
 The earlier downstream release check reproduced the 414 gene and 448 isoform DE call sets using DESeq2 1.52.0 and tximport 1.40.0. The manuscript reports tximport 1.34.0; isoform fold changes differed by at most 0.000028 in that check. The current bundled-table run uses the supplied DESeq2 tables directly and does not refit those models.
 
+## Recovered Supplementary Figure 3A,B and reconstructed Figure 7D
+
+The additional check on 18 November 2026 ran both numbered supplementary scripts with `--tables-only` from a separate work directory, using absolute script paths and `KC_WORK_DIR`. All 18 bundled inputs passed their checksum checks. No figure images were created.
+
+- Supplementary Figure 3A: 19 genes × nine samples; Figure 3B: 23 genes × 14 samples. Recomputed motif-selection metadata, TPM, log2(TPM + 1) and row Z-scores matched the saved outputs of the recovered scripts, with no numeric differences in the eight compared tables. Row clustering retains Euclidean distance and Ward.D2; sample columns retain the original control-then-case order.
+- Supplementary Figure 7D: 805 events in 609 genes, including 314 SE-only genes. An independent Python calculation from the complete epithelial JC tables matched all 609 gene memberships and all 21 nonempty intersections. The shared plotting code built its ggplot layers without graphics devices. This is an adaptation of the supplied stromal UpSet code; it does not establish pixel-level equivalence to the original epithelial panel.
+- Figure 1D regression: the previous published script and the shared implementation were run on the same stromal data. All 14 output tables were byte-for-byte identical, retaining 1,073 events, 807 genes and 487 SE-only genes.
+- All R scripts passed parsing, and the existing eight automated analysis/workflow tests passed.
+
 ## Limits of this validation
 
 - FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi commands were planned and regression-tested, but no raw reads were processed on Ubuntu for this release.
 - Figure images were not regenerated or visually compared. Platform fonts and plotting versions can affect layout.
-- Epithelial, rMAPS3 and NEASE modules require their separately described inputs. They are not included in the bundled Figure 1/Figure 3 reproduction command.
+- Supplementary Figures 3A,B and 7D have separate commands using bundled inputs; they are not part of `run_manuscript.py`. Other epithelial, rMAPS3 and NEASE modules may require the separately described supplementary workbooks, logs or quantifications.
 - The original PowerPoint composition, RT-PCR gel-intensity measurements and conceptual schematic are outside the checked workflow.
