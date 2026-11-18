@@ -3,7 +3,6 @@
 # Missing/unquantifiable events remain NA and are reported separately.
 # Significance categories describe independent dataset calls, not tissue specificity.
 
-rm(list = ls())
 
 args <- commandArgs(trailingOnly = TRUE)
 if (any(!args %in% c("--tables-only"))) stop("Unknown argument")

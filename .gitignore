@@ -1,8 +1,25 @@
-# Only release the analysis source and its instructions.
+# Publish source, settings, documentation and the selected processed inputs.
 *
 !/.gitignore
 !/README.md
+!/CITATION.cff
 !/requirements-nease.txt
 !/scripts/
 !/scripts/*.R
 !/scripts/*.py
+!/config/
+!/config/*.tsv
+!/config/*.json
+!/config/*.yml
+!/docs/
+!/docs/*.md
+!/inputs/
+!/inputs/manifest.json
+!/inputs/stroma/
+!/inputs/stroma/rmats/
+!/inputs/stroma/rmats/*.gz
+!/inputs/stroma/expression/
+!/inputs/stroma/expression/*.gz
+!/tests/
+!/tests/*.py
+!/LICENSE

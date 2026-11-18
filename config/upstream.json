@@ -1,0 +1,12 @@
+{
+  "threads": 32,
+  "genome_fasta": "data/reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "annotation_gtf": "data/reference/Homo_sapiens.GRCh38.114.gtf",
+  "output_dir": "results/upstream",
+  "rmats_command": [
+    "rmats.py"
+  ],
+  "sashimi_command": [
+    "rmats2sashimiplot"
+  ]
+}

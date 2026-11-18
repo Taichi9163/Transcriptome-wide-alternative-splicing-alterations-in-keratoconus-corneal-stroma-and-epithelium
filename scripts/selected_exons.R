@@ -14,3 +14,12 @@ rows <- lapply(names(targets), function(gene) {
 })
 write.table(do.call(rbind, rows), "results/stroma/selected_exons.tsv",
             sep = "\t", quote = FALSE, row.names = FALSE)
+
+# Export the same complete rMATS rows for the three manuscript sashimi panels.
+selected <- do.call(rbind, lapply(names(targets), function(gene) {
+  subset(x, geneSymbol == gene & exonStart_0base == targets[[gene]])
+}))
+# Restore the duplicate ID header expected by native rMATS consumers.
+names(selected)[names(selected) == "ID.1"] <- "ID"
+write.table(selected, "results/stroma/sashimi_events.tsv",
+            sep = "\t", quote = FALSE, row.names = FALSE)

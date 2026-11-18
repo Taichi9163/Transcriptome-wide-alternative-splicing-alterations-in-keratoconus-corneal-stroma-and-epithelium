@@ -1,114 +1,88 @@
-# Alternative splicing in keratoconus corneal stroma and epithelium
+# Transcriptome-wide alternative splicing alterations in keratoconus corneal stroma and epithelium
 
-Analysis code for *Transcriptome-wide alternative splicing alterations in keratoconus corneal stroma and epithelium*. The primary stromal comparison uses five keratoconus specimens and four controls. A sensitivity analysis adds the sixth keratoconus specimen (KC6). The independent epithelial comparison uses seven specimens per group. All effect sizes use keratoconus minus control.
+Analysis code accompanying the manuscript by Yuasa, Ueda and colleagues, version dated **18 November 2026**. The primary stromal comparison includes five keratoconus specimens and four controls; a sensitivity analysis adds KC6. The independent epithelial cohort includes seven specimens per group. Effects are defined as keratoconus minus control.
 
-## Start with the supplementary data
+This repository combines the downstream analysis modules, the supplied Figure 1/Figure 3 code, and the Ubuntu read-processing commands. Paths are configurable. Original FASTQ/BAM files, manuscript documents, presentation files and gel images are not distributed here.
 
-Run the commands from the repository root in a new working copy. Place the paper's Supplementary Data 1, 2 and 3 workbooks in `data/` with the names shown below. The importer converts the worksheets to tab-delimited files and preserves the order of the sample-level PSI vectors. If you already have the native rMATS or rMAPS3 outputs, use the directory layout in the next section.
+## Reproduce the manuscript tables and panels
 
-```sh
-Rscript --vanilla scripts/import_supplement.R stroma "data/Supplementary Data 1.xlsx"
-Rscript --vanilla scripts/import_supplement.R epithelium "data/Supplementary Data 2.xlsx"
-Rscript --vanilla scripts/import_supplement.R motifs "data/Supplementary Data 3.xlsx"
+Seven compressed processed input tables are included under `inputs/stroma/`: five complete rMATS JC tables and gene/transcript DESeq2 tables. Their uncompressed SHA-256 checksums are recorded in [inputs/manifest.json](inputs/manifest.json). The reference annotation is downloaded separately from Ensembl, with its checksum verified before event–transcript mapping.
 
-Rscript --vanilla scripts/call_das.R stroma
-Rscript --vanilla scripts/call_das.R epithelium
-Rscript --vanilla scripts/call_das.R stroma_with_kc6
-Rscript --vanilla scripts/compare_das.R
-Rscript --vanilla scripts/compare_se.R --tables-only
-Rscript --vanilla scripts/compare_se_support.R
-python3 scripts/stromal_sensitivity.py
-Rscript --vanilla scripts/motif_tests.R
-```
-
-The five rMATS event classes are SE, A5SS, A3SS, MXE and RI. Each call requires FDR < 0.05 and |IncLevelDifference| > 0.10 in the JC table. Unique gene counts use rMATS GeneID. Numeric rMATS event IDs apply within one run and event class. Cross-run matching uses chromosome, strand and all coordinates specific to that event class.
-
-| Check from study inputs | Expected result |
-| --- | --- |
-| Primary stroma, all classes | 1,073 events in 807 genes |
-| Epithelium, all classes | 805 events in 609 genes |
-| Stroma including KC6 | 1,074 events in 802 genes, with 889 events shared with the primary calls |
-| Junction support in primary stroma | 768 events have finite PSI and at least 10 inclusion + skipping junction reads in ≥3 cases and ≥2 controls |
-| Stromal expression | 414 DE genes (8 with DAS) and 448 DE isoforms in 410 genes (55 with DAS) |
-| SE union across tissues | 1,135 significant in either tissue, 891 estimable in both, 13 significant in both |
-| rMAPS3 sensitivity | 3,648 motif–region tests and 14 pairs below the display cutoff after window correction |
-
-The SE scatter retains measured zeroes. An event needs a coordinate match, a finite effect and at least one finite PSI in each group of each cohort. The rMAPS3 figure uses BH across the 912 regional minima within each tissue and direction. The sensitivity calculation first corrects for the 50 exonic or 250 intronic window positions, then applies BH or BY across those 912 tests.
-
-## Native inputs and software
-
-The stromal dataset is identified by [GEO GSE336375](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE336375). The epithelial dataset is identified by [BioProject PRJNA799648](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA799648).
-
-| Directory | Files |
-| --- | --- |
-| `data/stroma/rmats/`, `data/epithelium/rmats/`, `data/stroma_with_kc6/rmats/` | Five complete `<event>.MATS.JC.txt` tables per comparison |
-| `data/stroma/rmaps/`, `data/epithelium/rmaps/` | `pVal.up.vs.bg.RNAmap.txt` and `pVal.dn.vs.bg.RNAmap.txt` per tissue. Include the native `log.motifMap.txt` if available to verify scan settings. |
-| User-supplied paths in sample sheets | One RSEM `*.genes.results` or `*.isoforms.results` file per sample. Use a separate sample sheet for each cohort and analysis level. |
-
-Upstream processing used fastp 0.20.0, STAR 2.7.11a, GRCh38 with Ensembl release 114, RSEM 1.3.1 and rMATS-turbo 4.3.0. The rMATS runs used paired-end data, 150 nt read length, variable-length reads, clipped alignments, fr-unstranded libraries and the default 1 nt anchor. Supply case BAMs as group 1 and controls as group 2. rMAPS3 3.1.0 used the hg38 SE workflow, the human/mouse motif library, a 50 nt window and a 1 nt step. The repository starts from processed tables. It does not contain the original read alignment jobs, sashimi commands, gel images or the original Figure 3D event-to-transcript matching program.
-
-R 4.6.1 was used to check the table analyses. DAS calling and the SE comparison in tables-only mode use base R. Install the additional packages for the modules you intend to run.
+Use Python 3.9 or later and R with these packages:
 
 ```r
-install.packages(c("readxl", "data.table", "ggplot2", "gplots", "ggrepel", "patchwork",
-                   "ragg", "RColorBrewer", "tidyr", "dplyr", "stringr", "reshape2",
-                   "BiocManager"))
-BiocManager::install(c("DESeq2", "tximport"))
+install.packages(c("ggplot2", "ggforce", "ragg", "gplots", "RColorBrewer",
+                   "dplyr", "tidyr", "purrr", "patchwork"))
 ```
 
-## Analysis by figure
+From a clone of this repository:
 
-| Paper component | Script and output |
+```sh
+# Use a separate directory for inputs expanded from the release and analysis outputs.
+python3 scripts/prepare_inputs.py --work-dir work --download-reference
+
+# Validate numeric tables and plot layers without creating images.
+python3 scripts/run_manuscript.py --work-dir work --tables-only
+python3 scripts/leave_one_out.py --work-dir work
+
+# To generate Figure 1B-D and Figure 3A-D (PDF, PNG and TIFF):
+python3 scripts/run_manuscript.py --work-dir work
+```
+
+To use an existing reference instead of downloading it, replace `--download-reference` with `--gtf /path/to/Homo_sapiens.GRCh38.114.gtf.gz`. Input preparation reuses identical files and refuses to overwrite different files. Set `FIGURE_FONT` to select an installed font; the default is `sans`. All generated files stay in the selected work directory. Scripts can be called by absolute path from another directory.
+
+The manuscript workflow deliberately checks the expected study counts. It is a reproduction workflow for these inputs; adapting it to another cohort requires changing sample counts and the manuscript-specific checks.
+
+| Output under `work/results/` | Content |
 | --- | --- |
-| Fig. 1A–D and epithelial DAS | `call_das.R` writes per-class calls, gene memberships and counts to `results/<cohort>/das/`. `pca_significant.R` writes a PCA and heatmap of selected events. Clustering uses Euclidean distances and Ward.D2 on PSI, with row-scaled PSI used for heatmap colors. |
-| Fig. 1E,F and Supplementary Data 3 | `motif_heatmaps.R` renders the exploratory motif maps. `motif_tests.R` writes both the original and window-adjusted results under `results/motif_tests/`. |
-| Fig. 2D–F and Supplementary Data 6 | `selected_exons.R` exports sample-level PSI and rMATS FDR for the three stromal SE targets. `stromal_sensitivity.py` exports the junction-support and KC6 comparisons by event and class. |
-| Fig. 3A–C and Supplementary Data 4 | `differential_expression.R` fits the gene and transcript models. `expression_overlap.R` exports gene memberships and one largest-absolute-effect event per DAS gene for the gene-level scatter. Structural event–transcript pairing in Fig. 3D is outside this module. |
-| Fig. 4A,B | `compare_das.R` exports exact-coordinate unions for all classes. `compare_se.R` exports SE audit tables and, when called without `--tables-only`, the scatter plot. `compare_se_support.R` checks the effect values and support thresholds. |
-| Fig. 4C,D and Supplementary Data 5 | `nease_analysis.py` exports event–feature assignments, summary counts and pathway tests. `reactome_top10.py` ranks significant Reactome pathways by NEASE score and draws the top ten per tissue. |
+| `stroma/manuscript/` | DAS tables, PSI matrix, transcript matches and unmatched-event audit |
+| `stroma/figure1/` | PCA scores/variance, clustering order and gene intersections for Fig. 1B–D |
+| `stroma/figure3/` | Gene memberships, scatter source tables and Fig. 3A–D |
+| `stromal_leave_one_out/` | ΔPSI after each single-sample omission; no new significance testing |
+| `provenance/` | Installed R package versions and session information |
 
-The significant-event PCA describes the same events selected using the group labels. For PCA on complete, varying events independent of significance, run the three optional scripts in the order below. They write figure files and larger PCA caches under `results/`.
+The complete transcript mapping retains 7,287 compatible event–transcript pairs. Of these, 4,047 pairs from 995 events have finite expression effects and raw P values and enter Fig. 3D. Forty-two pairs, representing 29 genes, involve DE isoforms. Both inclusion-compatible and skipping-compatible pairs retain the **original rMATS ΔPSI**; their shapes distinguish the two forms. See [analysis conventions](docs/analysis_conventions.md) for coordinate, filtering and matching details.
 
-```sh
-Rscript --vanilla scripts/pca_significant.R stroma
-Rscript --vanilla scripts/pca_significant.R epithelium
-Rscript --vanilla scripts/selected_exons.R
-Rscript --vanilla scripts/motif_heatmaps.R
-Rscript --vanilla scripts/pca_all.R
-Rscript --vanilla scripts/pca_variable.R
-Rscript --vanilla scripts/pca_with_kc6.R
-```
+## Process reads on Ubuntu
 
-### Gene and isoform expression
-
-Use tab-delimited sample sheets with columns `sample`, `group`, and `path`. Each row identifies one biological sample, its group (`Control` or `Keratoconus`), and an RSEM result file. Paths are relative to the repository root or absolute. Use the study sample annotation to identify the nine primary stromal specimens. Group membership and the KC6 exclusion must follow the study labels. For example, a row for study sample KC1 can point to `data/stroma/rsem/KC1.genes.results` if that is how the quantification file was named.
+The configurable workflow covers FastQC, MultiQC, fastp, STAR, RSEM, rMATS and sashimi plotting. Edit [config/upstream.json](config/upstream.json) and [config/samples_stroma.tsv](config/samples_stroma.tsv) for your files and tools.
 
 ```sh
-Rscript --vanilla scripts/differential_expression.R gene data/stroma/genes.tsv results/stroma/gene
-Rscript --vanilla scripts/differential_expression.R isoform data/stroma/isoforms.tsv results/stroma/isoform
-Rscript --vanilla scripts/differential_expression.R gene data/epithelium/genes.tsv results/epithelium/gene
-Rscript --vanilla scripts/expression_overlap.R
+# Preview all processing commands; no tools are run and no files are created.
+python3 scripts/preprocess_reads.py all --work-dir /path/to/analysis
+
+# Run one stage in an environment containing the required software.
+python3 scripts/preprocess_reads.py trim --work-dir /path/to/analysis --execute
 ```
 
-The model is `~ condition` with a keratoconus versus control Wald contrast. Isoforms require at least 10 counts summed across the nine stromal samples. The DESeq2 independent filtering target is 0.10 for genes and 0.05 for isoforms. Both call sets use adjusted P < 0.05 and |log2 fold change| > 1. The study analysis used DESeq2 1.52.0 and reported tximport 1.34.0. The release check used DESeq2 1.52.0 and tximport 1.40.0. All 414 gene IDs and all 448 transcript IDs matched Supplementary Data 4. Individual isoform log2 fold changes differed by up to 0.000028 from the workbook.
+**Study sample KC6 corresponds to the original read prefix `KC_1`, whereas study sample KC3 corresponds to `KC_6`.** The supplied sample sheet records this mapping and includes all ten specimens for preprocessing. Only the nine primary specimens enter the primary rMATS comparison. The second rMATS comparison includes KC6. Read the [Ubuntu workflow guide](docs/upstream.md) before execution.
 
-For candidate RBP expression, run `motif_tests.R` and the corresponding gene-level model first. Supply a tab-separated Ensembl release 114 annotation with columns `gene_id` and `gene_symbol`, using IDs matching the RSEM reference. The output contains DESeq2 adjusted P values and row-wise Z scores of log10(TPM + 1).
+## Analyses by manuscript component
+
+| Manuscript component | Scripts |
+| --- | --- |
+| Fig. 1A; DAS calls and class counts | `call_das.R` |
+| Fig. 1B–D | `prepare_data.R`, `figure1BC.R`, `figure1D.R` |
+| Fig. 1E,F; motif sensitivity | `motif_heatmaps.R`, `motif_tests.R` |
+| Fig. 2A–C; sashimi source events | `selected_exons.R`, `preprocess_reads.py sashimi` |
+| Fig. 2D–F; sample-level PSI | `selected_exons.R` |
+| Fig. 3A–D | `figure3A.R`–`figure3D.R`, `map_events.py` |
+| Gene/transcript model fitting from RSEM | `differential_expression.R`, `expression_overlap.R` |
+| Fig. 4A,B; coordinate-matched cross-tissue comparison | `compare_das.R`, `compare_se.R`, `compare_se_support.R` |
+| Fig. 4C,D; NEASE and Reactome | `nease_analysis.py`, `reactome_top10.py` |
+| Supplementary sensitivity analyses | `stromal_sensitivity.py`, `leave_one_out.py`, `pca_all.R`, `pca_variable.R`, `pca_with_kc6.R` |
+| Epithelial significant-event PCA/heatmap; RBP expression | `pca_significant.R`, `rbp_expression.R` |
+
+The RT-PCR gel panels, their densitometry panels (Fig. 2G–L), and the conceptual summary (Fig. 4E) are not regenerated by this repository. The uploaded code bundle does not contain the original gel-intensity measurements. Source tables for the remaining modules can be imported from the paper's supplementary workbooks as described in [additional analyses](docs/additional_analyses.md).
+
+## Validation and citation
+
+The release check reproduced the primary DAS counts, expression-overlap counts, Figure 1 PCA variance and all Figure 3 event–transcript assignments. No figure images or raw-read analyses were regenerated during this check. [Validation details and limitations](docs/validation.md) distinguish numeric checks, regression tests and unexecuted upstream jobs.
 
 ```sh
-Rscript --vanilla scripts/rbp_expression.R stroma data/gene_symbols.tsv
-Rscript --vanilla scripts/rbp_expression.R epithelium data/gene_symbols.tsv
+python3 -m unittest discover -s tests -v
 ```
 
-### NEASE and Reactome
+Use [CITATION.cff](CITATION.cff) for the manuscript authors and title, and record the Git commit used. The manuscript is currently described as unpublished; no DOI is asserted. The stromal dataset is identified by [GEO GSE336375](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE336375) and the epithelial dataset by [BioProject PRJNA799648](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA799648).
 
-Use Python 3.12 and the package versions recorded for the NEASE analysis. Run after the two primary `call_das.R` commands. The code converts the rMATS exon start to a 1-based position, preserves the event identity during feature mapping, and disambiguates repeated pathway display names by reference row during the NEASE calculation. Reactome P values are BH-adjusted within each tissue.
-
-```sh
-python3.12 -m venv .venv
-.venv/bin/python -m pip install -r requirements-nease.txt
-.venv/bin/python scripts/nease_analysis.py stroma
-.venv/bin/python scripts/nease_analysis.py epithelium
-.venv/bin/python scripts/reactome_top10.py
-```
-
-The primary run keeps all input SE events for mapping. Pass `--orf-filter` to run the additional ORF-filtered sensitivity analysis in a separate output directory.
+Analysis code is distributed under the [MIT license](LICENSE).

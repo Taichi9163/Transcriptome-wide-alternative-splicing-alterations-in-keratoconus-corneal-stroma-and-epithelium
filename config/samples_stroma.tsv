@@ -1,0 +1,11 @@
+sample_id	group	source_id	read1	read2	include_primary
+KC1	Keratoconus	KC_3	data/reads/KC_3_1.fq.gz	data/reads/KC_3_2.fq.gz	true
+KC2	Keratoconus	KC_2	data/reads/KC_2_1.fq.gz	data/reads/KC_2_2.fq.gz	true
+KC3	Keratoconus	KC_6	data/reads/KC_6_1.fq.gz	data/reads/KC_6_2.fq.gz	true
+KC4	Keratoconus	KC_4	data/reads/KC_4_1.fq.gz	data/reads/KC_4_2.fq.gz	true
+KC5	Keratoconus	KC_5	data/reads/KC_5_1.fq.gz	data/reads/KC_5_2.fq.gz	true
+KC6	Keratoconus	KC_1	data/reads/KC_1_1.fq.gz	data/reads/KC_1_2.fq.gz	false
+Control1	Control	N_1	data/reads/N_1_1.fq.gz	data/reads/N_1_2.fq.gz	true
+Control2	Control	N_38	data/reads/N_38_1.fq.gz	data/reads/N_38_2.fq.gz	true
+Control3	Control	N_42	data/reads/N_42_1.fq.gz	data/reads/N_42_2.fq.gz	true
+Control4	Control	N_46	data/reads/N_46_1.fq.gz	data/reads/N_46_2.fq.gz	true

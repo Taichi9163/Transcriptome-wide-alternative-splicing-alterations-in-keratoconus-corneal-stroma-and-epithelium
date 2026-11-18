@@ -1,0 +1,44 @@
+[
+  {
+    "file": "inputs/stroma/rmats/A3SS.MATS.JC.txt.gz",
+    "destination": "data/stroma/rmats/A3SS.MATS.JC.txt",
+    "sha256": "1278dc2562b524575bc2d4f73b83fbaa84fb870a12fdcd9d9a6b191a91276629",
+    "bytes": 1585543
+  },
+  {
+    "file": "inputs/stroma/rmats/A5SS.MATS.JC.txt.gz",
+    "destination": "data/stroma/rmats/A5SS.MATS.JC.txt",
+    "sha256": "c9c4625b2c12fcf063d6a69c06f797552ae619298aa1b7886c64a7fd2cd92068",
+    "bytes": 1085924
+  },
+  {
+    "file": "inputs/stroma/rmats/MXE.MATS.JC.txt.gz",
+    "destination": "data/stroma/rmats/MXE.MATS.JC.txt",
+    "sha256": "2c6e7d516b01be736bf6a128a5dbff3920cbda07f330734e15a221fec1ce504f",
+    "bytes": 1529989
+  },
+  {
+    "file": "inputs/stroma/rmats/RI.MATS.JC.txt.gz",
+    "destination": "data/stroma/rmats/RI.MATS.JC.txt",
+    "sha256": "60293a96032f5697ea9fb83165effc1dfdc1cbbd0c1788cadc0ea2a6d3ee2867",
+    "bytes": 1441147
+  },
+  {
+    "file": "inputs/stroma/rmats/SE.MATS.JC.txt.gz",
+    "destination": "data/stroma/rmats/SE.MATS.JC.txt",
+    "sha256": "693259ba999e20a552e642f7d06d3a18c82efba36345b66d491447d5652281cc",
+    "bytes": 9172766
+  },
+  {
+    "file": "inputs/stroma/expression/gene_deseq2.tsv.gz",
+    "destination": "data/stroma/expression/gene_deseq2.tsv",
+    "sha256": "45a5edbbd8315ffb51beb8177ae0de80346274a38f07e018b74880f9bb425fa9",
+    "bytes": 2737216
+  },
+  {
+    "file": "inputs/stroma/expression/transcript_deseq2.tsv.gz",
+    "destination": "data/stroma/expression/transcript_deseq2.tsv",
+    "sha256": "c4414f02f7ee4e35332dd4f09d3f30797fd6841921e8c99b183450f530ceb568",
+    "bytes": 14950047
+  }
+]

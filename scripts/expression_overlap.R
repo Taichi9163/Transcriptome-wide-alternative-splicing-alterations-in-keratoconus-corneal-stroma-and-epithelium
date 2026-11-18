@@ -1,12 +1,13 @@
 # Figure 3A-C. Gene membership and the most strongly changed event per DAS gene.
 root <- "results/stroma"
-classes <- c("SE", "A5SS", "A3SS", "MXE", "RI")
+classes <- c("SE", "RI", "A5SS", "A3SS", "MXE")
 events <- do.call(rbind, lapply(classes, function(k) {
   x <- read.delim(file.path(root, "das", paste0(k, ".tsv")), check.names = FALSE)
   data.frame(gene_id = x$GeneID, gene_symbol = x$geneSymbol, event_class = k, event_id = x$ID,
-             delta = x$IncLevelDifference)
+             delta = x$IncLevelDifference, FDR = x$FDR)
 }))
-events <- events[order(-abs(events$delta), events$event_class, events$event_id), ]
+# Ties follow smaller FDR, then source order, as in the manuscript panel.
+events <- events[order(events$gene_id, -abs(events$delta), events$FDR), ]
 representative <- events[!duplicated(events$gene_id), ]
 gene <- read.delim(file.path(root, "gene/wald.tsv"))
 iso <- read.delim(file.path(root, "isoform/wald.tsv"))

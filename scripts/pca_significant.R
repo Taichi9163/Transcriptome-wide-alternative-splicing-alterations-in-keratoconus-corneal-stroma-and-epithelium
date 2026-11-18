@@ -1,191 +1,70 @@
-# 今までのデータ削除
-rm(list=ls())
-
-# ==== ライブラリ ====
-library(tidyr)
-library(dplyr)
-library(gplots)
-library(RColorBrewer)
-library(stringr)
-library(ggplot2)
-
-graphics.off()
-
-# ==== 設定 ====
-
+#!/usr/bin/env Rscript
+# PCA and Ward.D2 clustering of significant, PSI-complete events in one cohort.
+suppressPackageStartupMessages({
+  library(ggplot2)
+  library(gplots)
+  library(RColorBrewer)
+})
+script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)[1])
+source(file.path(dirname(normalizePath(script)), "common.R"))
+args <- setdiff(commandArgs(trailingOnly = TRUE), "--tables-only")
+if (length(args) != 1 || !args %in% c("stroma", "epithelium")) {
+  stop("Usage: Rscript scripts/pca_significant.R stroma|epithelium [--tables-only]")
+}
+cohort <- args[1]
+output <- file.path(ROOT, "results", cohort, "figures")
+dir.create(output, recursive = TRUE, showWarnings = FALSE)
 event_types <- c("SE", "RI", "A5SS", "A3SS", "MXE")
-
-args <- commandArgs(trailingOnly = TRUE)
-stopifnot(length(args) == 1L, args %in% c("stroma", "epithelium"))
-base_dir <- file.path("results", args, "das")
-figure_dir <- file.path("results", args, "figures")
-dir.create(figure_dir, recursive = TRUE, showWarnings = FALSE)
-kc_color <- if (args == "stroma") "#FFA500" else "#CC79A7"
-point_shape <- if (args == "stroma") 16 else 17
-
-# ==== 全event typeを読み込んで結合 ====
-
-all_numeric_list <- list()
-
-for (event_type in event_types) {
-
-  combined_path <- file.path(base_dir, paste0(event_type, ".tsv"))
-  message("Reading: ", combined_path)
-
-  dat0 <- read.table(combined_path, header=TRUE, sep="\t", stringsAsFactors=FALSE)
-
-  # IncLevel1 = Keratoconus
-  # IncLevel2 = Control
-
-  # サンプル数を自動判定
-  n_kc <- max(stringr::str_count(dat0$IncLevel1, ","), na.rm = TRUE) + 1
-  n_control <- max(stringr::str_count(dat0$IncLevel2, ","), na.rm = TRUE) + 1
-
-  # サンプル名
-  kc_names <- paste0("Keratoconus", 1:n_kc)
-  control_names <- paste0("Control", 1:n_control)
-
-  # 分割
-  dat1 <- dat0 %>%
-    separate(IncLevel1, into = kc_names, sep = ",", convert=TRUE) %>%
-    separate(IncLevel2, into = control_names, sep = ",", convert=TRUE)
-
-  # 数値だけ取り出す
-  numeric_data <- dat1 %>%
-    dplyr::select(all_of(c(kc_names, control_names))) %>%
-    dplyr::mutate(across(everything(), as.numeric))
-
-  # event type名を行名に付ける
-  rownames(numeric_data) <- paste0(event_type, "_", seq_len(nrow(numeric_data)))
-
-  all_numeric_list[[event_type]] <- numeric_data
+matrices <- lapply(event_types, function(event_type) {
+  events <- read_tsv(file.path(ROOT, "results", cohort, "das", paste0(event_type, ".tsv")))
+  cases <- strsplit(events$IncLevel1, ",", fixed = TRUE)
+  controls <- strsplit(events$IncLevel2, ",", fixed = TRUE)
+  stopifnot(length(unique(lengths(cases))) == 1, length(unique(lengths(controls))) == 1)
+  n_cases <- lengths(cases)[1]
+  n_controls <- lengths(controls)[1]
+  psi <- cbind(matrix(as.numeric(unlist(cases)), ncol = n_cases, byrow = TRUE),
+               matrix(as.numeric(unlist(controls)), ncol = n_controls, byrow = TRUE))
+  rownames(psi) <- paste(event_type, events$ID, sep = ":")
+  colnames(psi) <- c(paste0("Keratoconus", seq_len(n_cases)), paste0("Control", seq_len(n_controls)))
+  psi
+})
+x <- do.call(rbind, matrices)
+x <- x[complete.cases(x), , drop = FALSE]
+stopifnot(all(is.finite(x)), all(apply(x, 1, sd) > 0))
+case_color <- if (cohort == "stroma") "#FFA500" else "#CC79A7"
+point_shape <- if (cohort == "stroma") 16 else 17
+sample_group <- ifelse(grepl("^Control", colnames(x)), "Control", "Keratoconus")
+row_tree <- as.dendrogram(hclust(dist(x), method = "ward.D2"))
+column_tree <- as.dendrogram(hclust(dist(t(x)), method = "ward.D2"))
+# Rotate only the top branch to put the group with more controls on the left.
+if (sum(grepl("^Control", labels(column_tree[[2]]))) >
+    sum(grepl("^Control", labels(column_tree[[1]])))) {
+  tree_attributes <- attributes(column_tree)
+  column_tree <- column_tree[c(2, 1)]
+  attributes(column_tree) <- tree_attributes
 }
-
-# ==== 全event typeを縦に結合 ====
-
-numeric_data_all <- bind_rows(all_numeric_list)
-
-# NAを持つ行を除外
-numeric_data_all <- na.omit(numeric_data_all)
-
-x <- as.matrix(numeric_data_all)
-
-# 列名を明示
-colnames(x) <- colnames(numeric_data_all)
-
-# ==== Heatmap用の列アノテーション ====
-
-sample_group <- ifelse(grepl("^Control", colnames(x)),
-                       "Control",
-                       "Keratoconus")
-
-group_colors <- c(
-  "Control" = "black",
-  "Keratoconus" = kc_color
-)
-
-col_side_colors <- group_colors[sample_group]
-names(col_side_colors) <- colnames(x)
-
-# ==== クラスタリング ====
-
-d_row <- dist(x, method="euclidean")
-d_col <- dist(t(x), method="euclidean")
-
-c_row <- hclust(d_row, method="ward.D2")
-c_col <- hclust(d_col, method="ward.D2")
-
-# ==== 列デンドログラムの左右だけを入れ替える ====
-# クラスタリング結果は維持したまま、Control クラスターを左側に表示する
-swap_top_branches <- function(dend) {
-  old_attr <- attributes(dend)
-  dend <- dend[c(2, 1)]
-  attributes(dend) <- old_attr
-  dend
+pca <- prcomp(t(x), scale. = TRUE)
+variance <- 100 * pca$sdev^2 / sum(pca$sdev^2)
+scores <- data.frame(Sample = rownames(pca$x), PC1 = pca$x[, 1], PC2 = pca$x[, 2], Group = sample_group)
+write_tsv(scores, file.path(output, "das_pca_scores.tsv"))
+write_tsv(data.frame(PC = seq_along(variance), Variance_percent = variance), file.path(output, "das_pca_variance.tsv"))
+write_tsv(data.frame(Sample = labels(column_tree)), file.path(output, "das_heatmap_sample_order.tsv"))
+plot <- ggplot(scores, aes(PC1, PC2, color = Group, shape = Group)) +
+  geom_point(size = 5) +
+  scale_color_manual(values = c(Control = "black", Keratoconus = case_color)) +
+  scale_shape_manual(values = c(Control = point_shape, Keratoconus = point_shape)) +
+  labs(x = sprintf("PC1 (%.3g%%)", variance[1]), y = sprintf("PC2 (%.3g%%)", variance[2])) +
+  xlim(40, -40) + ylim(-40, 40) + theme_linedraw(base_size = 15) +
+  theme(aspect.ratio = 1, panel.border = element_rect(fill = NA, linewidth = 1),
+        panel.grid = element_line(linewidth = 1, colour = "black", linetype = "dashed"))
+invisible(ggplot_build(plot))
+if (!TABLES_ONLY) {
+  pdf_device(file.path(output, "das_heatmap.pdf"), 10, 8)
+  heatmap.2(x, col = rev(colorRampPalette(brewer.pal(10, "RdBu"))(256)),
+    scale = "row", dendrogram = "both", key = TRUE, keysize = 1.5,
+    density.info = "none", trace = "none", Rowv = row_tree, Colv = column_tree,
+    ColSideColors = ifelse(sample_group == "Control", "black", case_color),
+    cexRow = 0.4, cexCol = 1, margins = c(7, 6), main = "")
+  dev.off()
+  ggsave(file.path(output, "das_pca.pdf"), plot, width = 6, height = 6, device = pdf_device)
 }
-
-col_dend <- as.dendrogram(c_col)
-
-left_labels <- labels(col_dend[[1]])
-right_labels <- labels(col_dend[[2]])
-
-left_control_n <- sum(grepl("^Control", left_labels))
-right_control_n <- sum(grepl("^Control", right_labels))
-
-# 右側の枝にControlが多い場合だけ、最上位の左右を入れ替える
-if (right_control_n > left_control_n) {
-  col_dend <- swap_top_branches(col_dend)
-}
-
-# ==== Heatmap 描画 ====
-
-pdf(file.path(figure_dir, "das_heatmap.pdf"), width = 10, height = 8)
-
-heatmap.2(
-  x,
-  col = rev(colorRampPalette(brewer.pal(10, "RdBu"))(256)),
-  scale = "row",
-  dendrogram = "both",
-  key = TRUE,
-  keysize = 1.5,
-  density.info = "none",
-  trace = "none",
-  Rowv = as.dendrogram(c_row),
-  Colv = col_dend,
-  ColSideColors = col_side_colors,
-  cexRow = 0.4,
-  cexCol = 1.0,
-  margins = c(7, 6),
-  main = ""
-)
-
-dev.off()
-
-# ==== PCAの計算 ====
-
-# PCA実行（サンプルが列なので t(x) で転置）
-pcaobj <- prcomp(t(x), scale = TRUE)
-
-# 寄与率
-kiyo1 <- signif(summary(pcaobj)$importance[2, 1] * 100, 3)
-kiyo2 <- signif(summary(pcaobj)$importance[2, 2] * 100, 3)
-
-PC1.lab <- paste("PC1  (", kiyo1, "%)", sep = "")
-PC2.lab <- paste("PC2  (", kiyo2, "%)", sep = "")
-
-# PCA の PC1, PC2
-PC1 <- pcaobj$x[, 1]
-PC2 <- pcaobj$x[, 2]
-
-# サンプル名
-Sample <- rownames(pcaobj$x)
-
-# ==== グループの自動判定 ====
-Group <- ifelse(grepl("^Keratoconus", Sample), "Keratoconus", "Control")
-
-# ==== 統合データフレーム ====
-x.2 <- data.frame(Sample, PC1, PC2, Group)
-
-# ==== 範囲の手動指定 ====
-x_min <- 40
-x_max <-  -40
-y_min <- -40
-y_max <-  40
-
-# ==== PCAプロット ====
-
-p <- ggplot(x.2, aes(x = PC1, y = PC2, group = Group, fill = Group)) +
-  theme_linedraw() +
-  labs(x = PC1.lab, y = PC2.lab) +
-  geom_point(aes(shape = Group, color = Group), size = 5) +
-  scale_shape_manual(values = c("Control" = point_shape, "Keratoconus" = point_shape)) +
-  scale_color_manual(values = c("Control" = "black", "Keratoconus" = kc_color)) +
-  theme(
-    panel.border = element_rect(colour = "black", fill = NA, linewidth = 1.0),
-    panel.grid = element_line(linewidth = 1.0, colour = "black", linetype = "dashed"),
-    aspect.ratio = 1.0,
-    text = element_text(size = 15, family = "")
-  ) +
-  xlim(x_min, x_max) +
-  ylim(y_min, y_max)
-ggsave(file.path(figure_dir, "das_pca.pdf"), p, width = 6, height = 6)

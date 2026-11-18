@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "Please cite the associated manuscript and record the code commit used in your analysis."
+title: "Transcriptome-wide alternative splicing alterations in keratoconus corneal stroma and epithelium"
+type: software
+authors:
+  - name: "Keratoconus splicing study contributors"
+repository-code: "https://github.com/Taichi9163/keratoconus-splicing-analysis"
+url: "https://github.com/Taichi9163/keratoconus-splicing-analysis"
+license: MIT
+keywords:
+  - keratoconus
+  - alternative splicing
+  - RNA-seq
+  - rMATS
+preferred-citation:
+  type: unpublished
+  title: "Transcriptome-wide alternative splicing alterations in keratoconus corneal stroma and epithelium"
+  authors:
+    - family-names: Yuasa
+      given-names: Taichi
+    - family-names: Ueda
+      given-names: Naoyuki
+    - family-names: Yamashita
+      given-names: Yohei
+    - family-names: Yata
+      given-names: Yuma
+    - family-names: Matsuoka
+      given-names: Itsuki
+    - family-names: Kitano
+      given-names: Koichiro
+    - family-names: Kozaki
+      given-names: Renako
+    - family-names: Sotozono
+      given-names: Chie
+    - family-names: Koizumi
+      given-names: Noriko
+    - family-names: Kitazawa
+      given-names: Koji
+    - family-names: Okumura
+      given-names: Naoki
+  year: 2026
+  notes: "Manuscript version dated 18 November 2026; submitted to Investigative Ophthalmology & Visual Science."
